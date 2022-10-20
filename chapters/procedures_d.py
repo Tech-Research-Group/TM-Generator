@@ -96,7 +96,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, INSPECT.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-INSPECT.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -116,7 +116,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, TEST.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-TEST.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -136,7 +136,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, SERVICE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-SERVICE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -156,7 +156,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, REMOVE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-REMOVE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -176,7 +176,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, INSTALL.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-INSTALL.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -196,7 +196,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, REPLACE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-REPLACE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -216,7 +216,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, REPAIR.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-REPAIR.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -236,7 +236,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, PACK.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-PACK.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -256,7 +256,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, UNPACK.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-UNPACK.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -276,7 +276,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, PREP FOR USE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-PREP FOR USE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -296,7 +296,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, CLEAN.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-CLEAN.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -316,7 +316,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, PREP STORAGE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-PREP STORAGE.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -336,7 +336,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, PREP SHIP.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-PREP SHIP.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -356,7 +356,7 @@ class DepotProcedures:
         tmp += followon_maintsk()
         tmp += '</maintwp>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}, TRANSPORT.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-{}-TRANSPORT.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 

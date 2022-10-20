@@ -1,13 +1,15 @@
 """CONFIGURATION FILE"""
 prefix_file = 0
 
-operation = ["operator procedures", "operator instructions", "operator pmcs"]
-master_index = ["troubleshooting master index", "master index"]
-troubleshooting = ["operator troubleshooting", "operator instructions"]
-oper_main = ["operator maintenance"]
-main_troub = ["maintainer troubleshooting"]
+depot_main = ["depot maintenance", "nmwr maintenance", "dmwr maintenance"]
+depot_troub = ["depot troubleshooting", "nmwr troubleshooting", "dmwr troubleshooting"]
+destruction = ["destruction"]
 main_main = ["maintainer maintenance"]
 main_pmcs = ["maintainer pmcs"]
+main_troub = ["maintainer troubleshooting"]
+master_index = ["troubleshooting master index", "master index"]
+oper_main = ["operator maintenance"]
+operation = ["operator procedures", "operator instructions", "operator pmcs"]
 rpstl_check = ["rpstl", "parts info", "parts information", "parts list"]
 support_info = ["supporting information"]
-destruction = ["destruction"]
+troubleshooting = ["operator troubleshooting", "operator instructions"]

@@ -1056,62 +1056,167 @@ def build_nmwr_2b(save_path) -> None:
     chapter1.equipment_description()
     chapter1.theory_operations()
     chapter1.end()
-    # NMWR TROUBLESHOOTING
+    # DEPOT TROUBLESHOOTING
     depot_ts = td.TSDepot(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     depot_ts.start()
-    depot_ts.tsintrowp(wpno)
-    depot_ts.pshopanalwp(wpno)
-    depot_ts.tswp(wpno)
+
+    Mt = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        Mt += 1
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.depot_troub):
+                Mt += 1
+
+                for row2 in islice(ws.rows, Mt, None):
+                    wp_title2 = row2[2].value
+                    wpno = row2[1].value
+                    if wpno:
+                        if wpno[0] == "T":
+                            if "troubleshooting intro" in wp_title2.lower() or "troubleshooting introduction" in wp_title2.lower():
+                                depot_ts.tsintrowp(wpno)
+                            elif "troubleshooting index" in wp_title2.lower():
+                                depot_ts.tsindxwp(wpno)
+                            elif "preshop" in wp_title2.lower():
+                                depot_ts.pshopanalwp(wpno)
+                            elif "component" in wp_title2.lower() or "checklist" in wp_title2.lower():
+                                depot_ts.compchklistwp(wpno)
+                            else:
+                                wp_title2 = wp_title2.replace("/", "or")
+                                depot_ts.tswp(wpno, wp_title2)
+                    if wp_title2:
+                        if "chapter" in wp_title2.lower():
+                            break
+
     depot_ts.end()
     # DEPOT MAINTENANCE PROCEDURES
     depot_maintenance = dp.DepotProcedures(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     depot_maintenance.start()
-    depot_maintenance.ppmgeninfowp(wpno)
-    # depot_maintenance.perseqpwp() # Optional
-    depot_maintenance.inspect(wpno)
-    depot_maintenance.test(wpno)
-    depot_maintenance.service(wpno)
-    depot_maintenance.remove(wpno)
-    depot_maintenance.install(wpno)
-    depot_maintenance.replace(wpno)
-    depot_maintenance.repair(wpno)
-    depot_maintenance.pack(wpno)
-    depot_maintenance.unpack(wpno)
-    depot_maintenance.prepforuse(wpno)
-    depot_maintenance.clean(wpno)
-    depot_maintenance.prepstore(wpno)
-    depot_maintenance.prepship(wpno)
-    depot_maintenance.transport(wpno)
+    y = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        y += 1
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.depot_main):
+                y += 1
+                for row2 in islice(ws.rows, y, None):
+                    wpno = row2[1].value
+                    wp_title2 = row2[2].value
+                    proc_type = row2[3].value
+
+                    if wpno:
+                        if wpno[0] == 'M':
+                            wp_title2 = wp_title2.replace("/", " or")
+                            if proc_type:
+                                if proc_type.lower() == "clean":
+                                    depot_maintenance.clean(wpno, wp_title2)
+                                if proc_type.lower() == "replace":
+                                    depot_maintenance.replace(wpno, wp_title2)
+                                elif proc_type.lower() == "inspect":
+                                    depot_maintenance.inspect(wpno, wp_title2)
+                                elif proc_type.lower() == "test":
+                                    depot_maintenance.test(wpno, wp_title2)
+                                elif proc_type.lower() == "service":
+                                    depot_maintenance.service(wpno, wp_title2)
+                                elif proc_type.lower() == "remove":
+                                    depot_maintenance.remove(wpno, wp_title2)
+                                elif proc_type.lower() == "install":
+                                    depot_maintenance.install(wpno, wp_title2)
+                                elif proc_type.lower() == "repair":
+                                    depot_maintenance.repair(wpno, wp_title2)
+                                elif proc_type.lower() == "pack":
+                                    depot_maintenance.pack(wpno, wp_title2)
+                                elif proc_type.lower() == "unpack":
+                                    depot_maintenance.unpack(wpno, wp_title2)
+                                elif proc_type.lower() == "prepforuse":
+                                    depot_maintenance.prepforuse(wpno, wp_title2)
+                                elif proc_type.lower() == "prepstore":
+                                    depot_maintenance.prepstore(wpno, wp_title2)
+                                elif proc_type.lower() == "prepship":
+                                    depot_maintenance.prepship(wpno, wp_title2)
+                                elif proc_type.lower() == "transport":
+                                    depot_maintenance.transport(wpno, wp_title2)
+                            elif "preservation" in wp_title2.lower():
+                                depot_maintenance.ppmgeninfowp(wpno)
+                            elif "quality" in wp_title2.lower():
+                                depot_maintenance.qawp(wpno)
+                    if "chapter" in wp_title2.lower():
+                        break
+    # Other WP's to add later...
     # depot_maintenance.facilwp()   # Optional
     # depot_maintenance.oipwp() # Optional
     # depot_maintenance.mobilwp()   # Optional
-    depot_maintenance.qawp(wpno)
-    # depot_maintenance.manu_items_introwp()
+    # depot_maintenance.manu_items_introwp() # Optional
     # depot_maintenance.manuwp()    # Optional
     # depot_maintenance.torquewp()  # Optional
     # depot_maintenance.inventorywp()   # Optional
     # depot_maintenance.storagewp() # Optional
     # depot_maintenance.wiringwp()  # Optional
     depot_maintenance.end()
-    # RPSTL
-    repair_parts = rpstl.Rpstl(config, manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
-    repair_parts.start()
-    repair_parts.introwp(wpno)
-    repair_parts.plwp(wpno)
-    repair_parts.bulk_itemswp(wpno)
-    repair_parts.nsnindxwp(wpno)
-    repair_parts.pnindxwp(wpno)
-    repair_parts.end()
+    # PARTS INFORMATION
+    parts_info = pi.PartsInformation(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
+    parts_info.start()
+    parts_info.introwp()
+    Re = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        Re += 1
+
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.rpstl_check):
+                Re += 1
+                break
+    for row2 in islice(ws.rows, Re, None):
+
+        wpno2 = row2[1].value
+        wp_title2 = row2[2].value
+        wp_title2 = wp_title2.replace("/", " or")
+
+        if wpno2:
+            if wpno2[0] == "R":
+                if "bulk items" in wp_title2.lower():
+                    parts_info.bulk_itemswp(wpno2)
+                elif "nsn index" in wp_title2.lower() or "national stock" in wp_title2.lower():
+                    parts_info.nsnindxwp(wpno2)
+                elif "pn index" in wp_title2.lower() or "part number" in wp_title2.lower():
+                    parts_info.pnindxwp(wpno2)
+                else:
+                    parts_info.plwp(wpno2, wp_title2)
+        if wp_title2:
+            if "chapter" in wp_title2.lower():
+                break
+
+    parts_info.end()
     # SUPPORTING INFORMATION
     support_info = si.SupportingInformation(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     support_info.start()
-    support_info.refwp(wpno)
-    support_info.explistwp(wpno)
-    support_info.toolidwp(wpno)
-    support_info.mrplwp(wpno)
-    support_info.csi_wp(wpno)
-    support_info.supitemwp(wpno)
-    support_info.genwp(wpno)
+
+    S = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        S += 1
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.support_info):
+                S += 1
+                for row2 in islice(ws.rows, S, None):
+                    wpno = row2[1].value
+                    wp_title2 = row2[2].value
+                    if wpno:
+                        if wpno[0] == 'S':
+                            if wp_title2.lower() == "references":
+                                support_info.refwp(wpno)
+                            elif wp_title2.lower().startswith("expendable") or wp_title2.lower().startswith("edil"):
+                                support_info.explistwp(wpno)
+                            elif wp_title2.lower().startswith("tool") or wp_title2.lower().startswith("til"):
+                                support_info.toolidwp(wpno)
+                            elif wp_title2.lower().startswith("mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
+                                support_info.mrplwp(wpno)
+                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith("csi"):
+                                support_info.csi_wp(wpno)
+                            elif wp_title2.lower().startswith("support items"):
+                                support_info.supitemwp(wpno)
+                            elif wp_title2.lower().startswith("additional supporting"):
+                                support_info.genwp(wpno)
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
     messagebox.showinfo("Success!", "Your NMWR has been created.")
@@ -2102,10 +2207,35 @@ def build_nmwr_2c(save_path) -> None:
     repair_parts = rpstl.Rpstl(config, manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     repair_parts.start()
     repair_parts.introwp()
-    repair_parts.plwp(wpno, wp_title2)
-    repair_parts.bulk_itemswp(wpno, wp_title2)
-    repair_parts.nsnindxwp(wpno, wp_title2)
-    repair_parts.pnindxwp(wpno, wp_title2)
+    Re = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        Re += 1
+
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.rpstl_check):
+                Re += 1
+                break
+    for row2 in islice(ws.rows, Re, None):
+
+        wpno2 = row2[1].value
+        wp_title2 = row2[2].value
+        wp_title2 = wp_title2.replace("/", " or")
+
+        if wpno2:
+            if wpno2[0] == "R":
+                if "bulk items" in wp_title2.lower():
+                    repair_parts.bulk_itemswp(wpno2)
+                elif "nsn index" in wp_title2.lower() or "national stock" in wp_title2.lower():
+                    repair_parts.nsnindxwp(wpno2)
+                elif "pn index" in wp_title2.lower() or "part number" in wp_title2.lower():
+                    repair_parts.pnindxwp(wpno2)
+                else:
+                    repair_parts.plwp(wpno2, wp_title2)
+        if wp_title2:
+            if "chapter" in wp_title2.lower():
+                break
+
     repair_parts.end()
     # SUPPORTING INFORMATION
     support_info = si.SupportingInformation(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
@@ -2852,10 +2982,35 @@ def build_nmwr_2d(save_path) -> None:
     repair_parts = rpstl.Rpstl(config, manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     repair_parts.start()
     repair_parts.introwp()
-    repair_parts.plwp()
-    repair_parts.bulk_itemswp()
-    repair_parts.nsnindxwp()
-    repair_parts.pnindxwp()
+    Re = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        Re += 1
+
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.rpstl_check):
+                Re += 1
+                break
+    for row2 in islice(ws.rows, Re, None):
+
+        wpno2 = row2[1].value
+        wp_title2 = row2[2].value
+        wp_title2 = wp_title2.replace("/", " or")
+
+        if wpno2:
+            if wpno2[0] == "R":
+                if "bulk items" in wp_title2.lower():
+                    repair_parts.bulk_itemswp(wpno2)
+                elif "nsn index" in wp_title2.lower() or "national stock" in wp_title2.lower():
+                    repair_parts.nsnindxwp(wpno2)
+                elif "pn index" in wp_title2.lower() or "part number" in wp_title2.lower():
+                    repair_parts.pnindxwp(wpno2)
+                else:
+                    repair_parts.plwp(wpno2, wp_title2)
+        if wp_title2:
+            if "chapter" in wp_title2.lower():
+                break
+
     repair_parts.end()
     # SUPPORTING INFORMATION
     support_info = si.SupportingInformation(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)

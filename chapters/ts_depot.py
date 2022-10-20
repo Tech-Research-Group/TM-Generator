@@ -23,7 +23,7 @@ class TSDepot:
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-TS_DEPOT_START.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
-            cfg.prefix_file += 10
+        cfg.prefix_file += 10
     
     def tsintrowp(self, wpno):
         """Function to create a Depot Troubleshooting Intro WP."""
@@ -53,7 +53,55 @@ class TSDepot:
         </para0>
     </tsintrowp>'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-TSIntro.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-Troubleshooting-Introduction.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+            _f.write(tmp)
+        cfg.prefix_file += 10
+
+    def tsindxwp(self, wpno):
+        """Function to create a Depot Troubleshooting Index WP."""
+        tmp = f'<tsindxwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += '\t<wpidinfo>\n'
+        tmp += '\t\t<maintlvl level="depot"/>\n'
+        tmp += f'''\t\t<title>TROUBLESHOOTING INDEX</title>
+    </wpidinfo>
+    <geninfo>
+        <title>GENERAL</title>
+        <para>This chapter provides depot maintenance information and includes troubleshooting maintenance procedures.</para>
+        <para>
+            <emphasis emph="bold">TROUBLESHOOTING INDEX</emphasis>
+        </para>
+        <para>Troubleshooting index lists common malfunctions that may occur during {self.sys_acronym} shelter inspection and operation. Find malfunction to be eliminated and go to indicated troubleshooting work package that follows. Index cannot list all malfunctions that may occur, all tests or inspections needed to find fault, nor all actions required to correct fault. If existing malfunction is not listed, or cannot be corrected through this troubleshooting index, notify next higher level of maintenance.</para>
+    </geninfo>
+    <tsindx.symptom>
+        <title>Troubleshooting Index</title>
+        <tsindx.symptom-category>
+            <title>Lorem Ipsum</title>
+            <tsindx.symptom-entry>
+                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <action>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </action>
+            </tsindx.symptom-entry>
+        </tsindx.symptom-category>
+        <tsindx.symptom-category>
+            <title>Lorem Ipsum</title>
+            <tsindx.symptom-entry>
+                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <action>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </action>
+            </tsindx.symptom-entry>
+            <tsindx.symptom-entry>
+                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <action>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </action>
+            </tsindx.symptom-entry>
+        </tsindx.symptom-category>
+    </tsindx.symptom>
+</tsindxwp>'''
+        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
+                ' WIP/{:05d}-{}-Troubleshooting-Index.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -201,6 +249,42 @@ class TSDepot:
             _f.write(tmp)
         cfg.prefix_file += 10
 
+    def compchklistwp(self, wpno):
+        """Function to create a Depot Component Checklist WP."""
+        tmp = f'<compchklistwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += '\t<wpidinfo>\n'
+        tmp += '\t\t<maintlvl level="depot"/>\n'
+        tmp += '''\t\t<title>COMPONENT CHECKLIST</title>
+    </wpidinfo>\n'''
+        tmp += isb()
+        tmp += '''\t<intro>
+		<para0>
+			<title>Scope</title>
+			<para>This work package includes a list which is to be copied for each item received for a preshop analysis. After copying one list for each item, the information required must be completed on the checklist prior to the preshop analysis.</para>
+		</para0>
+	</intro>
+	<compchklist>
+		<name/>
+		<serialno/>
+		<daterec/>
+		<recfrom/>
+		<compname/>
+		<nsn>
+			<fsc/>
+			<niin/>
+		</nsn>
+		<partno/>
+		<cageno/>
+		<qty/>
+		<qtyrec/>
+		<damage/>
+	</compchklist>
+</compchklistwp>'''
+        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
+                ' WIP/{:05d}-{}-ComponentChecklist.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+            _f.write(tmp)
+        cfg.prefix_file += 10
+
     def tswp(self, wpno, wp_title):
         """Function to create a Depot Troubleshooting WP."""
         tmp = f'<tswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
@@ -221,14 +305,14 @@ class TSDepot:
                     <step1>
                         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
                     </step1>
-                    <figure id="T00101-XX-XXXX-XXX-F0001">
+                    <figure id="{wpno}-{self.sys_number}-F0001">
                         <title>Lorem Ipsum</title>
                         <graphic boardno="PLACEHOLDER"/>
                     </figure>
                     <step1>
                         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
                     </step1>
-                    <figure id="T00101-XX-XXXX-XXX-F0002">
+                    <figure id="{wpno}-{self.sys_number}-F0002">
                         <title>Lorem Ipsum</title>
                         <graphic boardno="PLACEHOLDER"/>
                     </figure>
@@ -249,7 +333,7 @@ class TSDepot:
                             <para>FAIL: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>						
                         </step2>
                     </step1>
-                    <figure id="T00101-XX-XXXX-XXX-F0003">
+                    <figure id="{wpno}-{self.sys_number}-F0003">
                         <title>Lorem Ipsum</title>
                         <graphic boardno="PLACEHOLDER"/>
                     </figure>
@@ -258,7 +342,7 @@ class TSDepot:
         </tsproc>
     </tswp>'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}-TS.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-{}-Troubleshooting-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
