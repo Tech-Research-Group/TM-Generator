@@ -20,7 +20,7 @@ class SupportingInformation:
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
     <sim chngno="0" revno="0" chap-toc="no">\n'''
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')' + '</name>\n'
+        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-SUPPORT_INFO_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
@@ -1100,7 +1100,7 @@ class SupportingInformation:
         """Function to create the Support Items WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
         tmp += f'<supitemwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
-        tmp += '''<wpidinfo>
+        tmp += '''\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>SUPPORT ITEMS</title>
 	</wpidinfo>

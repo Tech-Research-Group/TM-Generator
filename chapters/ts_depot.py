@@ -15,13 +15,13 @@ class TSDepot:
         """Function that creates Depot Troubleshooting starting tags of TM."""
         cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-<tim chngno="0" revno="0" chap-toc="no">'''
+    <tim chngno="0" revno="0" chap-toc="no">'''
         tmp += '\t<titlepg maintlvl="depot">\n'
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
         tmp += '<troubledmwrnmwrcategory>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-TS_DEPOT_START.txt', 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-TS_DEPOT_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
     

@@ -17,7 +17,7 @@ class TSMasterIndex:
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
 <tim chngno="0" revno="0" chap-toc="no">\n'''
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')' + '</name>\n'
+        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
         tmp += '\t<masterindexcategory>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +

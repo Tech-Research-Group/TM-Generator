@@ -19,62 +19,56 @@ class DepotProcedures:
         tmp += '\t<titlepg maintlvl="depot">\n'
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
-        tmp += '\t<maintenancecategory>\n'
+        tmp += '\t<depotcategory>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-DEPOT_START.txt', 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-DEPOT_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def ppmgeninfowp(self, wpno):
         """Function to create the Preservation, Packaging, and Marking General Information WP."""
-        tmp = f'<maintwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<ppmgeninfowp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
         tmp += '''<wpidinfo>
         <maintlvl level="depot"/>
         <title>PRESERVATION, PACKAGING, AND MARKING GENERAL INFORMATION</title>
-    </wpidinfo>\n'''
-        tmp += isb()
-        tmp += '\t<maintsk>\n'
-        tmp += '\t\t<ppmgeninfo>\n'
-        tmp += '''\t\t\t<geninfo>
-		<para0>
-			<title>PACKAGING</title>
-			<para>Military preservation, Level A packing, and marking shall be accomplished in accordance with the specific packaging instructions <xref wpid="M00701-10-5419-215"/>.</para>
-		</para0>
-		<para0>
-			<title>MARKING FOR STORAGE AND SHIPMENT</title>
-			<para>Storage: In addition to any special markings called out on the special packaging instruction (SPI) or in the packaging requirements code, all unit packages, intermediate packs, exterior shipping containers, and, as applicable, unitized loads shall be marked in accordance with <extref docno="MIL-STD-129"/> including bar coding. The repair facility is responsible for application of special markings as required by <extref docno="MIL-STD-129"/> regardless of whether specified in the contract/order or not. Special markings include, but are not limited to, Shelf-life markings, structural markings, and transportation special handling markings. The marking of pilferable and sensitive materiel will not identify the nature of the materiel.</para>
-			<para>Shipment: The repair facility shall apply identification and address markings with bar codes in accordance with <extref docno="MIL-STD-129"/>. A Military Shipment Label (MSL) is required for all shipments except contractor to contractor. The MSL will include both linear and 2D bar codes per the standard.</para>
-			<para>Military Shipping Label: Military Shipment Labels may be created using the Computer Automated Transportation Tool Military Shipment Label/Issue Receipt Release Document (CATT MSL/IRRD).</para>
-		</para0>
-		<para0>
-			<title>HEAT TREATMENT AND MARKING OF WOOD PACKAGING MATERIALS</title>
-			<para>Wood Packaging Materials (WPM) (e.g., boxes, crates, skids, pallets, and any wood used as inner packaging made of non-manufactured wood) shall be constructed of lumber that has been heat-treated in accordance with the requirements of International Standard for Phytosanitary Measures (ISPM) –15. The WPM manufacturer shall be affiliated with an inspection agency accredited by the board of review of the American Lumber Standard Committee. The WPM manufacturer shall ensure traceability to the original source of heat treatment. Each piece of WPM shall be marked to show the conformance to the International Plant Protection Convention Standard. Certification markings shall be indelible and permanent. They may be stamped, stenciled, or branded directly onto or into the WPM. Certification marks shall be applied in a visible location on at least two opposite sides of the wood packaging product but are not required on each individual component piece of a wood packaging product. On dunnage, the marking shall be applied every 2 feet to opposite surfaces of each piece. If possible, the mark shall be visible when the dunnage is placed in the load to enable inspectors to verify the WPM’s compliance without unloading or unstuffing the container. Foreign manufacturers shall have the heat treatment of WPM verified in accordance with their National Plant Protection Organization’s compliance program.</para>
-		</para0>
-		<para0>
-			<title>ALTERNATIVES</title>
-			<para>The packaging requirements have been validated and the method of preservation/packing has proven successful in meeting the needs of the military distribution system, including undefined storage and shipment throughout the world. Tailoring of the packaging instructions may only be authorized by the packaging requirements developer. If tailored, prototype package is required to validate the sizes and fit requirements. Minor dimensional and size changes are acceptable provided email notification is provided to the packaging requirements developer. Any design changes or changes in the method of preservation that provide a cost savings without degrading the method of preservation or packing or affecting the serviceability of the item will be considered and responded to within 10 days of submission. The equipment proponent reserves the right to require testing to validate alternate preservation methods, materials, alternates, blocking, bracing, cushioning, and packing.</para>
-		</para0>
-		<para0>
-			<title>REUSE OF PACKAGING MATERIALS</title>
-			<para>The cushioning material and the fiberboard boxes may be reused provided:</para>
-			<para>
-				<randlist>
-					<item label="a.">There is no visible damage to material.</item>
-					<item label="b.">The foam cushioning has not taken a permanent set.</item>
-					<item label="c.">The fiberboard has no punctures, delaminating, or crushed flutes.</item>
-				</randlist>
-			</para>
-			<para>The water vapor proof barrier bag shall never be reused. Always use new barrier material, evacuate air from the barrier bag, and conduct a snap test after 2 hours on each bag to ensure seal is holding. All components of the wood box/crate must be present, properly secured in position, and not broken. Splits are acceptable provided the boards remain secured and not loose. When reapplying the lid, fasteners shall be placed 1/2 inch away from the previous fastener hole. Strapping shall be applied per <extref docno="MIL-HDBK-774"/>.</para>
-		</para0>
-		<para0>
-			<title>CONTAINER REPAIR</title>
-			<para>Each long life metal reusable container will be inspected and reconditioned in accordance with <extref docno="TB 9-289"/>, <extref docno="TB 55-8100-200-24"/>, or <extref docno="SB 725-92-1"/> and the applicable container drawing package. Container drawings are available upon request from the packaging requirements developer. This reconditioning effort includes mandatory replacement of breather valves, humidity indicators, data plates, sealing gaskets, and desiccant, plus all shear mounts with an age factor of 5 years or older. It also includes a leak test after reconditioning, inspection and replacement of unserviceable wood skids, and touch up or total stripping and refinishing of the container surfaces with Chemical Agent Resistant Coating paint.</para>
-		</para0>
-	</geninfo>\n'''
-        tmp += '\t\t</ppmgeninfo>\n'
-        tmp += '\t</maintsk>\n'
-        tmp += followon_maintsk()
-        tmp += '</maintwp>'
+    </wpidinfo>
+    t<geninfo>
+        <para0>
+            <title>PACKAGING</title>
+            <para>Military preservation, Level A packing, and marking shall be accomplished in accordance with the specific packaging instructions <xref wpid="M00701-10-5419-215"/>.</para>
+        </para0>
+        <para0>
+            <title>MARKING FOR STORAGE AND SHIPMENT</title>
+            <para>Storage: In addition to any special markings called out on the special packaging instruction (SPI) or in the packaging requirements code, all unit packages, intermediate packs, exterior shipping containers, and, as applicable, unitized loads shall be marked in accordance with <extref docno="MIL-STD-129"/> including bar coding. The repair facility is responsible for application of special markings as required by <extref docno="MIL-STD-129"/> regardless of whether specified in the contract/order or not. Special markings include, but are not limited to, Shelf-life markings, structural markings, and transportation special handling markings. The marking of pilferable and sensitive materiel will not identify the nature of the materiel.</para>
+            <para>Shipment: The repair facility shall apply identification and address markings with bar codes in accordance with <extref docno="MIL-STD-129"/>. A Military Shipment Label (MSL) is required for all shipments except contractor to contractor. The MSL will include both linear and 2D bar codes per the standard.</para>
+            <para>Military Shipping Label: Military Shipment Labels may be created using the Computer Automated Transportation Tool Military Shipment Label/Issue Receipt Release Document (CATT MSL/IRRD).</para>
+        </para0>
+        <para0>
+            <title>HEAT TREATMENT AND MARKING OF WOOD PACKAGING MATERIALS</title>
+            <para>Wood Packaging Materials (WPM) (e.g., boxes, crates, skids, pallets, and any wood used as inner packaging made of non-manufactured wood) shall be constructed of lumber that has been heat-treated in accordance with the requirements of International Standard for Phytosanitary Measures (ISPM) –15. The WPM manufacturer shall be affiliated with an inspection agency accredited by the board of review of the American Lumber Standard Committee. The WPM manufacturer shall ensure traceability to the original source of heat treatment. Each piece of WPM shall be marked to show the conformance to the International Plant Protection Convention Standard. Certification markings shall be indelible and permanent. They may be stamped, stenciled, or branded directly onto or into the WPM. Certification marks shall be applied in a visible location on at least two opposite sides of the wood packaging product but are not required on each individual component piece of a wood packaging product. On dunnage, the marking shall be applied every 2 feet to opposite surfaces of each piece. If possible, the mark shall be visible when the dunnage is placed in the load to enable inspectors to verify the WPM’s compliance without unloading or unstuffing the container. Foreign manufacturers shall have the heat treatment of WPM verified in accordance with their National Plant Protection Organization’s compliance program.</para>
+        </para0>
+        <para0>
+            <title>ALTERNATIVES</title>
+            <para>The packaging requirements have been validated and the method of preservation/packing has proven successful in meeting the needs of the military distribution system, including undefined storage and shipment throughout the world. Tailoring of the packaging instructions may only be authorized by the packaging requirements developer. If tailored, prototype package is required to validate the sizes and fit requirements. Minor dimensional and size changes are acceptable provided email notification is provided to the packaging requirements developer. Any design changes or changes in the method of preservation that provide a cost savings without degrading the method of preservation or packing or affecting the serviceability of the item will be considered and responded to within 10 days of submission. The equipment proponent reserves the right to require testing to validate alternate preservation methods, materials, alternates, blocking, bracing, cushioning, and packing.</para>
+        </para0>
+        <para0>
+            <title>REUSE OF PACKAGING MATERIALS</title>
+            <para>The cushioning material and the fiberboard boxes may be reused provided:</para>
+            <para>
+                <randlist>
+                    <item label="a.">There is no visible damage to material.</item>
+                    <item label="b.">The foam cushioning has not taken a permanent set.</item>
+                    <item label="c.">The fiberboard has no punctures, delaminating, or crushed flutes.</item>
+                </randlist>
+            </para>
+            <para>The water vapor proof barrier bag shall never be reused. Always use new barrier material, evacuate air from the barrier bag, and conduct a snap test after 2 hours on each bag to ensure seal is holding. All components of the wood box/crate must be present, properly secured in position, and not broken. Splits are acceptable provided the boards remain secured and not loose. When reapplying the lid, fasteners shall be placed 1/2 inch away from the previous fastener hole. Strapping shall be applied per <extref docno="MIL-HDBK-774"/>.</para>
+        </para0>
+        <para0>
+            <title>CONTAINER REPAIR</title>
+            <para>Each long life metal reusable container will be inspected and reconditioned in accordance with <extref docno="TB 9-289"/>, <extref docno="TB 55-8100-200-24"/>, or <extref docno="SB 725-92-1"/> and the applicable container drawing package. Container drawings are available upon request from the packaging requirements developer. This reconditioning effort includes mandatory replacement of breather valves, humidity indicators, data plates, sealing gaskets, and desiccant, plus all shear mounts with an age factor of 5 years or older. It also includes a leak test after reconditioning, inspection and replacement of unserviceable wood skids, and touch up or total stripping and refinishing of the container surfaces with Chemical Agent Resistant Coating paint.</para>
+        </para0>
+    </geninfo>
+</ppmgeninfowp>\n'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-{}-PreservationPackagingMarkingGenInfo.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
@@ -362,15 +356,13 @@ class DepotProcedures:
 
     def qawp(self, wpno):
         """Function to create a Quality Assurance Requirements WP."""
-        tmp = f'<maintwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
-        tmp += '''<wpidinfo>
+        tmp = f'<qawp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += '''\t<wpidinfo>
         <maintlvl level="depot"/>
         <title>>QUALITY ASSURANCE REQUIREMENTS</title>
     </wpidinfo>\n'''
         tmp += isb()
-        tmp += '\t<maintsk>\n'
-        tmp += '\t\t<qawp>\n'
-        tmp += '''\t\t<responsibility>
+        tmp += '''\t<responsibility>
 		<title>STATEMENT OF RESPONSIBILITY</title>
 		<para>The depot/contractor is responsible for complying with the quality assurance requirements contained in this work package and in accordance with International Standards Organization (ISO) 9000 Series standards or equivalent. The commodity manager reserves the right to perform inspections or make changes that ensure the depot work being done meets the quality standards of the NMWR and preserves the inherent reliability of the item.</para>
 	</responsibility>
@@ -439,9 +431,8 @@ class DepotProcedures:
 				</tgroup>
 			</table>
         </para>
-    </acceptance>\n'''
-        tmp += followon_maintsk()
-        tmp += '</maintwp>'
+    </acceptance>
+</qawp>\n'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-{}-QualityAssuranceRequirements.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
@@ -450,7 +441,7 @@ class DepotProcedures:
     def end(self):
         """Function to create Depot Procedures end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
-        tmp = '\t</maintenancecategory>\n'
+        tmp = '\t</depotcategory>\n'
         tmp += '</mim>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-DEPOT_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
@@ -469,7 +460,7 @@ def followon_maintsk():
 
 def isb():
     """Function to create the Initial Setup Box."""
-    isb_tmp = '''\n<initial_setup>
+    isb_tmp = '''\n\t<initial_setup>
         <testeqp>
             <testeqp-setup-item>
                 <name></name>
