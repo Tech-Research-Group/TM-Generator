@@ -1,7 +1,8 @@
 """FRONT MATTER"""
-import cfg
 import math
 from dotenv import dotenv_values
+import cfg
+
 class FrontMatter:
     """Class to create various types of WP's included in the Front Matter section of a TM."""
     config = dotenv_values(".env")  # take environment variables from .env.
@@ -404,7 +405,7 @@ class FrontMatter:
     </loepwp>'''
 
         with open(self.save_path + '/' + self.sys_acronym.upper() + ' ' + self.manual_type + \
-            ' WIP/{:05d}-LOEP.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-LOEP.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
         
@@ -463,7 +464,7 @@ class FrontMatter:
         <title/>
     </contententry>
 </contents>\n'''
-        if self.manual_type != 'NMWR':
+        if self.manual_type.lower() != 'nmwr':
             tmp += '''<howtouse>
     <title/>
     <para0>
@@ -627,6 +628,6 @@ class FrontMatter:
         tmp += '</paper.frnt>\n'
 
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-TitleBlock_TOC_HowToUse.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-TitleBlock_TOC_HowToUse.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10

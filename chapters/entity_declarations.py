@@ -1,6 +1,4 @@
 """ENTITY DECLARATIONS"""
-import cfg
-
 class EntityDeclarations:
     """A class that is used to create the entity declarations file."""
     def __init__(self, sys_acronym, manual_type, milstd, save_path):

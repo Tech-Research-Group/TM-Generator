@@ -1073,6 +1073,7 @@ def build_nmwr_2b(save_path) -> None:
                     wpno = row2[1].value
                     if wpno:
                         if wpno[0] == "T":
+                            wp_title2 = wp_title2.replace("/", "or")
                             if "troubleshooting intro" in wp_title2.lower() or "troubleshooting introduction" in wp_title2.lower():
                                 depot_ts.tsintrowp(wpno)
                             elif "troubleshooting index" in wp_title2.lower():
@@ -1082,7 +1083,6 @@ def build_nmwr_2b(save_path) -> None:
                             elif "component" in wp_title2.lower() or "checklist" in wp_title2.lower():
                                 depot_ts.compchklistwp(wpno)
                             else:
-                                wp_title2 = wp_title2.replace("/", "or")
                                 depot_ts.tswp(wpno, wp_title2)
                     if wp_title2:
                         if "chapter" in wp_title2.lower():
@@ -1130,16 +1130,12 @@ def build_nmwr_2b(save_path) -> None:
                                     depot_maintenance.unpack(wpno, wp_title2)
                                 elif proc_type.lower() == "prepforuse":
                                     depot_maintenance.prepforuse(wpno, wp_title2)
-                                elif proc_type.lower() == "prepstore":
-                                    depot_maintenance.prepstore(wpno, wp_title2)
-                                elif proc_type.lower() == "prepship":
-                                    depot_maintenance.prepship(wpno, wp_title2)
-                                elif proc_type.lower() == "transport":
-                                    depot_maintenance.transport(wpno, wp_title2)
                             elif "preservation" in wp_title2.lower():
                                 depot_maintenance.ppmgeninfowp(wpno)
                             elif "quality" in wp_title2.lower():
                                 depot_maintenance.qawp(wpno)
+                            else:
+                                break
                     if "chapter" in wp_title2.lower():
                         break
     # Other WP's to add later...

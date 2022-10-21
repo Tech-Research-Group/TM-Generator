@@ -1,6 +1,6 @@
 """DEPOT PROCEDURES"""
-import cfg
 import math
+import cfg
 
 class DepotProcedures:
     """Class to create various types of WP's included in Depot Procedures of a TM."""

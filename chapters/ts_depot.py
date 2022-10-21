@@ -1,6 +1,6 @@
 """TROUBLESHOOTING DEPOT PROCEDURES"""
-import cfg
 import math
+import cfg
 
 class TSDepot:
     """Class to create various types of WP's included in Troubleshooting Depot Procedures of a TM."""
@@ -15,7 +15,7 @@ class TSDepot:
         """Function that creates Depot Troubleshooting starting tags of TM."""
         cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-    <tim chngno="0" revno="0" chap-toc="no">'''
+<tim chngno="0" revno="0" chap-toc="no">'''
         tmp += '\t<titlepg maintlvl="depot">\n'
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
@@ -30,28 +30,28 @@ class TSDepot:
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
         tmp += f'<tsintrowp chngno="0" wpno="{wpno}-' + self.sys_number+ '">\n'
         tmp += '''<wpidinfo>
-            <maintlvl level="depot"/>
-            <title>TROUBLESHOOTING INTRODUCTION</title>
-        </wpidinfo>
-        <geninfo>
-            <title>GENERAL INFORMATION</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-        </geninfo>
-        <para0>
-            <title>GENERAL</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-        </para0>
-        <para0>
-            <title>TROUBLESHOOTING INDEX</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</para>
-        </para0>
-        <para0>
-            <title/>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-        </para0>
-    </tsintrowp>'''
+        <maintlvl level="depot"/>
+        <title>TROUBLESHOOTING INTRODUCTION</title>
+    </wpidinfo>
+    <geninfo>
+        <title>GENERAL INFORMATION</title>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+    </geninfo>
+    <para0>
+        <title>GENERAL</title>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+    </para0>
+    <para0>
+        <title>TROUBLESHOOTING INDEX</title>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</para>
+    </para0>
+    <para0>
+        <title/>
+        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+    </para0>
+</tsintrowp>'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-{}-Troubleshooting-Introduction.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
@@ -294,53 +294,53 @@ class TSDepot:
         </wpidinfo>\n'''
         tmp += isb()
         tmp += f'''<tsproc>
-            <faultproc>
-                <title>{wp_title}</title>
-                <note>
-                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                </note>
-                <symptom>Lorem ipsum dolor sit amet.</symptom>
-                <malfunc label="malfunction">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</malfunc>
-                <action>
-                    <step1>
+        <faultproc>
+            <title>{wp_title}</title>
+            <note>
+                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+            </note>
+            <symptom>Lorem ipsum dolor sit amet.</symptom>
+            <malfunc label="malfunction">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</malfunc>
+            <action>
+                <step1>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </step1>
+                <figure id="{wpno}-{self.sys_number}-F0001">
+                    <title>Lorem Ipsum</title>
+                    <graphic boardno="PLACEHOLDER"/>
+                </figure>
+                <step1>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </step1>
+                <figure id="{wpno}-{self.sys_number}-F0002">
+                    <title>Lorem Ipsum</title>
+                    <graphic boardno="PLACEHOLDER"/>
+                </figure>
+                <step1>
+                    <specpara>
+                        <note>
+                            <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                        </note>
                         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0001">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0002">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <specpara>
-                            <note>
-                                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                            </note>
-                            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                        </specpara>
-                        <step2>
-                            <para>PASS: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                        </step2>
-                        <step2>
-                            <para>FAIL: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                        </step2>
-                        <step2>
-                            <para>FAIL: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>						
-                        </step2>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0003">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                </action>
-            </faultproc>
-        </tsproc>
-    </tswp>'''
+                    </specpara>
+                    <step2>
+                        <para>PASS: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    </step2>
+                    <step2>
+                        <para>FAIL: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    </step2>
+                    <step2>
+                        <para>FAIL: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>						
+                    </step2>
+                </step1>
+                <figure id="{wpno}-{self.sys_number}-F0003">
+                    <title>Lorem Ipsum</title>
+                    <graphic boardno="PLACEHOLDER"/>
+                </figure>
+            </action>
+        </faultproc>
+    </tsproc>
+</tswp>'''
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
                 ' WIP/{:05d}-{}-Troubleshooting-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
