@@ -487,8 +487,7 @@ class FrontMatter:
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-                '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF \
-                    OPERATION</title>\n'
+                '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
             tmp += self.TAB_3 + '<para>' + self.config.get('CHAPTER_1') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -509,8 +508,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-                '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE \
-                    INSTRUCTIONS</title>\n'
+                '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
             tmp += self.TAB_3 + '<para>' + self.config.get('PMCS') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -546,8 +544,7 @@ class FrontMatter:
             tmp += self.TAB_3 + '<title>Finding Information</title>\n'
             tmp += self.TAB_3 + '<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
             tmp += self.TAB_3 + \
-                '<!-- CHANGE: USE the index statement applicable to your TM or none if that \
-                    applies. -->\n'
+                '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
             tmp += self.TAB_3 + '<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -606,8 +603,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '<title>Finding Information</title>\n'
             tmp += self.TAB_2 + '<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
             tmp += self.TAB_2 + \
-                '<!-- CHANGE: Use the index statement applicable to your TM or none if \
-                    that applies -->\n'
+                '<!-- CHANGE: Use the index statement applicable to your TM or none if that applies -->\n'
             tmp += self.TAB_2 + '<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'

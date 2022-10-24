@@ -1,11 +1,14 @@
 """ TM SHELL GENERATOR """
 import os
-# from plistlib import InvalidFileException
+from plistlib import InvalidFileException
 import shutil
 import tkinter as tk
 from tkinter import Button, Checkbutton, filedialog, Entry, IntVar, Label, messagebox, StringVar
 from tkinter.ttk import Combobox
+from itertools import islice
+import openpyxl as xl
 from dotenv import dotenv_values
+import cfg
 import chapters.ammunition as a
 import chapters.ammunition_marking as am
 import chapters.auxiliary_equipment as ae
@@ -29,18 +32,24 @@ import chapters.ts_maintainer as tm
 import chapters.ts_master_index_o as tsmi_o
 import chapters.ts_operator as to
 from chapters import rpstl
-import openpyxl as xl
-from itertools import islice
-import cfg
-
-config = dotenv_values(".env")  # take environment variables from .env.
 
 global chbox_1, chbox_2, chbox_3, chbox_4, chbox_5, chbox_6
-errors = []
+config = dotenv_values(".env")  # take environment variables from .env.
+ERRORS = []
+excelFile = None
 manual = ''
 milstd = ''
+workbook = None
+ws = None
+
 CBX_MANUAL = ''
 CBX_MIL_STD = ''
+FSC = ''
+NIIN = ''
+PART_NO = ''
+SYS_ACRONYM = ''
+SYS_NAME = ''
+SYS_NUMBER = ''
 TAB_2 = '\t\t'
 TAB_3 = '\t\t\t'
 TAB_4 = '\t\t\t\t'
@@ -48,16 +57,14 @@ TAB_5 = '\t\t\t\t\t'
 TAB_6 = '\t\t\t\t\t\t'
 TAB_7 = '\t\t\t\t\t\t\t'
 TAB_8 = '\t\t\t\t\t\t\t\t'
+UOC = ''
 
-excelFile = None
-workbook = None
-ws = None
 
 def form_validation(save_path) -> None:
     """Validates the items that are part of the form.
     Turns input fields red if empty. Adds error messages to the errors list."""
-    global errors, SYS_ACRONYM, SYS_NUMBER, SYS_NAME, FSC, NIIN, PART_NO, UOC
-    errors = []
+    global ERRORS, SYS_ACRONYM, SYS_NUMBER, SYS_NAME, FSC, NIIN, PART_NO, UOC
+    ERRORS = []
     SYS_NAME = ent_sys_name.get()
     SYS_ACRONYM = ent_sys_acronym.get()
     SYS_NUMBER = ent_sys_number.get()
@@ -69,41 +76,41 @@ def form_validation(save_path) -> None:
     # Form Validation to make sure all fields are filled out
     if SYS_NAME == '':
         lbl_sys_name.configure(fg='red')
-        errors.append('SYSTEM NAME is required.\n')
+        ERRORS.append('SYSTEM NAME is required.\n')
     else:
         lbl_sys_name.configure(fg='black')
     if SYS_ACRONYM == '':
         lbl_sys_acronym.configure(fg='red')
-        errors.append('SYSTEM ACRONYM is required.\n')
+        ERRORS.append('SYSTEM ACRONYM is required.\n')
     else:
         lbl_sys_acronym.configure(fg='black')
     if SYS_NUMBER == '':
         lbl_sys_number.configure(fg='red')
-        errors.append('SYSTEM NUMBER is required.\n')
+        ERRORS.append('SYSTEM NUMBER is required.\n')
     else:
         lbl_sys_number.configure(fg='black')
     if FSC == '':
         lbl_fsc.configure(fg='red')
-        errors.append('FSC is required.\n')
+        ERRORS.append('FSC is required.\n')
     else:
         lbl_fsc.configure(fg='black')
     if NIIN == '':
         lbl_niin.configure(fg='red')
-        errors.append('NIIN is required.\n')
+        ERRORS.append('NIIN is required.\n')
     else:
         lbl_niin.configure(fg='black')
     if PART_NO == '':
         lbl_part_no.configure(fg='red')
-        errors.append('PART NUMBER is required.\n')
+        ERRORS.append('PART NUMBER is required.\n')
     else:
         lbl_part_no.configure(fg='black')
     if UOC == '':
         lbl_uoc.configure(fg='red')
-        errors.append('UOC is required.\n')
+        ERRORS.append('UOC is required.\n')
     else:
         lbl_uoc.configure(fg='black')
     # If errors list contains errors, display them in a message box.
-    if errors:
+    if ERRORS:
         messagebox.showerror("Error", show_errors())
     # If no errors, build the TM.
     else:
@@ -112,7 +119,7 @@ def form_validation(save_path) -> None:
 def show_errors() -> str:
     """Combines all form errors and returns them as a string."""
     error_string = ''
-    for error in errors:
+    for error in ERRORS:
         error_string += error
     return error_string
 
@@ -3187,7 +3194,7 @@ def create_tm_wip_dir(save_path) -> None:
 
 def save_folder() -> str:
     """File dialog to save the folder."""
-    if not errors:
+    if not ERRORS:
         save_path = filedialog.askdirectory(initialdir="/", title="Save file")
         print(save_path)
         if save_path == "":
@@ -3196,7 +3203,7 @@ def save_folder() -> str:
             form_validation(save_path)
     else:
         messagebox.showerror("Error", "Please fill out all fields.")
-        print(errors)
+        print(ERRORS)
 
 # Comboboxes
 def maincombo() -> None:
@@ -3242,9 +3249,16 @@ def combofill(_e) -> None:
 
 def open_tm_tracker():
     global excelFile, workbook, ws
-    excelFile = filedialog.askopenfilename(initialdir="~",title="Select TM Tracker",filetypes=(("Excel File", "*xlsx"),("All Files",".")))
-    workbook = xl.load_workbook(excelFile)
-    ws = workbook.active
+    try:
+        excelFile = filedialog.askopenfilename(initialdir="~", title="Select TM Tracker",
+            filetypes=(("Excel File", "*xlsx"), ("All Files",".")))
+        if excelFile == "":
+            raise FileNotFoundError("No TM tracker selected.")
+    except FileNotFoundError as err:
+        messagebox.showerror("Error", err)
+    else:
+        workbook = xl.load_workbook(excelFile)
+        ws = workbook.active
 
 def autofill() -> None:
     """Automatically fills in Entries with dummy data."""
@@ -3259,8 +3273,6 @@ def autofill() -> None:
 root = tk.Tk()
 root.geometry('935x470')
 root.title('TM Generator')
-root.resizable(False, False)
-# root.iconbitmap('images/logo_TRG.ico')
 
 # System name
 lbl_sys_name = Label(root, text='SYSTEM NAME: ', font='helvetica 13 bold', pady=5)
