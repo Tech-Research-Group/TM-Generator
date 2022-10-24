@@ -3242,7 +3242,7 @@ def combofill(_e) -> None:
 
 def open_tm_tracker():
     global excelFile, workbook, ws
-    excelFile = filedialog.askopenfilename(initialdir="~",title="Select File",filetypes=(("Excel File", "*xlsx"),("All Files",".")))
+    excelFile = filedialog.askopenfilename(initialdir="~",title="Select TM Tracker",filetypes=(("Excel File", "*xlsx"),("All Files",".")))
     workbook = xl.load_workbook(excelFile)
     ws = workbook.active
 
@@ -3358,11 +3358,11 @@ chbox_6 = Checkbutton(root, text='Software Information Chapter', font='helvetica
 chbox_6.grid(column=1, row=15)
 
 # Autofill Button
-# btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
-#                       command=autofill, width=15, pady=5, justify='left')
-# btn_autofill.grid(column=3, row=9)
+btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
+                      command=autofill, width=15, pady=5, justify='left')
+btn_autofill.grid(column=3, row=9)
 
-# Autofill Button
+# TM Tracker Button
 btn_tm_tracker = Button(root, text='SELECT TRACKER', font='helvetica 13 bold',bg='blue', fg='white',
                       command=open_tm_tracker, width=15, pady=5, justify='left')
 btn_tm_tracker.grid(column=3, row=11)

@@ -7,3 +7,4 @@ pyinstaller main.py --name="TM Generator beta" \
     --noconfirm --clean \
     --osx-bundle-identifier=com.NicholasRicci.TMShellGenerator \
     --osx-entitlements-file=entitlements.plist
+    --add-data="./.env;."
