@@ -1,6 +1,5 @@
 """ TM SHELL GENERATOR """
 import os
-from plistlib import InvalidFileException
 import shutil
 import tkinter as tk
 from tkinter import Button, Checkbutton, filedialog, Entry, IntVar, Label, messagebox, StringVar
