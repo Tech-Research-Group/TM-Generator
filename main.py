@@ -3260,7 +3260,7 @@ root = tk.Tk()
 root.geometry('935x470')
 root.title('TM Generator')
 root.resizable(False, False)
-root.iconbitmap('images/logo_TRG.ico')
+# root.iconbitmap('images/logo_TRG.ico')
 
 # System name
 lbl_sys_name = Label(root, text='SYSTEM NAME: ', font='helvetica 13 bold', pady=5)
