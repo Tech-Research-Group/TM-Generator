@@ -3259,6 +3259,8 @@ def autofill() -> None:
 root = tk.Tk()
 root.geometry('935x470')
 root.title('TM Generator')
+root.resizable(False, False)
+root.iconbitmap('images/logo_TRG.ico')
 
 # System name
 lbl_sys_name = Label(root, text='SYSTEM NAME: ', font='helvetica 13 bold', pady=5)
@@ -3356,12 +3358,12 @@ chbox_6 = Checkbutton(root, text='Software Information Chapter', font='helvetica
 chbox_6.grid(column=1, row=15)
 
 # Autofill Button
-btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
-                      command=autofill, width=15, pady=5, justify='left')
-btn_autofill.grid(column=3, row=9)
+# btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
+#                       command=autofill, width=15, pady=5, justify='left')
+# btn_autofill.grid(column=3, row=9)
 
 # Autofill Button
-btn_tm_tracker = Button(root, text='TM TRACKER', font='helvetica 13 bold',bg='blue', fg='white',
+btn_tm_tracker = Button(root, text='SELECT TRACKER', font='helvetica 13 bold',bg='blue', fg='white',
                       command=open_tm_tracker, width=15, pady=5, justify='left')
 btn_tm_tracker.grid(column=3, row=11)
 
