@@ -3258,7 +3258,7 @@ def autofill() -> None:
 
 root = tk.Tk()
 root.geometry('935x470')
-root.title('TM Shell Generator Beta 2')
+root.title('TM Generator')
 
 # System name
 lbl_sys_name = Label(root, text='SYSTEM NAME: ', font='helvetica 13 bold', pady=5)
