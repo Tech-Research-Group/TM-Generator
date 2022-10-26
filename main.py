@@ -3,6 +3,7 @@ import os
 import shutil
 import tkinter as tk
 from tkinter import Button, Checkbutton, filedialog, Entry, IntVar, Label, messagebox, StringVar
+from tkinter.constants import FALSE
 from tkinter.ttk import Combobox
 from itertools import islice
 import openpyxl as xl
@@ -40,7 +41,7 @@ manual = ''
 milstd = ''
 workbook = None
 ws = None
-
+ICON = r"C:\\Users\\nicho\\Desktop\\Dev Projects\\TM Generator\\logo_TRG.ico"
 CBX_MANUAL = ''
 CBX_MIL_STD = ''
 FSC = ''
@@ -3259,19 +3260,25 @@ def open_tm_tracker():
         workbook = xl.load_workbook(excelFile)
         ws = workbook.active
 
-def autofill() -> None:
-    """Automatically fills in Entries with dummy data."""
-    ent_sys_name.insert(0, 'Expeditionary TRICON Food Sanitation System')
-    ent_sys_number.insert(0, '10-5419-224')
-    ent_sys_acronym.insert(0, 'ETFSS')
-    ent_niin.insert(0, '01-686-0248')
-    ent_fsc.insert(0, '5419')
-    ent_uoc.insert(0, 'SHELTER, EXPANDABLE, ETFSS (GREEN)')
-    ent_part_no.insert(0, '9-1-1121-1')
+# def autofill() -> None:
+#     """Automatically fills in Entries with dummy data."""
+#     ent_sys_name.insert(0, 'Expeditionary TRICON Food Sanitation System')
+#     ent_sys_number.insert(0, '10-5419-224')
+#     ent_sys_acronym.insert(0, 'ETFSS')
+#     ent_niin.insert(0, '01-686-0248')
+#     ent_fsc.insert(0, '5419')
+#     ent_uoc.insert(0, 'SHELTER, EXPANDABLE, ETFSS (GREEN)')
+#     ent_part_no.insert(0, '9-1-1121-1')
 
 root = tk.Tk()
 root.geometry('935x470')
 root.title('TM Generator')
+root.resizable(width=FALSE, height=FALSE)
+
+try:
+    root.iconbitmap(ICON)
+except tk.TclError:
+    pass
 
 # System name
 lbl_sys_name = Label(root, text='SYSTEM NAME: ', font='helvetica 13 bold', pady=5)
@@ -3369,9 +3376,9 @@ chbox_6 = Checkbutton(root, text='Software Information Chapter', font='helvetica
 chbox_6.grid(column=1, row=15)
 
 # Autofill Button
-btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
-                      command=autofill, width=15, pady=5, justify='left')
-btn_autofill.grid(column=3, row=9)
+# btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',
+#                       command=autofill, width=15, pady=5, justify='left')
+# btn_autofill.grid(column=3, row=9)
 
 # TM Tracker Button
 btn_tm_tracker = Button(root, text='SELECT TRACKER', font='helvetica 13 bold',bg='blue', fg='white',
