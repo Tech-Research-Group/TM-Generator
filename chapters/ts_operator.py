@@ -1,6 +1,6 @@
 """TROUBLESHOOTING OPERATOR PROCEDURES"""
-import cfg
 import math
+import cfg
 
 class TSOperator:
     """Class to create various types of WP's included in Troubleshooting Procedures of a TM."""
@@ -20,8 +20,7 @@ class TSOperator:
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
         tmp += '\t<troublecategory>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-TS_OPERATOR_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_OPERATOR_START.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
         
@@ -67,14 +66,13 @@ class TSOperator:
 		<para>STEP 3. Reset external power control circuit breaker by setting to OFF, then back to ON.</para>
 	</para0>
 </tsintrowp>\n'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-T00001-Troubleshooting-Introduction.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-T00001-Troubleshooting-Introduction.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def tswp(self, wpno, wp_title):
         """Function to create an Operator Troubleshooting WP."""
-        tmp = f'<tswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<tswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += f'''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>{wp_title}</title>
@@ -128,24 +126,21 @@ class TSOperator:
         </faultproc>
     </tsproc>
 </tswp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-Troubleshooting-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-Troubleshooting-{wp_title}.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def end(self):
         """Function to create the Operator Troubleshooting Procedures end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
-        tmp = '\t</troublecategory>\n'
-        tmp += '</tim>'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-TS_OPERATOR_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp = '\t</troublecategory>\n' + '</tim>'
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_OPERATOR_END.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
 
 def isb():
     """Function to create the Initial Setup Box."""
-    isb_tmp = '''\t<initial_setup>
+    return '''\t<initial_setup>
         <testeqp>
             <testeqp-setup-item>
                 <name></name>
@@ -204,4 +199,3 @@ def isb():
             </eqpconds-setup-item>
         </eqpconds>
     </initial_setup>\n'''
-    return isb_tmp

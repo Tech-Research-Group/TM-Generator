@@ -66,6 +66,5 @@ class EntityDeclarations:
 ]>
 <?Pub EntList alpha bull copy rArr sect trade amp hyphen shy deg sup2
 OHgr?>\n '''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/00000-EntityDeclarations_SVG.txt', 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/00000-EntityDeclarations_SVG.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)

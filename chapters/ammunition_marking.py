@@ -1,6 +1,7 @@
 """AMMUNITION MARKING MAINTENANCE INSTRUCTIONS"""
-import cfg
 import math
+import cfg
+
 class AmmunitionMarking:
     """Class to create various types of WP's included in the Ammunition
     Marking Maintenance Instructions chapter of a TM."""
@@ -23,8 +24,7 @@ class AmmunitionMarking:
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')' + '</name>\n'
         tmp += '\t</titlepg>\n'
         tmp += '\t<ammunitioncategory>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-AMMO_MARKING_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-AMMO_MARKING_START.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -60,8 +60,7 @@ class AmmunitionMarking:
         tmp += '\t</ammotype>\n'
 
         tmp += '</ammo.markingwp>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-O00001-AmmunitionMarkingInfo.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-O00001-AmmunitionMarkingInfo.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -69,16 +68,14 @@ class AmmunitionMarking:
         """Function to create the Ammunition Marking Maintenance
         Instructions chapter end tags."""
         cfg.prefix_file = ((math.ceil(cfg.prefix_file/1000)) * 1000) - 1
-        tmp = '\t</ammunitioncategory>'
-        tmp += '</mim>'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-AMMO_MARKING_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp = '\t</ammunitioncategory>\n' + '</mim>'
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-AMMO_MARKING_END.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
         
 def isb():
     """Function to create the Initial Setup Box."""
-    isb_tmp = '''\t<initial_setup>
+    return '''\t<initial_setup>
         <testeqp>
             <testeqp-setup-item>
                 <name></name>
@@ -137,4 +134,3 @@ def isb():
             </ref-setup-item>
         </ref>
     </initial_setup>\n'''
-    return isb_tmp
