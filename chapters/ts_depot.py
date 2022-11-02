@@ -1,9 +1,12 @@
 """TROUBLESHOOTING DEPOT PROCEDURES"""
 import math
 import cfg
+import views.isb as isb
+
 
 class TSDepot:
     """Class to create various types of WP's included in Troubleshooting Depot Procedures of a TM."""
+
     def __init__(self, manual_type, sys_acronym, sys_name, sys_number, save_path):
         self.manual_type = manual_type
         self.sys_acronym = sys_acronym
@@ -13,22 +16,20 @@ class TSDepot:
 
     def start(self):
         """Function that creates Depot Troubleshooting starting tags of TM."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
     <tim chngno="0" revno="0" chap-toc="no">'''
         tmp += '\t<titlepg maintlvl="depot">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
-        tmp += '\t</titlepg>\n'
-        tmp += '<troubledmwrnmwrcategory>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-TS_DEPOT_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
+        tmp += '\t</titlepg>\n' + '<troubledmwrnmwrcategory>\n'
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_DEPOT_START.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-    
+
     def tsintrowp(self, wpno):
         """Function to create a Depot Troubleshooting Intro WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<tsintrowp chngno="0" wpno="{wpno}-' + self.sys_number+ '">\n'
+        tmp += f'<tsintrowp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''<wpidinfo>
         <maintlvl level="depot"/>
         <title>TROUBLESHOOTING INTRODUCTION</title>
@@ -52,16 +53,14 @@ class TSDepot:
         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
     </para0>
 </tsintrowp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-Troubleshooting-Introduction.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-Troubleshooting-Introduction.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def tsindxwp(self, wpno):
         """Function to create a Depot Troubleshooting Index WP."""
-        tmp = f'<tsindxwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
-        tmp += '\t<wpidinfo>\n'
-        tmp += '\t\t<maintlvl level="depot"/>\n'
+        tmp = f'<tsindxwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
+        tmp += '\t<wpidinfo>\n' + '\t\t<maintlvl level="depot"/>\n'
         tmp += f'''\t\t<title>TROUBLESHOOTING INDEX</title>
     </wpidinfo>
     <geninfo>
@@ -100,20 +99,19 @@ class TSDepot:
         </tsindx.symptom-category>
     </tsindx.symptom>
 </tsindxwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-Troubleshooting-Index.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-Troubleshooting-Index.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def pshopanalwp(self, wpno):
         """Function to create a Preshop Analysis Work Package."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<pshopanalwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<pshopanalwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''<wpidinfo>
             <maintlvl level="depot"/>
             <title>Preshop Analysis</title>
         </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += '''<scope>
 		<title>SCOPE</title>
 		<para>The purpose of the preshop analysis operations is to determine, at the highest assembly level possible, the work required to return the Expeditionary TRICON Self Serve Laundry System (ETSSLS) to a condition specified under the Scope of this NMWR found in <xref posttext=", General Information" wpid="G00001-10-5419-215"/>. If inspection at the highest assembly level is precluded by missing, damaged, or defective components, inspection will proceed at the next lower level. The preshop analysis checklist will be used to record the results of the analysis and any required maintenance. The preshop analysis checklists are to be reproduced locally, as needed.</para>
@@ -244,19 +242,18 @@ class TSDepot:
 		</chklist>
 	</pshopanal>
 </pshopanalwp>\n'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PreshopAnalysis.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PreshopAnalysis.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def compchklistwp(self, wpno):
         """Function to create a Depot Component Checklist WP."""
-        tmp = f'<compchklistwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<compchklistwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '\t<wpidinfo>\n'
         tmp += '\t\t<maintlvl level="depot"/>\n'
         tmp += '''\t\t<title>COMPONENT CHECKLIST</title>
     </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += '''\t<intro>
 		<para0>
 			<title>Scope</title>
@@ -280,19 +277,18 @@ class TSDepot:
 		<damage/>
 	</compchklist>
 </compchklistwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-ComponentChecklist.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-ComponentChecklist.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def tswp(self, wpno, wp_title):
         """Function to create a Depot Troubleshooting WP."""
-        tmp = f'<tswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<tswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += f'''<wpidinfo>
             <maintlvl level="depot"/>
             <title>{wp_title}</title>
         </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += f'''<tsproc>
         <faultproc>
             <title>{wp_title}</title>
@@ -341,80 +337,14 @@ class TSDepot:
         </faultproc>
     </tsproc>
 </tswp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-Troubleshooting-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-Troubleshooting-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def end(self):
         """Function to create the Depot Troubleshooting end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
-        tmp = '\t</troubledmwrnmwrcategory>\n'
-        tmp += '</tim>'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-TS_DEPOT_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp = '\t</troubledmwrnmwrcategory>\n' + '</tim>'
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_DEPOT_END.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
-
-def isb():
-    """Function to create the Initial Setup Box."""
-    isb_tmp = '''\t<initial_setup>
-        <testeqp>
-            <testeqp-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </testeqp-setup-item>
-        </testeqp>
-        <tools>
-            <tools-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </tools-setup-item>
-        </tools>
-        <!--<spectools>
-            <spectools-setup-item>
-                <name></name>
-            </spectools-setup-item>
-        </spectools>-->
-        <mtrlpart>
-            <mtrlpart-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mtrlpart-setup-item>
-        </mtrlpart>
-        <!--<mrp>
-            <mrp-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mrp-setup-item>
-        </mrp>-->
-        <persnreq>
-            <persnreq-setup-item>
-                <name></name>
-            </persnreq-setup-item>
-        </persnreq>
-        <ref>
-            <ref-setup-item>
-                <xref wpid="XX-XXXX-XXX"/>
-            </ref-setup-item>
-        </ref>
-        <eqpconds>
-            <eqpconds-setup-item>
-                <condition></condition>
-                <itemref>
-                    <xref wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </eqpconds-setup-item>
-        </eqpconds>
-    </initial_setup>\n'''
-    return isb_tmp

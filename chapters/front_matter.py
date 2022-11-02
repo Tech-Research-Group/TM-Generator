@@ -44,24 +44,24 @@ class FrontMatter:
         tmp += self.TAB_4 + '<?Pub Dtl?>\n'
         tmp += self.TAB_4 + '<tmtitle>\n'
         if self.manual_type == '-10':
-            tmp += self.TAB_5 + '<tmno>TM ' + self.sys_number + self.manual_type + '</tmno>\n'
+            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
         elif self.manual_type == '-12&P':
-            tmp += self.TAB_5 + '<tmno>TM ' + self.sys_number + self.manual_type + '</tmno>\n'
+            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
         elif self.manual_type == '-13&P':
-            tmp += self.TAB_5 + '<tmno>TM ' + self.sys_number + self.manual_type + '</tmno>\n'
+            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
         elif self.manual_type == '-23&P':
-            tmp += self.TAB_5 + '<tmno>TM ' + self.sys_number + self.manual_type + '</tmno>\n'
+            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
         elif self.manual_type == 'NMWR':
-            tmp += self.TAB_5 + '<tmno>NMWR ' + self.sys_number + '</tmno>\n'
+            tmp += f'{self.TAB_5}<tmno>NMWR {self.sys_number}</tmno>\n'
         tmp += self.TAB_5 + '<prtitle>\n'
         tmp += self.TAB_6 + '<sysnomen>\n'
-        tmp += f'{self.TAB_7}<name>{self.sys_name}' + '</name>\n'
+        tmp += f'{self.TAB_7}<name>{self.sys_name}</name>\n'
         tmp += self.TAB_7 + '<modelno>(GREEN)</modelno>\n'
         tmp += self.TAB_7 + '<nsn>\n'
-        tmp += f'{self.TAB_8}<fsc>{self.fsc}' + '</fsc>\n'
-        tmp += f'{self.TAB_8}<niin>{self.niin}' + '</niin>\n'
+        tmp += f'{self.TAB_8}<fsc>{self.fsc}</fsc>\n'
+        tmp += f'{self.TAB_8}<niin>{self.niin}</niin>\n'
         tmp += self.TAB_7 + '</nsn>\n'
-        tmp += f'{self.TAB_7}<partno>{self.part_no}' + '</partno>\n'
+        tmp += f'{self.TAB_7}<partno>{self.part_no}</partno>\n'
         tmp += self.TAB_7 + '<eic>255</eic>\n'
         tmp += self.TAB_6 + '</sysnomen>\n'
         tmp += self.TAB_5 + '</prtitle>\n'
@@ -223,7 +223,7 @@ class FrontMatter:
 
         tmp += self.TAB_2 + '<warning>\n'
         tmp += self.TAB_3 + '<icon-set boardno="Electrical_Symbols"/>\n'
-        tmp += f'{self.TAB_3}<trim.para>Interior and exterior areas of {self.sys_acronym.upper()}' + ' may be a wet environment. Electrical cables and controls should not be handled with wet hands or while standing in water. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
+        tmp += f'{self.TAB_3}<trim.para>Interior and exterior areas of {self.sys_acronym.upper()} may be a wet environment. Electrical cables and controls should not be handled with wet hands or while standing in water. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
 
         tmp += self.TAB_2 + '</warning>\n'
 
@@ -328,8 +328,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Fire"/>\n'
         tmp += f'{self.TAB_3}<para>' + self.config.get('HM_FUEL') + '</para>\n'
         tmp += self.TAB_2 + '</hazard>\n'
-        tmp += '\t</hazmat>\n'
-        tmp += '</warnsum>\n'
+        tmp += '\t</hazmat>\n' + '</warnsum>\n'
 
         with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-WarningSummary.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
@@ -396,7 +395,7 @@ class FrontMatter:
         </chghistory>
     </loepwp>'''
 
-        with open(f"{self.save_path}/{self.sys_acronym.upper()} {self.manual_type} WIP/{cfg.prefix_file:05d}-LOEP.txt", 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-LOEP.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
         

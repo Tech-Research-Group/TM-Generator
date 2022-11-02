@@ -1,5 +1,4 @@
 """REAR MATTER"""
-import cfg
 class RearMatter:
     """Class to create various types of WP's included in the Rear Matter section of a TM."""
     def __init__(self, manual_type, sys_acronym, save_path):
@@ -65,6 +64,6 @@ class RearMatter:
     </rear>
 </paper.manual>
 </production>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/ZZZZZ-REAR_MATTER.txt', 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/ZZZZZ-REAR_MATTER.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
+            _f.close()

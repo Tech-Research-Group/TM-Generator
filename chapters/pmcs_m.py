@@ -28,7 +28,7 @@ class PMCS:
 
     def pmcsintrowp(self):
         """ Function to create a PMCS intro WP """
-        tmp = '<pmcsintrowp wpno="M00101-' + self.sys_number + '" chngno="0">'
+        tmp = '<pmcsintrowp wpno="M00001-' + self.sys_number + '" chngno="0">'
         tmp += '\t<wpidinfo>\n'
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
         tmp += '''\t\t<title>INTRODUCTION</title>

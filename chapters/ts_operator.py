@@ -1,6 +1,7 @@
 """TROUBLESHOOTING OPERATOR PROCEDURES"""
 import math
 import cfg
+import views.isb as isb
 
 class TSOperator:
     """Class to create various types of WP's included in Troubleshooting Procedures of a TM."""
@@ -17,9 +18,8 @@ class TSOperator:
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
     <tim chngno="0" revno="0" chap-toc="no">'''
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
-        tmp += '\t</titlepg>\n'
-        tmp += '\t<troublecategory>\n'
+        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
+        tmp += '\t</titlepg>\n' + '\t<troublecategory>\n'
         with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_OPERATOR_START.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
@@ -27,7 +27,7 @@ class TSOperator:
     def tsintrowp(self):
         """Function to create a Troubleshooting Intro WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<tsintrowp chngno="0" wpno="T00001-' + self.sys_number + '">\n'
+        tmp += f'<tsintrowp chngno="0" wpno="T00001-{self.sys_number}">\n'
         tmp += f'''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>TROUBLESHOOTING INTRODUCTION</title>
@@ -77,7 +77,7 @@ class TSOperator:
         <maintlvl level="operator"/>
         <title>{wp_title}</title>
     </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += f'''\t<tsproc>
         <faultproc>
             <title>{wp_title}</title>
@@ -132,70 +132,8 @@ class TSOperator:
 
     def end(self):
         """Function to create the Operator Troubleshooting Procedures end tags."""
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = '\t</troublecategory>\n' + '</tim>'
         with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_OPERATOR_END.txt", 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
-
-def isb():
-    """Function to create the Initial Setup Box."""
-    return '''\t<initial_setup>
-        <testeqp>
-            <testeqp-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </testeqp-setup-item>
-        </testeqp>
-        <tools>
-            <tools-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </tools-setup-item>
-        </tools>
-        <!--<spectools>
-            <spectools-setup-item>
-                <name></name>
-            </spectools-setup-item>
-        </spectools>-->
-        <mtrlpart>
-            <mtrlpart-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mtrlpart-setup-item>
-        </mtrlpart>
-        <!--<mrp>
-            <mrp-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mrp-setup-item>
-        </mrp>-->
-        <persnreq>
-            <persnreq-setup-item>
-                <name></name>
-            </persnreq-setup-item>
-        </persnreq>
-        <ref>
-            <ref-setup-item>
-                <xref wpid="XX-XXXX-XXX"/>
-            </ref-setup-item>
-        </ref>
-        <eqpconds>
-            <eqpconds-setup-item>
-                <condition></condition>
-                <itemref>
-                    <xref wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </eqpconds-setup-item>
-        </eqpconds>
-    </initial_setup>\n'''
