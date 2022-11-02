@@ -14,21 +14,20 @@ class Rpstl:
 
     def start(self):
         """Function to create RPSTL section start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-    <pim chngno="0" revno="0" chap-toc="no" dmwr-inclus="none">\n'''
+<pim chngno="0" revno="0" chap-toc="no" dmwr-inclus="none">\n'''
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
+        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
         tmp += '\t</titlepg>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-RPSTL_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-RPSTL_START.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def introwp(self):
         """Function that creates the RPSTL Introduction WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<introwp chngno="0" wpno="R00001-' + self.sys_number + '">\n'
+        tmp += f'<introwp chngno="0" wpno="R00001-{self.sys_number}">\n'
         tmp += f'''\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION</title>
@@ -701,14 +700,13 @@ class Rpstl:
         </para>
     </para0>
 </introwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-R00001-RPSTL-Introduction.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-R00001-RPSTL-Introduction.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def plwp(self, wpno, wp_title):
         """ Function to create list of parts for a subsystem WP. """
-        tmp = f'<plwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<plwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += f'''\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>{wp_title}</title>
@@ -794,14 +792,13 @@ class Rpstl:
         </pi.item>
     </pi.category>
 </plwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def bulk_itemswp(self, wpno):
         """Function to create Bulk Items List WP."""
-        tmp = f'<bulk_itemswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<bulk_itemswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>BULK ITEMS</title>
@@ -876,14 +873,13 @@ class Rpstl:
         <desc></desc>
     </pi.item>
 </bulk_itemswp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-BulkItems.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-BulkItems.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def nsnindxwp(self, wpno):
         """Function to create NSN Index WP."""
-        tmp = f'<nsnindxwp wpno="{wpno}-' + self.sys_number + '" chngno="0">\n'
+        tmp = f'<nsnindxwp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>NATIONAL STOCK NUMBER INDEX</title>
@@ -926,14 +922,13 @@ class Rpstl:
         </nsnindxrow>
     </nsnindx>
 </nsnindxwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-NSNIndex.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-NSNIndex.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def pnindxwp(self, wpno):
         """Function to create Part Number Index WP."""
-        tmp = f'<pnindxwp wpno="{wpno}-' + self.sys_number + '" chngno="0">\n'
+        tmp = f'<pnindxwp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="maintainer" />
         <title>PART NUMBER INDEX</title>
@@ -971,16 +966,14 @@ class Rpstl:
         </pnindxrow>
     </pnindx>
 </pnindxwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PartNumberIndex.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PartNumberIndex.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
         
     def end(self):
         """Function to create RPSTL section end tags."""
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = '</pim>'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-RPSTL_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-RPSTL_END.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1

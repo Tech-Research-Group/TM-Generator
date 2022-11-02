@@ -157,28 +157,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
                         if wpno[0] == 'M':
                             wp_title2 = wp_title2.replace("/", " or")
                             if proc_type:
-                                if proc_type.lower() == "inspect":
-                                    oper_maintenance.inspect(wpno, wp_title2)
-                                elif proc_type.lower() == "test":
-                                    oper_maintenance.test(wpno, wp_title2)
-                                elif proc_type.lower() == "service":
-                                    oper_maintenance.service(wpno, wp_title2)
-                                elif proc_type.lower() == "remove":
-                                    oper_maintenance.remove(wpno, wp_title2)
-                                elif proc_type.lower() == "install":
-                                    oper_maintenance.install(wpno, wp_title2)
-                                elif proc_type.lower() == "replace":
-                                    oper_maintenance.replace(wpno, wp_title2)
-                                elif proc_type.lower() == "repair":
-                                    oper_maintenance.repair(wpno, wp_title2)
-                                elif proc_type.lower() == "pack":
-                                    oper_maintenance.pack(wpno, wp_title2)
-                                elif proc_type.lower() == "unpack":
-                                    oper_maintenance.unpack(wpno, wp_title2)
-                                elif proc_type.lower() == "clean":
-                                    oper_maintenance.clean(wpno, wp_title2)
-                                elif proc_type.lower() == "prepforuse":
-                                    oper_maintenance.prepforuse(wpno, wp_title2)
+                                oper_maintenance.maintwp(wpno, wp_title2, proc_type)
                     if wp_title2:
                         if "chapter" in wp_title2.lower():
                             break
@@ -384,28 +363,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                         if wpno[0] == 'M':
                             wp_title2 = wp_title2.replace("/", "or")
                             if proc_type:
-                                if proc_type.lower() == "replace":
-                                    oper_maintenance.replace(wpno, wp_title2)
-                                elif proc_type.lower() == "inspect":
-                                    oper_maintenance.inspect(wpno, wp_title2)
-                                elif proc_type.lower() == "test":
-                                    oper_maintenance.test(wpno, wp_title2)
-                                elif proc_type.lower() == "service":
-                                    oper_maintenance.service(wpno,wp_title2)
-                                elif proc_type.lower() == "remove":
-                                    oper_maintenance.remove(wpno, wp_title2)
-                                elif proc_type.lower() == "install":
-                                    oper_maintenance.install(wpno, wp_title2)
-                                elif proc_type.lower() == "repair":
-                                    oper_maintenance.repair(wpno,wp_title2)
-                                elif proc_type.lower() == "pack":
-                                    oper_maintenance.pack(wpno, wp_title2)
-                                elif proc_type.lower() == "unpack":
-                                    oper_maintenance.unpack(wpno,wp_title2)
-                                elif proc_type.lower() == "clean":
-                                    oper_maintenance.clean(wpno, wp_title2)
-                                elif proc_type.lower() == "prepforuse":
-                                    oper_maintenance.prepforuse(wpno, wp_title2)
+                                oper_maintenance.maintwp(wpno, wp_title2, proc_type)
                     if wp_title2:
                         if "chapter" in wp_title2.lower():
                             break
@@ -495,28 +453,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                             if "service upon receipt" in wp_title2.lower():
                                 maint_maintenance.surwp(wpno)
                             elif proc_type:
-                                if proc_type.lower() == "replace":
-                                    maint_maintenance.replace(wpno, wp_title2)
-                                elif proc_type.lower() == "inspect":
-                                    maint_maintenance.inspect(wpno, wp_title2)
-                                elif proc_type.lower() == "test":
-                                    maint_maintenance.test(wpno, wp_title2)
-                                elif proc_type.lower() == "service":
-                                    maint_maintenance.service(wpno, wp_title2)
-                                elif proc_type.lower() == "remove":
-                                    maint_maintenance.remove(wpno, wp_title2)
-                                elif proc_type.lower() == "install":
-                                    maint_maintenance.install(wpno, wp_title2)
-                                elif proc_type.lower() == "repair":
-                                    maint_maintenance.repair(wpno, wp_title2)
-                                elif proc_type.lower() == "pack":
-                                    maint_maintenance.pack(wpno, wp_title2)
-                                elif proc_type.lower() == "unpack":
-                                    maint_maintenance.unpack(wpno, wp_title2)
-                                elif proc_type.lower() == "clean":
-                                    maint_maintenance.clean(wpno, wp_title2)
-                                elif proc_type.lower() == "prepforuse":
-                                    maint_maintenance.prepforuse(wpno, wp_title2)
+                                oper_maintenance.maintwp(wpno, wp_title2, proc_type)
                     if "chapter" in wp_title2.lower():
                         break
     maint_maintenance.end()
@@ -735,28 +672,7 @@ def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                             if "service upon receipt" in wp_title2.lower():
                                 maint_maintenance.surwp(wpno)
                             elif proc_type:
-                                if proc_type.lower() == "replace":
-                                    maint_maintenance.replace(wpno, wp_title2)
-                                elif proc_type.lower() == "inspect":
-                                    maint_maintenance.inspect(wpno, wp_title2)
-                                elif proc_type.lower() == "test":
-                                    maint_maintenance.test(wpno, wp_title2)
-                                elif proc_type.lower() == "service":
-                                    maint_maintenance.service(wpno, wp_title2)
-                                elif proc_type.lower() == "remove":
-                                    maint_maintenance.remove(wpno, wp_title2)
-                                elif proc_type.lower() == "install":
-                                    maint_maintenance.install(wpno, wp_title2)
-                                elif proc_type.lower() == "repair":
-                                    maint_maintenance.repair(wpno, wp_title2)
-                                elif proc_type.lower() == "pack":
-                                    maint_maintenance.pack(wpno, wp_title2)
-                                elif proc_type.lower() == "unpack":
-                                    maint_maintenance.unpack(wpno, wp_title2)
-                                elif proc_type.lower() == "clean":
-                                    maint_maintenance.clean(wpno, wp_title2)
-                                elif proc_type.lower() == "prepforuse":
-                                    maint_maintenance.prepforuse(wpno, wp_title2)
+                                maint_maintenance.maintwp(wpno, wp_title2, proc_type)
                     if "chapter" in wp_title2.lower():
                         break
     maint_maintenance.end()
@@ -933,28 +849,7 @@ def build_nmwr(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NU
                         if wpno[0] == 'M':
                             wp_title2 = wp_title2.replace("/", " or")
                             if proc_type:
-                                if proc_type.lower() == "clean":
-                                    depot_maintenance.clean(wpno, wp_title2)
-                                if proc_type.lower() == "replace":
-                                    depot_maintenance.replace(wpno, wp_title2)
-                                elif proc_type.lower() == "inspect":
-                                    depot_maintenance.inspect(wpno, wp_title2)
-                                elif proc_type.lower() == "test":
-                                    depot_maintenance.test(wpno, wp_title2)
-                                elif proc_type.lower() == "service":
-                                    depot_maintenance.service(wpno, wp_title2)
-                                elif proc_type.lower() == "remove":
-                                    depot_maintenance.remove(wpno, wp_title2)
-                                elif proc_type.lower() == "install":
-                                    depot_maintenance.install(wpno, wp_title2)
-                                elif proc_type.lower() == "repair":
-                                    depot_maintenance.repair(wpno, wp_title2)
-                                elif proc_type.lower() == "pack":
-                                    depot_maintenance.pack(wpno, wp_title2)
-                                elif proc_type.lower() == "unpack":
-                                    depot_maintenance.unpack(wpno, wp_title2)
-                                elif proc_type.lower() == "prepforuse":
-                                    depot_maintenance.prepforuse(wpno, wp_title2)
+                                depot_maintenance.maintwp(wpno, wp_title2, proc_type)
                             elif "preservation" in wp_title2.lower():
                                 depot_maintenance.ppmgeninfowp(wpno)
                             elif "quality" in wp_title2.lower():

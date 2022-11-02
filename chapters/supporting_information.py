@@ -2,7 +2,7 @@
 import math
 from dotenv import dotenv_values
 import cfg
-import views.isb
+import views.isb as isb
 
 class SupportingInformation:
     """Class to create various types of WP's included in Supporting Info section of a TM."""
