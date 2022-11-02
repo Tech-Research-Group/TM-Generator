@@ -1,7 +1,7 @@
 """CHAPTER 1"""
+import math
 from dotenv import dotenv_values
 import cfg
-import math
 
 class Chapter1:
     """Class to create various types of WP's included in Chapter 1 of a TM."""
@@ -263,12 +263,12 @@ class Chapter1:
         tmp += '\t</wpidinfo>\n'
         tmp += '\t<eqpinfo>\n'
         tmp += self.TAB_2 + \
-            '<title>EQUIPMENT CHARACTERISTICS, CAPABILITIES, AND FEATURES</title>\n'
+                '<title>EQUIPMENT CHARACTERISTICS, CAPABILITIES, AND FEATURES</title>\n'
         tmp += self.TAB_2 + '<eqpdesc>\n'
         tmp += self.TAB_3 + '<title>Characteristics</title>\n'
         tmp += self.TAB_3 + '<para>\n'
         tmp += self.TAB_4 + '<figure id="G00002-' + self.sys_number + '-F0001">\n'
-        tmp += self.TAB_5 + '<title>' + self.sys_acronym + ' Deployed</title>\n'
+        tmp += f'{self.TAB_5}<title>{self.sys_acronym} Deployed</title>\n'
         tmp += self.TAB_5 + '<graphic boardno="PLACEHOLDER"/>\n'
         tmp += self.TAB_4 + '</figure>\n'
         tmp += self.TAB_3 + '</para>\n'
@@ -287,8 +287,8 @@ class Chapter1:
         tmp += '\t<locdesc>\n'
         tmp += self.TAB_2 + '<title>LOCATION AND DESCRIPTION OF MAJOR COMPONENTS</title>\n'
         tmp += self.TAB_2 + \
-            '<para>Refer to the following technical manuals for description of end items that are components of ' + \
-            self.sys_acronym + ':\n'
+                '<para>Refer to the following technical manuals for description of end items that are components of ' + \
+                self.sys_acronym + ':\n'
         tmp += self.TAB_3 + '<randlist bullet="yes">\n'
         tmp += self.TAB_4 + '<item>Lorem ipsum.</item>\n'
         tmp += self.TAB_4 + '<item>Lorem ipsum.</item>\n'
@@ -297,11 +297,11 @@ class Chapter1:
         tmp += self.TAB_2 + '<comp-item>\n'
         tmp += self.TAB_3 + '<para>\n'
         tmp += self.TAB_4 + '<figure id="G00002-' + self.sys_number + '-F0005">\n'
-        tmp += self.TAB_5 + '<title>' + self.sys_acronym + ' Exterior (Front)</title>\n'
+        tmp += f'{self.TAB_5}<title>{self.sys_acronym}' + ' Exterior (Front)</title>\n'
         tmp += self.TAB_5 + '<graphic boardno="PLACEHOLDER"/>\n'
         tmp += self.TAB_4 + '</figure>\n'
         tmp += self.TAB_4 + '<table id="G00002-' + self.sys_number + '-T0004">\n'
-        tmp += self.TAB_5 + '<title>' + self.sys_acronym + '</title>\n'
+        tmp += f'{self.TAB_5}<title>{self.sys_acronym}' + '</title>\n'
         tmp += self.TAB_5 + '<tgroup cols="3">\n'
         tmp += self.TAB_6 + '<colspec colname="col1" colwidth="0.30*"/>\n'
         tmp += self.TAB_6 + '<colspec colname="col2" colwidth="0.40*"/>\n'
@@ -440,12 +440,12 @@ class Chapter1:
         tmp += self.TAB_2 + '<para0>\n'
         tmp += self.TAB_3 + '<title>Performance Data</title>\n'
         tmp += self.TAB_3 + '<para>Operating the ' + self.sys_acronym + \
-            ' outside of these specifications may cause equipment damage due to freezing or overheating.</para>\n'
+                ' outside of these specifications may cause equipment damage due to freezing or overheating.</para>\n'
         tmp += self.TAB_2 + '</para0>\n'
         tmp += '\t</eqpdata>\n'
         tmp += '</descwp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-G00002-EquipmentDescription.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+                ' WIP/{:05d}-G00002-EquipmentDescription.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
