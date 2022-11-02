@@ -1,7 +1,8 @@
 """SUPPORTING INFORMATION"""
-import cfg
 import math
 from dotenv import dotenv_values
+import cfg
+import views.isb
 
 class SupportingInformation:
     """Class to create various types of WP's included in Supporting Info section of a TM."""
@@ -16,21 +17,20 @@ class SupportingInformation:
 
     def start(self):
         """Function to create Supporting Info section start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
     <sim chngno="0" revno="0" chap-toc="no">\n'''
         tmp += '\t<titlepg maintlvl="operator">\n'
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
         tmp += '\t</titlepg>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-SUPPORT_INFO_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-SUPPORT_INFO_START.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def refwp(self, wpno):
         """Function to create References WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<refwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<refwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>REFERENCES</title>
@@ -160,15 +160,14 @@ class SupportingInformation:
         </pubident>
     </publist>
 </refwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-References.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open((f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-References.txt'), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def macintrowp(self, wpno):
         """Function to create the Introduction WP for the MAC."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<macintrowp wpno="{wpno}-' + self.sys_number + '" chngno="0">\n'
+        tmp += f'<macintrowp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MAINTENANCE ALLOCATION CHART (MAC) INTRODUCTION</title>
@@ -302,15 +301,14 @@ class SupportingInformation:
         </para0>
     </intro>
 </macintrowp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-MAC-Introduction.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MAC-Introduction.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def macwp(self, wpno):
         """Function to create the MAC WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<macwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<macwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MAINTENANCE ALLOCATION CHART (MAC)</title>
@@ -448,15 +446,14 @@ class SupportingInformation:
         </remark-group>
     </remarktab>
 </macwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-MAC.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MAC.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def coeibiiwp(self, wpno):
         """Function to create the COEI & BII Lists WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<coeibiiwp chngno="0" wpno="{wpno}-' + self.sys_number +'">\n'
+        tmp += f'<coeibiiwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>COMPONENTS OF END ITEM (COEI) AND BASIC ISSUE ITEMS (BII) LIST</title>
@@ -598,14 +595,13 @@ class SupportingInformation:
         </bii-opt-entry>
     </bii-opt>
 </coeibiiwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-COEI-BII-List.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-COEI-BII-List.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def aalwp(self, wpno):
         """Function to create the Additional Authorization List (AAL) WP."""
-        tmp = f'<aalwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<aalwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>ADDITIONAL AUTHORIZATION LIST (AAL)</title>
@@ -729,15 +725,14 @@ class SupportingInformation:
         </aal-entry>
     </aal>
 </aalwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-AAL.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open((f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-AAL.txt'), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def explistwp(self, wpno):
         """Function to create the EDIL List WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<explistwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<explistwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>EXPENDABLE AND DURABLE ITEMS LIST</title>
@@ -834,15 +829,14 @@ class SupportingInformation:
         </expdur-entry>
     </explist>
 </explistwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-EDIL.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-EDIL.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def toolidwp(self, wpno):
         """Function to create the Tool Identification List WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<toolidwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<toolidwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>TOOL IDENTIFICATION LIST</title>
@@ -944,15 +938,14 @@ class SupportingInformation:
         </tool-entry>
     </toolidlist>
 </toolidwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-TIL.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-TIL.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def mrplwp(self, wpno):
         """Function to create the Mandatory Replacement Parts WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<mrplwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<mrplwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MANDATORY REPLACEMENT PARTS LIST</title>
@@ -1035,15 +1028,14 @@ class SupportingInformation:
         
     </mrpl>
 </mrplwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-MRP.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MRP.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def csi_wp(self, wpno):
         """Function to create the Critical Safety Items WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<csi.wp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<csi.wp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>CRITICAL SAFETY ITEMS</title>
@@ -1091,15 +1083,14 @@ class SupportingInformation:
 		</csi.tab>
 	</csi>
 </csi.wp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-CSI.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-CSI.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def supitemwp(self, wpno):
         """Function to create the Support Items WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<supitemwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<supitemwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>SUPPORT ITEMS</title>
@@ -1113,20 +1104,19 @@ class SupportingInformation:
         </para0>
     </intro>  
 </supitemwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-SupportItems.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-SupportItems.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def genwp(self, wpno):
         """Function to create the Support Items WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<genwp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp += f'<genwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>ADDITIONAL SUPPORTING WORK PACKAGES</title>
 	</wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += '''<proc>
         <title>Lorem Ipsum</title>
         <step1>
@@ -1146,80 +1136,14 @@ class SupportingInformation:
         </step1>
     </proc>  
 </genwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-AdditionalSupportingWP.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-AdditionalSupportingWP.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def end(self):
         """ Function to create Supporting Info section end tags. """
         tmp = '</sim>'
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-SUPPORT_INFO_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-SUPPORT_INFO_END.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
-        
-def isb():
-    """Function to create the Initial Setup Box."""
-    isb_tmp = '''\t<initial_setup>
-        <testeqp>
-            <testeqp-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </testeqp-setup-item>
-        </testeqp>
-        <tools>
-            <tools-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </tools-setup-item>
-        </tools>
-        <!--<spectools>
-            <spectools-setup-item>
-                <name></name>
-            </spectools-setup-item>
-        </spectools>-->
-        <mtrlpart>
-            <mtrlpart-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mtrlpart-setup-item>
-        </mtrlpart>
-        <!--<mrp>
-            <mrp-setup-item>    
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mrp-setup-item>
-        </mrp>-->
-        <persnreq>
-            <persnreq-setup-item>
-                <name></name>
-            </persnreq-setup-item>
-        </persnreq>
-        <ref>
-            <ref-setup-item>
-                <xref wpid="XX-XXXX-XXX"/>
-            </ref-setup-item>
-        </ref>
-        <eqpconds>
-            <eqpconds-setup-item>
-                <condition></condition>
-                <itemref>
-                    <xref wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </eqpconds-setup-item>
-        </eqpconds>
-    </initial_setup>\n'''
-    return isb_tmp
-            
