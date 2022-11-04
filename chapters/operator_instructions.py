@@ -1,7 +1,7 @@
 """OPERATOR INSTRUCTIONS"""
-import cfg
 import math
-
+import cfg
+import views.isb as isb
 class OperatorInstructions:
     """Class to create various types of WP's included in Operator Instructions section of a TM."""
     lorem_ipsum = \
@@ -19,14 +19,12 @@ class OperatorInstructions:
 
     def start(self):
         """Function that creates Operator Instructions section starting tags of TM."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<opim chngno="0" revno="0" chap-toc="no">\n'
-        tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
+        tmp += '<opim chngno="0" revno="0" chap-toc="no">\n' + '\t<titlepg maintlvl="operator">\n'
+        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
         tmp += '\t</titlepg>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-OPER_INSTRUCTIONS_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-OPER_INSTRUCTIONS_START.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -43,13 +41,13 @@ class OperatorInstructions:
         tmp += self.TAB_2 + '<para0-alt>\n'
         tmp += self.TAB_3 + '<para0>\n'
         tmp += self.TAB_4 + '<title>Introduction</title>\n'
-        tmp += self.TAB_4 + '<para>' + self.lorem_ipsum + '</para>\n'
+        tmp += f'{self.TAB_4}<para>{self.lorem_ipsum}</para>\n'
         tmp += self.TAB_3 + '</para0>\n'
         tmp += self.TAB_2 + '</para0-alt>\n'
         tmp += '\t</intro>\n'
         tmp += '\t<ctrlindtab>\n'
         tmp += '<title>Lorem Ipsum</title>\n'
-        tmp += '<figure id="O00001-' + self.sys_number+ '-F0001">\n'
+        tmp += f'<figure id="O00001-{self.sys_number}-F0001">\n'
         tmp += '''<title>Lorem Ipsum</title>
                 <graphic boardno="PLACEHOLDER"/>
             </figure>
@@ -66,7 +64,7 @@ class OperatorInstructions:
         </ctrlindtab>
         <ctrlindtab>
             <title>Lorem Ipsum</title>'''
-        tmp += '<figure id="O00001-' + self.sys_number + '-F0011">\n'
+        tmp += f'<figure id="O00001-{self.sys_number}-F0011">\n'
         tmp += '''<title>Lorem Ipsum</title>
                 <graphic boardno="PLACEHOLDER"/>
             </figure>
@@ -82,19 +80,18 @@ class OperatorInstructions:
             </ctrlindrow>
         </ctrlindtab>
     </ctrlindwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-O00001-ControlsIndicators.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-O00001-ControlsIndicators.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def operating_procedures(self, wpno, wp_title):
         """Function to create operating procedures WP."""
-        tmp = f'<opusualwp chngno="0" wpno="{wpno}-' + self.sys_number + '">'
+        tmp = f'<opusualwp chngno="0" wpno="{wpno}-{self.sys_number}">'
         tmp += f'''<wpidinfo>
             <maintlvl level="operator"/>
             <title>OPERATION UNDER USUAL CONDITIONS<?Pub _newline?>{wp_title}</title>
         </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += f'''\n<opertsk>
             <initial>
                 <proc>
@@ -250,19 +247,18 @@ class OperatorInstructions:
             </site>
         </opertsk>
     </opusualwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-{}-OperationUnderUsualConditions-{}.txt'.format(cfg.prefix_file, wpno, wp_title), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-OperationUnderUsualConditions-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def unusual_conditions(self, wpno):
         """Function to create the operating under unusual conditions section."""
-        tmp = f'<opunuwp chngno="0" wpno="{wpno}-' + self.sys_number + '">'
+        tmp = f'<opunuwp chngno="0" wpno="{wpno}-{self.sys_number}">'
         tmp += '''<wpidinfo>
             <maintlvl level="operator"/>
             <title>OPERATION UNDER UNUSUAL CONDITIONS</title>
         </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += f'''\n<opunutsk>
             <unusualenv>
                 <proc>
@@ -367,79 +363,14 @@ class OperatorInstructions:
             </unusualenv>
         </opunutsk>
     </opunuwp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-{}-OperationUnderUnusualConditions.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-OperationUnderUnusualConditions.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
         
     def end(self):
         """Function to create Operator Instructions section end tags."""
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = '</opim>'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-OPER_INSTRUCTIONS_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-OPER_INSTRUCTIONS_END.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
-
-def isb():
-    """Function to create the Initial Setup Box."""
-    isb_tmp = '''\t<initial_setup>
-        <testeqp>
-            <testeqp-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </testeqp-setup-item>
-        </testeqp>
-        <tools>
-            <tools-setup-item>
-                <name></name>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </tools-setup-item>
-        </tools>
-        <!--<spectools>
-            <spectools-setup-item>
-                <name></name>
-            </spectools-setup-item>
-        </spectools>-->
-        <mtrlpart>
-            <mtrlpart-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mtrlpart-setup-item>
-        </mtrlpart>
-        <!--<mrp>
-            <mrp-setup-item>
-                <name></name>
-                <qty></qty>
-                <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </mrp-setup-item>
-        </mrp>-->
-        <persnreq>
-            <persnreq-setup-item>
-                <name></name>
-            </persnreq-setup-item>
-        </persnreq>
-        <ref>
-            <ref-setup-item>
-                <xref wpid="XX-XXXX-XXX"/>
-            </ref-setup-item>
-        </ref>
-        <eqpconds>
-            <eqpconds-setup-item>
-                <condition></condition>
-                <itemref>
-                    <xref wpid="XX-XXXX-XXX"/>
-                </itemref>
-            </eqpconds-setup-item>
-        </eqpconds>
-    </initial_setup>\n'''
-    return isb_tmp

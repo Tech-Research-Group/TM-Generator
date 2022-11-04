@@ -29,28 +29,28 @@ class FrontMatter:
     def title_page(self):
         """Function to create title page XML."""
         cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n' + '<production chngdate="11 SEPTEMBER 2022" chnglevel="0" date="11 SEPTEMBER 2022" pin="XX-XXX-XX">\n'
+        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n' + '<production chngdate="11 SEPTEMBER 2022" chnglevel="0" \
+        date="11 SEPTEMBER 2022" pin="XX-XXX-XX">\n'
         if self.manual_type == '-10':
-            tmp += f'\t<paper.manual maintitl="OPERATOR MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" maintlvls="10" multivolume="no" pubno="TM {self.sys_number} {self.manual_type}" revno="0" rpstl="no">\n'
+            tmp += f'\t<paper.manual maintitl="OPERATOR MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" \
+            maintlvls="10" multivolume="no" pubno="TM {self.sys_number} {self.manual_type}" revno="0" rpstl="no">\n'
         elif self.manual_type == '-12&P':
-            tmp += f'\t<paper.manual maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" maintlvls="13" multivolume="no" pubno="TM {self.sys_number}-12" revno="0" rpstl="yes">\n'
+            tmp += f'\t<paper.manual maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL FOR {self.sys_name.upper()} \
+            ({self.sys_acronym})" maintlvls="13" multivolume="no" pubno="TM {self.sys_number}-12" revno="0" rpstl="yes">\n'
         elif self.manual_type == '-13&P':
-            tmp += f'\t<paper.manual maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" maintlvls="13" multivolume="no" pubno="TM {self.sys_number}-13" revno="0" rpstl="yes">\n'
+            tmp += f'\t<paper.manual maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL FOR {self.sys_name.upper()} \
+            ({self.sys_acronym})" maintlvls="13" multivolume="no" pubno="TM {self.sys_number}-13" revno="0" rpstl="yes">\n'
         elif self.manual_type == '-23&P':
-            tmp += f'\t<paper.manual maintitl="REPAIR PARTS LIST FOR {self.sys_name.upper()} ({self.sys_acronym})" maintlvls="23" multivolume="no" pubno="TM {self.sys_number}-23" revno="0" rpstl="only">\n'
+            tmp += f'\t<paper.manual maintitl="REPAIR PARTS LIST FOR {self.sys_name.upper()} \
+            ({self.sys_acronym})" maintlvls="23" multivolume="no" pubno="TM {self.sys_number}-23" revno="0" rpstl="only">\n'
         elif self.manual_type == 'NMWR':
-            tmp += f'\t<paper.manual maintitl="END ITEM" maintlvls="nmwr" multivolume="no" pubno="NMWR {self.sys_number}" revno="0" rpstl="yes">\n'
+            tmp += f'\t<paper.manual maintitl="END ITEM" maintlvls="nmwr" multivolume="no" pubno="NMWR \
+            {self.sys_number}" revno="0" rpstl="yes">\n'
         tmp += self.TAB_2 + '<paper.frnt>\n'
         tmp += self.TAB_3 + '<frntcover>\n'
         tmp += self.TAB_4 + '<?Pub Dtl?>\n'
         tmp += self.TAB_4 + '<tmtitle>\n'
-        if self.manual_type == '-10':
-            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
-        elif self.manual_type == '-12&P':
-            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
-        elif self.manual_type == '-13&P':
-            tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
-        elif self.manual_type == '-23&P':
+        if self.manual_type in ['-10', '-12&P', '-13&P', '-23&P']:
             tmp += f'{self.TAB_5}<tmno>TM {self.sys_number} {self.manual_type}</tmno>\n'
         elif self.manual_type == 'NMWR':
             tmp += f'{self.TAB_5}<tmno>NMWR {self.sys_number}</tmno>\n'
