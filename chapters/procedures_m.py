@@ -45,16 +45,16 @@ class MaintainerProcedures:
             <maintlvl level="maintainer"/>
             <title>SERVICE UPON RECEIPT</title>
         </wpidinfo>\n'''
-        tmp += isb()
+        tmp += isb.show()
         tmp += '''<surtsk>
             <siting>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</siting>
         </surtsk>
         <surtsk>
             <surmat>
                 <unpack>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</unpack>
                 <chkeqp>
                     <title/>
@@ -64,23 +64,23 @@ class MaintainerProcedures:
         </surtsk>
         <surtsk>
             <preserv>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</preserv>
         </surtsk>
         <surtsk>
             <prechkadj>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</prechkadj>
         </surtsk>
         <surtsk>
             <precal>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</precal>
         </surtsk>
         <surtsk>
             <calign>
                 <alignproc>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</alignproc>
             </calign>
         </surtsk>'''
@@ -88,13 +88,13 @@ class MaintainerProcedures:
         if self.mil_std == '2D' and self.manual_type == ('-12', '-12&P'):
             tmp += '''<surtsk>
                 <ammo.sur>'''
-            tmp += proc()
+            tmp += proc.show()
             tmp += '''</ammo.sur>
             </surtsk>'''
 
         tmp += '''<surtsk>
             <other.surtsk>'''
-        tmp += proc()
+        tmp += proc.show()
         tmp += '''</other.surtsk>
         </surtsk>
     </surwp>'''
@@ -130,7 +130,7 @@ class MaintainerProcedures:
 
     def end(self):
         """Function to create Maintainer Procedures end tags."""
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = '\t</maintenancecategory>\n' + '</mim>'
         with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-MAINTAINER_END.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
