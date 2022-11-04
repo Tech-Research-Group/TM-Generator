@@ -24,7 +24,9 @@ import cfg
 
 config = dotenv_values(".env")  # take environment variables from .env.
 
-def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5) -> None:
+
+def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
+             chb_5) -> None:
     """Calls methods to build each work package for a -10 TM shell using MIL-STD-2B."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER
@@ -143,7 +145,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
     oper_maintenance.start()
 
     M = 0
-    for row in islice(ws.rows, 1,None):
+    for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         M += 1
         if wp_title:
@@ -181,7 +183,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
         destruct = d.Destruction(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         destruct.start()
         destruct.destruct_introwp()
-        for row in islice(ws.rows, 1 , None):
+        for row in islice(ws.rows, 1, None):
             wp_title = row[2].value
             wpno = row[1].value
             if wpno:
@@ -209,14 +211,17 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
                                 support_info.refwp(wpno)
                             elif wp_title2.lower() == "coei & bii" or wp_title2.lower() == "coei and bii":
                                 support_info.coeibiiwp(wpno)
-                            elif wp_title2.lower().startswith("additional authorization list") or wp_title2.lower() == "aal":
+                            elif wp_title2.lower().startswith(
+                                    "additional authorization list") or wp_title2.lower() == "aal":
                                 support_info.aalwp(wpno)
                             elif wp_title2.lower().startswith("expendable") or wp_title2.lower().startswith("edil"):
                                 support_info.explistwp(wpno)
-                            elif wp_title2.lower().startswith("mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
+                            elif wp_title2.lower().startswith(
+                                    "mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
                                 support_info.mrplwp(wpno)
-                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith("csi"):
-                                support_info.csi_wp(wpno)                          
+                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith(
+                                    "csi"):
+                                support_info.csi_wp(wpno)
                             elif wp_title2.lower().startswith("support items"):
                                 support_info.supitemwp(wpno)
                             elif wp_title2.lower().startswith("additional supporting"):
@@ -225,7 +230,9 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
 
-def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5) -> None: 
+
+def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
+              chb_5) -> None:
     """Calls methods to build each work package for a -13&P TM shell using MIL-STD-2B."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER
@@ -254,7 +261,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
         if wp_title:
             if any(s in wp_title.lower() for s in cfg.operation):
                 O += 1
-                for row2 in islice(ws.rows,O,None):
+                for row2 in islice(ws.rows, O, None):
                     wpno = row2[1].value
                     wp_title2 = row2[2].value
 
@@ -266,7 +273,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                             else:
                                 wp_title2 = wp_title2.replace("/", " or")
                                 oper_instructions.operating_procedures(wpno, wp_title2)
-                            
+
                     if wp_title2:
                         if "chapter" in wp_title2.lower():
                             break
@@ -347,14 +354,14 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
     oper_maintenance = op.OperatorProcedures(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     oper_maintenance.start()
     x = 0
-    for row in islice(ws.rows,1,None):
+    for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         x += 1
         if wp_title:
             if any(s in wp_title.lower() for s in cfg.oper_main):
                 x += 1
 
-                for row2 in islice(ws.rows,x,None):
+                for row2 in islice(ws.rows, x, None):
                     wp_title2 = row2[2].value
                     wpno = row2[1].value
                     proc_type = row2[3].value
@@ -435,14 +442,14 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
     maint_maintenance.start()
 
     y = 0
-    for row in islice(ws.rows,1,None):
+    for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         y += 1
         if wp_title:
             if any(s in wp_title.lower() for s in cfg.main_main):
                 y += 1
 
-                for row2 in islice(ws.rows,y,None):
+                for row2 in islice(ws.rows, y, None):
                     wpno = row2[1].value
                     wp_title2 = row2[2].value
                     proc_type = row2[3].value
@@ -515,7 +522,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
         destruct = d.Destruction(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         destruct.start()
         destruct.destruct_introwp()
-        for row in islice(ws.rows, 1 , None):
+        for row in islice(ws.rows, 1, None):
             wp_title = row[2].value
             wpno = row[1].value
             if wpno:
@@ -547,22 +554,27 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                                 support_info.refwp(wpno)
                             elif wp_title2.lower() == "coei & bii" or wp_title2.lower() == "coei and bii":
                                 support_info.coeibiiwp(wpno)
-                            elif wp_title2.lower().startswith("additional authorization list") or wp_title2.lower() == "aal":
+                            elif wp_title2.lower().startswith(
+                                    "additional authorization list") or wp_title2.lower() == "aal":
                                 support_info.aalwp(wpno)
                             elif wp_title2.lower().startswith("expendable") or wp_title2.lower().startswith("edil"):
                                 support_info.explistwp(wpno)
                             elif wp_title2.lower().startswith("tool") or wp_title2.lower().startswith("til"):
                                 support_info.toolidwp(wpno)
-                            elif wp_title2.lower().startswith("mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
+                            elif wp_title2.lower().startswith(
+                                    "mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
                                 support_info.mrplwp(wpno)
-                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith("csi"):
-                                support_info.csi_wp(wpno)                          
+                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith(
+                                    "csi"):
+                                support_info.csi_wp(wpno)
                             elif wp_title2.lower().startswith("additional supporting"):
                                 support_info.genwp(wpno)
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
-    
-def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5) -> None:
+
+
+def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
+              chb_5) -> None:
     """Calls methods to build each work package for a -23&P TM shell using MIL-STD-2B."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER
@@ -654,14 +666,14 @@ def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
     maint_maintenance.start()
 
     y = 0
-    for row in islice(ws.rows,1,None):
+    for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         y += 1
         if wp_title:
             if any(s in wp_title.lower() for s in cfg.main_main):
                 y += 1
 
-                for row2 in islice(ws.rows,y,None):
+                for row2 in islice(ws.rows, y, None):
                     wpno = row2[1].value
                     wp_title2 = row2[2].value
                     proc_type = row2[3].value
@@ -734,7 +746,7 @@ def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
         destruct = d.Destruction(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         destruct.start()
         destruct.destruct_introwp()
-        for row in islice(ws.rows, 1 , None):
+        for row in islice(ws.rows, 1, None):
             wp_title = row[2].value
             wpno = row[1].value
             if wpno:
@@ -766,21 +778,25 @@ def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
                                 support_info.refwp(wpno)
                             elif wp_title2.lower() == "coei & bii" or wp_title2.lower() == "coei and bii":
                                 support_info.coeibiiwp(wpno)
-                            elif wp_title2.lower().startswith("additional authorization list") or wp_title2.lower() == "aal":
+                            elif wp_title2.lower().startswith(
+                                    "additional authorization list") or wp_title2.lower() == "aal":
                                 support_info.aalwp(wpno)
                             elif wp_title2.lower().startswith("expendable") or wp_title2.lower().startswith("edil"):
                                 support_info.explistwp(wpno)
                             elif wp_title2.lower().startswith("tool") or wp_title2.lower().startswith("til"):
                                 support_info.toolidwp(wpno)
-                            elif wp_title2.lower().startswith("mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
+                            elif wp_title2.lower().startswith(
+                                    "mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
                                 support_info.mrplwp(wpno)
-                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith("csi"):
-                                support_info.csi_wp(wpno)                          
+                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith(
+                                    "csi"):
+                                support_info.csi_wp(wpno)
                             elif wp_title2.lower().startswith("additional supporting"):
                                 support_info.genwp(wpno)
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
-    
+
+
 def build_nmwr(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws) -> None:
     """Calls methods to build each work package for a NMWR shell using MIL-STD-2B."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
@@ -925,12 +941,13 @@ def build_nmwr(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NU
                                 support_info.explistwp(wpno)
                             elif wp_title2.lower().startswith("tool") or wp_title2.lower().startswith("til"):
                                 support_info.toolidwp(wpno)
-                            elif wp_title2.lower().startswith("mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
+                            elif wp_title2.lower().startswith(
+                                    "mandatory replacement parts") or wp_title2.lower().startswith("mrp"):
                                 support_info.mrplwp(wpno)
-                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith("csi"):
+                            elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith(
+                                    "csi"):
                                 support_info.csi_wp(wpno)
                             elif wp_title2.lower().startswith("additional supporting"):
                                 support_info.genwp(wpno)
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
-

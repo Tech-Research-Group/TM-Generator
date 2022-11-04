@@ -424,7 +424,7 @@ class PMCS:
         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type}' + ' WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Weekly.txt', 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Weekly.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 

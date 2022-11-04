@@ -3,6 +3,7 @@ import math
 from dotenv import dotenv_values
 import cfg
 
+
 class FrontMatter:
     """Class to create various types of WP's included in the Front Matter section of a TM."""
     config = dotenv_values(".env")  # take environment variables from .env.
@@ -27,7 +28,7 @@ class FrontMatter:
 
     def title_page(self):
         """Function to create title page XML."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n' + '<production chngdate="11 SEPTEMBER 2022" chnglevel="0" date="11 SEPTEMBER 2022" pin="XX-XXX-XX">\n'
         if self.manual_type == '-10':
             tmp += f'\t<paper.manual maintitl="OPERATOR MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" maintlvls="10" multivolume="no" pubno="TM {self.sys_number} {self.manual_type}" revno="0" rpstl="no">\n'
@@ -76,14 +77,15 @@ class FrontMatter:
         tmp += self.TAB_4 + '<date>11 SEPTEMBER 2022</date>\n'
         tmp += self.TAB_3 + '</frntcover>\n'
 
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-FrontCover.txt", 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-FrontCover.txt",
+                  'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def warning_summary(self):
         """Function to create Warning Summary section."""
         tmp = '\n<?xml version="1.0" encoding="UTF-8"?>\n' + '<warnsum>\n'
-        tmp += '\t<para>' + self.config.get('WARNING_SUMMARY') + '</para>\n'
+        tmp += f"\t<para>{self.config.get('WARNING_SUMMARY')}</para>\n"
         tmp += '\t<first_aid>\n'
         tmp += self.TAB_2 + '<title>First Aid</title>\n'
         tmp += f"{self.TAB_2}<para>{self.config.get('SW_FIRSTAID')}</para>\n"
@@ -96,7 +98,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Ear_Protection_Symbol"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>EAR PROTECTION</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_EAR_PROTECTION') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_EAR_PROTECTION')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -218,7 +220,7 @@ class FrontMatter:
         tmp += self.TAB_2 + '<warning>\n'
         tmp += self.TAB_3 + '<icon-set boardno="Slick_Floor"/>\n'
         tmp += self.TAB_3 + \
-                '<trim.para>All doors and doorways must remain unblocked, both inside and outside, during operation of system to allow for egress during an emergency. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
+               '<trim.para>All doors and doorways must remain unblocked, both inside and outside, during operation of system to allow for egress during an emergency. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
         tmp += self.TAB_2 + '</warning>\n'
 
         tmp += self.TAB_2 + '<warning>\n'
@@ -230,13 +232,13 @@ class FrontMatter:
         tmp += self.TAB_2 + '<warning>\n'
         tmp += self.TAB_3 + '<icon-set boardno="Electrical_Symbols"/>\n'
         tmp += self.TAB_3 + \
-                '<trim.para>Power source and ' + self.sys_acronym.upper() + ' container must all be grounded to ensure safety of personnel during operation. Operating ' + self.sys_acronym.upper() + ' components while ungrounded or improperly grounded may expose personnel to risk of shock resulting in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
+               '<trim.para>Power source and ' + self.sys_acronym.upper() + ' container must all be grounded to ensure safety of personnel during operation. Operating ' + self.sys_acronym.upper() + ' components while ungrounded or improperly grounded may expose personnel to risk of shock resulting in serious injury or death to personnel. Seek immediate medical attention if injury occurs.</trim.para>\n'
         tmp += self.TAB_3 + \
-                '<trim.para>High voltage is present during operation. All electrical safety precautions must be followed when operating or maintaining equipment. Failure to comply may result in death or serious injury to personnel. Seek immediate medical attention if exposed to electricity.</trim.para>\n'
+               '<trim.para>High voltage is present during operation. All electrical safety precautions must be followed when operating or maintaining equipment. Failure to comply may result in death or serious injury to personnel. Seek immediate medical attention if exposed to electricity.</trim.para>\n'
         tmp += self.TAB_3 + \
-                '<trim.para>Source power must be off prior to connecting or removing power cables to ' + self.sys_acronym.upper() + ' shelter.</trim.para>\n'
+               '<trim.para>Source power must be off prior to connecting or removing power cables to ' + self.sys_acronym.upper() + ' shelter.</trim.para>\n'
         tmp += self.TAB_3 + \
-                '<trim.para>All jewelry must be removed before starting work. Metal objects, such as rings or tools, can cause short circuits when contacting live circuits. A direct short can cause instant heating of metal resulting in severe burns. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if exposed to electricity.</trim.para>\n'
+               '<trim.para>All jewelry must be removed before starting work. Metal objects, such as rings or tools, can cause short circuits when contacting live circuits. A direct short can cause instant heating of metal resulting in severe burns. Failure to comply may result in serious injury or death to personnel. Seek immediate medical attention if exposed to electricity.</trim.para>\n'
         tmp += self.TAB_2 + '</warning>\n'
         tmp += '\t</warninfo>\n'
 
@@ -330,7 +332,9 @@ class FrontMatter:
         tmp += self.TAB_2 + '</hazard>\n'
         tmp += '\t</hazmat>\n' + '</warnsum>\n'
 
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-WarningSummary.txt", 'w', encoding='UTF-8') as _f:
+        with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-WarningSummary.txt",
+                'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -395,10 +399,11 @@ class FrontMatter:
         </chghistory>
     </loepwp>'''
 
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-LOEP.txt", 'w', encoding='UTF-8') as _f:
+        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-LOEP.txt", 'w',
+                encoding='UTF-8') as _f:
             _f.write(tmp)
-        cfg.prefix_file += 10
-        
+        cfg.prefix_file += 1
+
     def tb_toc_htu(self):
         """Function that creates Title Block, TOC & How to Use sections."""
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
@@ -409,8 +414,7 @@ class FrontMatter:
     <date>11 SEPTEMBER 2022</date>
     <prtitle>
         <sysnomen>\n'''
-        tmp += '\t\t\t<name>' + self.sys_name.upper() + ' (' + self.sys_acronym.upper() + \
-                ')' + '</name>\n'
+        tmp += '\t\t\t<name>' + self.sys_name.upper() + ' (' + self.sys_acronym.upper() + ')' + '</name>\n'
         tmp += '\t\t\t<modelno>GREEN </modelno>\n'
         tmp += '\t\t\t<nsn>\n'
         tmp += '\t\t\t\t<fsc>' + self.fsc + '</fsc>\n'
@@ -459,13 +463,13 @@ class FrontMatter:
     <title/>
     <para0>
         <title>HOW TO OBTAIN TECHNICAL MANUALS</title>\n'''
-            tmp += '\t\t<para>' + self.config.get('OBTAIN_TM_P1') + '</para>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('OBTAIN_TM_P2') + '</para>\n'
+            tmp += f"\t\t<para>{self.config.get('OBTAIN_TM_P1')}</para>\n"
+            tmp += f"{self.TAB_2}<para>{self.config.get('OBTAIN_TM_P2')}</para>\n"
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Instructions for Unit Publications Clerk</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('UNIT_PUB_CLERK_P1') + '</para>\n'
 
-            tmp += f'{self.TAB_3}<para>' + self.config.get('UNIT_PUB_CLERK_P2') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('UNIT_PUB_CLERK_P2')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += '\t</para0>\n'
@@ -479,7 +483,7 @@ class FrontMatter:
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-                    '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
+               '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('CHAPTER_1') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -501,7 +505,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-                    '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
+               '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('PMCS') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -516,7 +520,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-                    '<title>CHAPTER 9 - DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE</title>\n'
+               '<title>CHAPTER 9 - DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('DESTRUCTION') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -539,7 +543,7 @@ class FrontMatter:
             tmp += self.TAB_3 + '<title>Finding Information</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
             tmp += self.TAB_3 + \
-                    '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
+               '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -603,13 +607,13 @@ class FrontMatter:
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>Finding Information</title>\n'
             tmp += f'{self.TAB_2}<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
-            tmp += self.TAB_2 + \
-                    '<!-- CHANGE: Use the index statement applicable to your TM or none if that applies -->\n'
+            tmp += self.TAB_2 + '<!-- CHANGE: Use the index statement applicable to your TM or none if that applies -->\n'
             tmp += f'{self.TAB_2}<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>How To Fix An Equipment Malfunction</title>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('HOW_TO_FIX_EQUIPMENT_MALFUNCTION') + ' <!--DELETE THIS SENTENCE IF NOT USED-->\n'
+            tmp += f'{self.TAB_2}<para>' + self.config.get(
+                'HOW_TO_FIX_EQUIPMENT_MALFUNCTION') + ' <!--DELETE THIS SENTENCE IF NOT USED-->\n'
 
             tmp += self.TAB_2 + '</para>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -624,6 +628,8 @@ class FrontMatter:
             tmp += '</howtouse>\n'
         tmp += '</paper.frnt>\n'
 
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TitleBlock_TOC_HowToUse.txt", 'w', encoding='UTF-8') as _f:
+        with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TitleBlock_TOC_HowToUse.txt",
+                'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10

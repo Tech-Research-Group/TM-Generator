@@ -14,7 +14,7 @@ import chapters.procedures_o as op
 import chapters.pmcs_m as pm
 import chapters.pmcs_o as po
 import chapters.rear_matter as rm
-import chapters.software_information as s
+import chapters.software_information as so
 import chapters.supporting_information as si
 import chapters.ts_depot as td
 import chapters.ts_maintainer as tm
@@ -69,12 +69,11 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
     # TROUBLESHOOTING MASTER INDEX
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
-        if wp_title:
-            if any(s in wp_title.lower() for s in cfg.master_index):
-                mi = tsmi_o.TSMasterIndex(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
-                mi.start()
-                mi.tsindxwp()
-                mi.end()
+        if wp_title and any(s in wp_title.lower() for s in cfg.master_index):
+            mi = tsmi_o.TSMasterIndex(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path) # TODO - CHECK THIS SHIT RIGHT HERE
+            mi.start()
+            mi.tsindxwp()
+            mi.end()
     # OPERATOR TROUBLESHOOTING
     oper_ts = to.TSOperator(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     oper_ts.start()
@@ -192,7 +191,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
         destruct.end()
     # SOFTWARE INFORMATION - OPTIONAL
     if chb_6.get() == 1:
-        software = s.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
+        software = so.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         software.start()
         software.softginfowp()
         software.softsumwp()
@@ -245,7 +244,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
 
-def build_13p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6) -> None:
+def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6) -> None:
     """Calls methods to build each work package for a -13&P TM shell using MIL-STD-2C."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER
@@ -511,7 +510,7 @@ def build_13p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, S
         destruct.end()
     # SOFTWARE INFORMATION - OPTIONAL
     if chb_6.get() == 1:
-        software = s.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
+        software = so.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         software.start()
         software.softginfowp()
         software.softsumwp()
@@ -601,7 +600,7 @@ def build_13p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, S
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
 
-def build_23p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6) -> None:
+def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6) -> None:
     """Calls methods to build each work package for a -23&P TM shell using MIL-STD-2C."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER
@@ -749,7 +748,7 @@ def build_23p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, S
         destruct.end()
     # SOFTWARE INFORMATION - OPTIONAL
     if chb_6.get() == 1:
-        software = s.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
+        software = so.SoftwareInformation(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
         software.start()
         software.softginfowp()
         software.softsumwp()
@@ -839,7 +838,7 @@ def build_23p_tm_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, S
     support_info.end()
     rm.RearMatter(manual, SYS_ACRONYM, save_path).rear_matter()
 
-def build_nmwr_2c(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws) -> None:
+def build_nmwr(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws) -> None:
     """Calls methods to build each work package for a NMWR shell using MIL-STD-2C."""
     ed.EntityDeclarations(SYS_ACRONYM, manual, milstd, save_path).entity_declarations()
     # FRONT MATTER

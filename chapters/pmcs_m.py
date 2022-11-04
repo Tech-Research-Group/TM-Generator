@@ -2,8 +2,10 @@
 import cfg
 import math
 
+
 class PMCS:
     """Class to create various types of WP's included in the PMCS section of a TM."""
+
     def __init__(self, manual_type, milstd, sys_acronym, sys_name, sys_number, save_path):
         self.manual_type = manual_type
         self.milstd = milstd
@@ -14,15 +16,15 @@ class PMCS:
 
     def start(self):
         """Function to create the PMCS start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
+        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
         tmp = '''<?xml version="1.0" encoding="UTF-8"?>
     <mim chngno="0" revno="0" chap-toc="no">\n'''
         tmp += '\t<titlepg maintlvl="maintainer">\n'
         tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')' + '</name>\n'
         tmp += '\t</titlepg>\n'
         tmp += '<pmcscategory>\n'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-PMCS_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-PMCS_START.txt',
+                  'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -109,20 +111,19 @@ class PMCS:
         </subpara1>
     </para0>
 </pmcsintrowp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-M00101-PMCS-Introduction.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-M00101-PMCS-Introduction.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def pmcs_before(self, wpno):
         """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '\t<wpidinfo>\n'
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
         tmp += '''\t\t<title>Before Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
         tmp += '''\t\t<title>Before Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Before</interval>
@@ -173,20 +174,19 @@ class PMCS:
         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Before.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Before.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def pmcs_during(self, wpno):
         """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '\t<wpidinfo>\n'
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
         tmp += '''\t\t<title>During Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>\n'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
         tmp += '''\t\t<title>During Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>During</interval>
@@ -237,20 +237,19 @@ class PMCS:
         <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-During.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-During.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def pmcs_after(self, wpno):
         """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
+        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '\t<wpidinfo>\n'
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
         tmp += '''\t\t<title>After Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>\n'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
         tmp += '''\t\t<title>After Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>After</interval>
@@ -302,10 +301,10 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-After.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-After.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-                
+
     def pmcs_daily(self, wpno):
         """ Function to create a PMCS WP. """
         tmp = f'<pmcswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
@@ -314,7 +313,7 @@ class PMCS:
         tmp += '''\t\t<title>Daily Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Daily Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Daily</interval>
@@ -366,7 +365,7 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Daily.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Daily.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -378,7 +377,7 @@ class PMCS:
         tmp += '''\t\t<title>Weekly Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Weekly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Weekly</interval>
@@ -430,7 +429,7 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Weekly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Weekly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -442,7 +441,7 @@ class PMCS:
         tmp += '''\t\t<title>Monthly Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Monthly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Monthly</interval>
@@ -494,10 +493,10 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Monthly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Monthly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-    
+
     def pmcs_quarterly(self, wpno):
         """ Function to create a PMCS WP. """
         tmp = f'<pmcswp chngno="0" wpno="{wpno}-' + self.sys_number + '">\n'
@@ -506,7 +505,7 @@ class PMCS:
         tmp += '''\t\t<title>Quarterly Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Quarterly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Quarterly</interval>
@@ -558,7 +557,7 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Quarterly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Quarterly.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -570,7 +569,7 @@ class PMCS:
         tmp += '''\t\t<title>Semi-annually Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Semi-annually Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Semi-annually</interval>
@@ -622,7 +621,7 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Semi-annually.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Semi-annually.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
@@ -634,7 +633,7 @@ class PMCS:
         tmp += '''\t\t<title>Annually Maintainer Preventive Maintenance Checks and Services (PMCS) Procedures</title>
     </wpidinfo>'''
         tmp += isb()
-        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number +'-T0001">\n'
+        tmp += f'\t<pmcstable id="{wpno}-' + self.sys_number + '-T0001">\n'
         tmp += '''<title>Annually Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Annually</interval>
@@ -686,17 +685,17 @@ class PMCS:
     </mrplpart>\n'''
         tmp += '</pmcswp>\n'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-{}-PMCS-Annually.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-{}-PMCS-Annually.txt'.format(cfg.prefix_file, wpno), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def end(self):
         """ Function to create the PMCS section end tags """
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = '\t</pmcscategory>\n'
         tmp += '</mim>'
         with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type +
-                ' WIP/{:05d}-PMCS_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+                  ' WIP/{:05d}-PMCS_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
 
@@ -763,4 +762,3 @@ def isb():
         </eqpconds>
     </initial_setup>\n'''
     return isb_tmp
-
