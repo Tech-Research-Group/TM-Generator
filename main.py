@@ -45,12 +45,12 @@ def form_validation(save_path) -> None:
     Turns input fields red if empty. Adds error messages to the errors list."""
     global ERRORS, SYS_ACRONYM, SYS_NUMBER, SYS_NAME, FSC, NIIN, PART_NO, UOC
     ERRORS = []
-    SYS_NAME = ent_sys_name.get()
-    SYS_ACRONYM = ent_sys_acronym.get()
-    SYS_NUMBER = ent_sys_number.get()
-    FSC = ent_fsc.get()
+    # FSC = ent_fsc.get()
     NIIN = ent_niin.get()
     PART_NO = ent_part_no.get()
+    SYS_ACRONYM = ent_sys_acronym.get()
+    SYS_NAME = ent_sys_name.get()
+    SYS_NUMBER = ent_sys_number.get()
     UOC = ent_uoc.get()
 
     # Form Validation to make sure all fields are filled out
@@ -84,11 +84,11 @@ def form_validation(save_path) -> None:
         ERRORS.append('PART NUMBER is required.\n')
     else:
         lbl_part_no.configure(fg='black')
-    if UOC == '':
-        lbl_uoc.configure(fg='red')
-        ERRORS.append('UOC is required.\n')
-    else:
-        lbl_uoc.configure(fg='black')
+    # if UOC == '':
+    #     lbl_uoc.configure(fg='red')
+    #     ERRORS.append('UOC is required.\n')
+    # else:
+    #     lbl_uoc.configure(fg='black')
     # If errors list contains errors, display them in a message box.
     if ERRORS:
         messagebox.showerror("Error", show_errors())
@@ -281,13 +281,13 @@ def open_tm_tracker():
 
 def autofill() -> None:
     """Automatically fills in Entries with dummy data."""
-    ent_sys_name.insert(0, 'Expeditionary TRICON Food Sanitation System')
-    ent_sys_number.insert(0, '10-5419-224')
-    ent_sys_acronym.insert(0, 'ETFSS')
-    ent_niin.insert(0, '01-686-0248')
-    ent_fsc.insert(0, '5419')
-    ent_uoc.insert(0, 'SHELTER, EXPANDABLE, ETFSS (GREEN)')
-    ent_part_no.insert(0, '9-1-1121-1')
+    ent_sys_name.insert(0, 'M157 Sight, Small Arms Fire Control (SAFC)')
+    ent_sys_number.insert(0, 'XX-XXXX-XXX')
+    ent_sys_acronym.insert(0, 'M157 Sight')
+    ent_niin.insert(0, 'XXX-XX-XXXX')
+    ent_fsc.insert(0, 'XXXX')
+    ent_uoc.insert(0, '')
+    ent_part_no.insert(0, 'SPR-900053')
 
 root = tk.Tk()
 root.geometry('935x470')

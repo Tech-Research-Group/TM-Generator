@@ -400,9 +400,9 @@ class FrontMatter:
     </loepwp>'''
 
         with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-LOEP.txt", 'w',
-                encoding='UTF-8') as _f:
+                  encoding='UTF-8') as _f:
             _f.write(tmp)
-        cfg.prefix_file += 1
+        cfg.prefix_file += 10
 
     def tb_toc_htu(self):
         """Function that creates Title Block, TOC & How to Use sections."""
@@ -483,7 +483,7 @@ class FrontMatter:
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-               '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
+                   '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('CHAPTER_1') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -505,7 +505,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-               '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
+                   '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('PMCS') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -520,7 +520,7 @@ class FrontMatter:
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
-               '<title>CHAPTER 9 - DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE</title>\n'
+                   '<title>CHAPTER 9 - DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('DESTRUCTION') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
@@ -543,7 +543,7 @@ class FrontMatter:
             tmp += self.TAB_3 + '<title>Finding Information</title>\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
             tmp += self.TAB_3 + \
-               '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
+                   '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
             tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
