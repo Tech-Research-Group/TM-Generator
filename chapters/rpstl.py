@@ -24,7 +24,7 @@ class Rpstl:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def introwp(self):
+    def introwp(self, wpno):
         """Function that creates the RPSTL Introduction WP."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
         tmp += f'<introwp chngno="0" wpno="R00001-{self.sys_number}">\n'
@@ -700,7 +700,7 @@ class Rpstl:
         </para>
     </para0>
 </introwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-R00001-RPSTL-Introduction.txt', 'w', encoding='UTF-8') as _f:
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-RPSTL-Introduction.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 

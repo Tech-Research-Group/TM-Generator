@@ -18,6 +18,7 @@ import chapters.ts_maintainer as tm
 import chapters.ts_operator as to
 import chapters.ts_master_index_o as tsmi
 import cfg
+from chapters import rpstl
 
 # from main import SYS_ACRONYM, manual, milstd, save_path
 config = dotenv_values(".env")  # take environment variables from .env.
@@ -56,18 +57,20 @@ def get_operator_instructions(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_pa
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         _o += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.operation):
-            _o += 1
-            for row2 in islice(ws.rows, _o, None):
-                wp_title2 = row2[2].value
-                wpno = row2[1].value
-                if wpno and wpno[0] == 'O':
-                    wp_title2 = wp_title2.replace("/", " or")
-                    oper_instructions.operating_procedures(wpno, wp_title2)
-                    if "unusual" in wp_title2:
-                        oper_instructions.unusual_conditions(wpno)
-                if wp_title2 and "chapter" in wp_title2:
-                    break
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.operation):
+                _o += 1
+                for row2 in islice(ws.rows, _o, None):
+                    wp_title2 = row2[2].value
+                    wpno = row2[1].value
+                    if wpno:
+                        if wpno[0] == 'O':
+                            wp_title2 = wp_title2.replace("/", " or")
+                            oper_instructions.operating_procedures(wpno, wp_title2)
+                            if "unusual" in wp_title2:
+                                oper_instructions.unusual_conditions(wpno)
+                        if wp_title2 and "chapter" in wp_title2:
+                            break
     oper_instructions.end()
 
 
@@ -86,8 +89,7 @@ def get_operator_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws):
     """Calls TSOperator and all of its medthods to create an Operator Troubleshooting Chapter in XML."""
     oper_ts = to.TSOperator(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     oper_ts.start()
-    oper_ts.tsintrowp()
-    T = 1
+    T = 0
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         T += 1
@@ -98,8 +100,10 @@ def get_operator_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws):
                 wpno = row2[1].value
                 if wpno and wpno[0] == "T":
                     wp_title2 = wp_title2.replace("/", " or")
-                    if "troubleshooting index" in wp_title2.lower():
-                        continue
+                    if "troubleshooting introduction" in wp_title2.lower():
+                        oper_ts.tsintrowp(wpno)
+                    elif "troubleshooting index" in wp_title2.lower():
+                        oper_ts.tsindxwp(wpno)
                     else:
                         oper_ts.tswp(wpno, wp_title2)
                 if wp_title2 and "chapter" in wp_title2.lower():
@@ -111,19 +115,23 @@ def get_maintainer_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws) 
     """Calls TSMaintainer and all of its medthods to create an Maintainer Troubleshooting Chapter in XML."""
     maint_ts = tm.TSMaintainer(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     maint_ts.start()
-    maint_ts.tsintrowp()
-    Mt = 1
+    T = 0
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
-        Mt += 1
+        T += 1
         if wp_title and any(s in wp_title.lower() for s in cfg.main_troub):
-            Mt += 1
-            for row2 in islice(ws.rows, Mt, None):
+            T += 1
+            for row2 in islice(ws.rows, T, None):
                 wp_title2 = row2[2].value
                 wpno = row2[1].value
                 if wpno and wpno[0] == "T":
                     wp_title2 = wp_title2.replace("/", "or")
-                    maint_ts.tswp(wpno, wp_title2)
+                    if "introduction" in wp_title2.lower() or "intro" in wp_title2.lower():
+                        maint_ts.tsintrowp(wpno)
+                    elif "index" in wp_title2.lower():
+                        maint_ts.tsindxwp(wpno)
+                    else:
+                        maint_ts.tswp(wpno, wp_title2)
                 if wp_title2 and "chapter" in wp_title2.lower():
                     break
     maint_ts.end()
@@ -144,7 +152,8 @@ def get_depot_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws):
                 wpno = row2[1].value
                 if wpno and wpno[0] == "T":
                     wp_title2 = wp_title2.replace("/", "or")
-                    if "troubleshooting intro" in wp_title2.lower() or "troubleshooting introduction" in wp_title2.lower():
+                    if "troubleshooting intro" in wp_title2.lower() or \
+                            "troubleshooting introduction" in wp_title2.lower():
                         depot_ts.tsintrowp(wpno)
                     elif "troubleshooting index" in wp_title2.lower():
                         depot_ts.tsindxwp(wpno)
@@ -168,31 +177,34 @@ def get_operator_pmcs(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_pa
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         P += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.operation):
-            P += 1
-            for row2 in islice(ws.rows, P, None):
-                wpno = row2[1].value
-                if not wpno or wpno[0] != 'M':
-                    break
-                wp_title2 = row2[2].value
-                if "before" in wp_title2.lower():
-                    oper_pmcs.pmcs_before(wpno)
-                elif "during" in wp_title2.lower():
-                    oper_pmcs.pmcs_during(wpno)
-                elif "after" in wp_title2.lower():
-                    oper_pmcs.pmcs_after(wpno)
-                elif "daily" in wp_title2.lower():
-                    oper_pmcs.pmcs_daily(wpno)
-                elif "weekly" in wp_title2.lower():
-                    oper_pmcs.pmcs_weekly(wpno)
-                elif "monthly" in wp_title2.lower():
-                    oper_pmcs.pmcs_monthly(wpno)
-                elif "quarterly" in wp_title2.lower():
-                    oper_pmcs.pmcs_quarterly(wpno)
-                elif "semi" in wp_title2.lower():
-                    oper_pmcs.pmcs_semi_annually(wpno)
-                elif "annually" in wp_title2.lower():
-                    oper_pmcs.pmcs_annually(wpno)
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.operation):
+                P += 1
+                for row2 in islice(ws.rows, P, None):
+                    wpno = row2[1].value
+                    wp_title2 = row2[2].value
+                    if wpno:
+                        if wpno[0] == 'M':
+                            if "before" in wp_title2.lower():
+                                oper_pmcs.pmcs_before(wpno)
+                            elif "during" in wp_title2.lower():
+                                oper_pmcs.pmcs_during(wpno)
+                            elif "after" in wp_title2.lower():
+                                oper_pmcs.pmcs_after(wpno)
+                            elif "daily" in wp_title2.lower():
+                                oper_pmcs.pmcs_daily(wpno)
+                            elif "weekly" in wp_title2.lower():
+                                oper_pmcs.pmcs_weekly(wpno)
+                            elif "monthly" in wp_title2.lower():
+                                oper_pmcs.pmcs_monthly(wpno)
+                            elif "quarterly" in wp_title2.lower():
+                                oper_pmcs.pmcs_quarterly(wpno)
+                            elif "semi" in wp_title2.lower():
+                                oper_pmcs.pmcs_semi_annually(wpno)
+                            elif "annually" in wp_title2.lower():
+                                oper_pmcs.pmcs_annually(wpno)
+                        else:
+                            break
     oper_pmcs.end()
 
 
@@ -205,31 +217,34 @@ def get_maintainer_pmcs(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         P += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.main_pmcs):
-            P += 1
-            for row2 in islice(ws.rows, P, None):
-                wpno = row2[1].value
-                if not wpno or wpno[0] != 'M':
-                    break
-                wp_title2 = row2[2].value
-                if "before" in wp_title2.lower():
-                    main_pmcs.pmcs_before(wpno)
-                elif "during" in wp_title2.lower():
-                    main_pmcs.pmcs_during(wpno)
-                elif "after" in wp_title2.lower():
-                    main_pmcs.pmcs_after(wpno)
-                elif "daily" in wp_title2.lower():
-                    main_pmcs.pmcs_daily(wpno)
-                elif "weekly" in wp_title2.lower():
-                    main_pmcs.pmcs_weekly(wpno)
-                elif "monthly" in wp_title2.lower():
-                    main_pmcs.pmcs_monthly(wpno)
-                elif "quarterly" in wp_title2.lower():
-                    main_pmcs.pmcs_quarterly(wpno)
-                elif "semi" in wp_title2.lower():
-                    main_pmcs.pmcs_semi_annually(wpno)
-                elif "annually" in wp_title2.lower():
-                    main_pmcs.pmcs_annually(wpno)
+        if wp_title:
+            if any(s in wp_title.lower() for s in cfg.main_pmcs):
+                P += 1
+                for row2 in islice(ws.rows, P, None):
+                    wpno = row2[1].value
+                    wp_title2 = row2[2].value
+                    if wpno:
+                        if wpno[0] == 'M':
+                            if "before" in wp_title2.lower():
+                                main_pmcs.pmcs_before(wpno)
+                            elif "during" in wp_title2.lower():
+                                main_pmcs.pmcs_during(wpno)
+                            elif "after" in wp_title2.lower():
+                                main_pmcs.pmcs_after(wpno)
+                            elif "daily" in wp_title2.lower():
+                                main_pmcs.pmcs_daily(wpno)
+                            elif "weekly" in wp_title2.lower():
+                                main_pmcs.pmcs_weekly(wpno)
+                            elif "monthly" in wp_title2.lower():
+                                main_pmcs.pmcs_monthly(wpno)
+                            elif "quarterly" in wp_title2.lower():
+                                main_pmcs.pmcs_quarterly(wpno)
+                            elif "semi" in wp_title2.lower():
+                                main_pmcs.pmcs_semi_annually(wpno)
+                            elif "annually" in wp_title2.lower():
+                                main_pmcs.pmcs_annually(wpno)
+                        else:
+                            break
     main_pmcs.end()
 
 
@@ -347,6 +362,38 @@ def get_parts_information(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, 
             break
     parts_info.end()
 
+
+def get_rpstl(config, manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws):
+    """Calls Rpstl and all of it's methods to create a RPSTL Chapter in XML."""
+    repair_parts = rpstl.Rpstl(config, manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
+    repair_parts.start()
+
+    R = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        R += 1
+        if wp_title and any(s in wp_title.lower() for s in cfg.rpstl_check):
+            R += 1
+            break
+    for row2 in islice(ws.rows, R, None):
+        wpno2 = row2[1].value
+        wp_title2 = row2[2].value
+        wp_title2 = wp_title2.replace("/", " or")
+        if wpno2 and wpno2[0] == "R":
+            if "introduction" in wp_title2.lower() or "intro" in wp_title2.lower():
+                repair_parts.introwp(wpno2)
+            elif "bulk items" in wp_title2.lower():
+                repair_parts.bulk_itemswp(wpno2)
+            elif "nsn index" in wp_title2.lower() or "national stock" in wp_title2.lower():
+                repair_parts.nsnindxwp(wpno2)
+            elif "pn index" in wp_title2.lower() or "part number" in wp_title2.lower():
+                repair_parts.pnindxwp(wpno2)
+            else:
+                repair_parts.plwp(wpno2, wp_title2)
+        if wp_title2 and "chapter" in wp_title2.lower():
+            break
+    repair_parts.end()
+
 def get_supporting_information(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws):
     """Calls SupportingInformation and all of it's methods to create a Supporting Info Chapter in XML."""
     support_info = si.SupportingInformation(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
@@ -396,13 +443,13 @@ def get_supporting_information_mac(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, sa
                 wpno = row2[1].value
                 wp_title2 = row2[2].value
                 if wpno and wpno[0] == 'S':
-                    if "intro" in wp_title2.lower() or "introduction" in wp_title2.lower():
-                        support_info.macintrowp(wpno)
-                    elif wp_title2.lower() in ["mac", "maintenance allocation chart", "maintenance allocation chart (mac)"]:
-                        support_info.macwp(wpno)
-                    elif wp_title2.lower() == "references":
+                    if wp_title2.lower() == "references":
                         support_info.refwp(wpno)
-                    elif wp_title2.lower() in ["coei & bii", "coei and bii"]:
+                    elif "intro" in wp_title2.lower() or "introduction" in wp_title2.lower():
+                        support_info.macintrowp(wpno)
+                    elif "mac" in wp_title2.lower() or "maintenance allocation chart" in wp_title2.lower():
+                        support_info.macwp(wpno)
+                    elif "coei" in wp_title2.lower() or "components of end item" in wp_title2.lower():
                         support_info.coeibiiwp(wpno)
                     elif wp_title2.lower().startswith(
                             "additional authorization list") or wp_title2.lower() == "aal":
@@ -417,6 +464,8 @@ def get_supporting_information_mac(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, sa
                     elif wp_title2.lower().startswith("critical safety items") or wp_title2.lower().startswith(
                             "csi"):
                         support_info.csi_wp(wpno)
+                    elif wp_title2.lower().startswith("support items"):
+                        support_info.supitemwp(wpno)
                     elif wp_title2.lower().startswith("additional supporting"):
                         support_info.genwp(wpno)
     support_info.end()

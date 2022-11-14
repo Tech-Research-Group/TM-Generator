@@ -3,7 +3,7 @@ import os
 import shutil
 import tkinter as tk
 from tkinter import Button, Checkbutton, filedialog, Entry, IntVar, Label, messagebox, StringVar
-from tkinter.constants import FALSE
+from tkinter.constants import END, FALSE
 from tkinter.ttk import Combobox
 import contextlib
 import openpyxl as xl
@@ -12,7 +12,7 @@ import manuals.tm2b as tm2b
 import manuals.tm2c as tm2c
 import manuals.tm2d as tm2d
 
-global chbox_1, chbox_2, chbox_3, chbox_4, chbox_5, chbox_6
+global chbox_1, chbox_2, chbox_3, chbox_4, chbox_5, chbox_6, chbox_tmi
 config = dotenv_values(".env")  # take environment variables from .env.
 excelFile = None
 manual = ''
@@ -45,13 +45,12 @@ def form_validation(save_path) -> None:
     Turns input fields red if empty. Adds error messages to the errors list."""
     global ERRORS, SYS_ACRONYM, SYS_NUMBER, SYS_NAME, FSC, NIIN, PART_NO, UOC
     ERRORS = []
-    # FSC = ent_fsc.get()
+    FSC = ent_fsc.get()
     NIIN = ent_niin.get()
     PART_NO = ent_part_no.get()
     SYS_ACRONYM = ent_sys_acronym.get()
     SYS_NAME = ent_sys_name.get()
     SYS_NUMBER = ent_sys_number.get()
-    UOC = ent_uoc.get()
 
     # Form Validation to make sure all fields are filled out
     if SYS_NAME == '':
@@ -84,12 +83,6 @@ def form_validation(save_path) -> None:
         ERRORS.append('PART NUMBER is required.\n')
     else:
         lbl_part_no.configure(fg='black')
-    # if UOC == '':
-    #     lbl_uoc.configure(fg='red')
-    #     ERRORS.append('UOC is required.\n')
-    # else:
-    #     lbl_uoc.configure(fg='black')
-    # If errors list contains errors, display them in a message box.
     if ERRORS:
         messagebox.showerror("Error", show_errors())
     # If no errors, build the TM.
@@ -105,19 +98,20 @@ def show_errors() -> str:
 
 def clear_form() -> None:
     """Clears all the form fields."""
-    ent_sys_name.delete(0, 'end')
-    ent_sys_acronym.delete(0, 'end')
-    ent_sys_number.delete(0, 'end')
-    ent_fsc.delete(0, 'end')
-    ent_niin.delete(0, 'end')
-    ent_part_no.delete(0, 'end')
-    ent_uoc.delete(0, 'end')
+    ent_sys_name.delete(0, END)
+    ent_sys_acronym.delete(0, END)
+    ent_sys_number.delete(0, END)
+    ent_fsc.delete(0, END)
+    ent_niin.delete(0, END)
+    ent_part_no.delete(0, END)
+    ent_uoc.delete(0, END)
 
     # Reset the Comoboxes
     CBX_MANUAL.current(0)
     CBX_MIL_STD.current(0)
 
     # Reset the Checkboxes
+    chbox_tmi.deselect()
     chbox_1.deselect()
     chbox_2.deselect()
     chbox_3.deselect()
@@ -137,17 +131,17 @@ def build_tm(save_path) -> None:
     if milstd == '2B':
         if manual == "-10":
             create_tm_wip_dir(save_path)
-            tm2b.build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5)
+            tm2b.build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "-13&P":       
             create_tm_wip_dir(save_path)
-            tm2b.build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5)
+            tm2b.build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "-23&P":
             create_tm_wip_dir(save_path)         
-            tm2b.build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5)
+            tm2b.build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "NMWR":
@@ -158,17 +152,17 @@ def build_tm(save_path) -> None:
     elif milstd == '2C':
         if manual == "-10":
             create_tm_wip_dir(save_path)
-            tm2c.build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6)
+            tm2c.build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "-13&P":
             create_tm_wip_dir(save_path)
-            tm2c.build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6)
+            tm2c.build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "-23&P":
             create_tm_wip_dir(save_path)
-            tm2c.build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6)
+            tm2c.build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "NMWR":
@@ -179,12 +173,12 @@ def build_tm(save_path) -> None:
     elif milstd == '2D':
         if manual == "-10":
             create_tm_wip_dir(save_path)
-            tm2d.build_10_tm(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_3, chb_4, chb_5, chb_6)
+            tm2d.build_10_tm(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_3, chb_4, chb_5, chb_6, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "-12&P":
             create_tm_wip_dir(save_path)
-            tm2d.build_12p_tm(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6)
+            tm2d.build_12p_tm(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2, chb_5, chb_6, chb_tmi)
             print(f'Building...{manual} TM Shell using MIL-STD-{milstd}')
             messagebox.showinfo("Success!", "Your technical manual has been created.")
         elif manual == "NMWR":
@@ -290,7 +284,7 @@ def autofill() -> None:
     ent_part_no.insert(0, 'SPR-900053')
 
 root = tk.Tk()
-root.geometry('935x470')
+root.geometry('935x490')
 root.title('TM Generator')
 root.resizable(width=FALSE, height=FALSE)
 
@@ -366,30 +360,34 @@ lbl_add_chapters = Label(root, text='ADD OPTIONAL CHAPTERS:', font='helvetica 13
                          pady=5, anchor='w', width=35)
 lbl_add_chapters.grid(column=1, row=9)
 
+chb_tmi = IntVar()
 chb_1 = IntVar()
 chb_2 = IntVar()
 chb_3 = IntVar()
 chb_4 = IntVar()
 chb_5 = IntVar()
 chb_6 = IntVar()
+chbox_tmi = Checkbutton(root, text='Troubleshooting Master Index', font='helvetica 13 bold',
+                      variable=chb_tmi, onvalue=1, offvalue=0, width=35, anchor='w')
+chbox_tmi.grid(column=1, row=10)
 chbox_1 = Checkbutton(root, text='Auxillary Equipment Chapter', font='helvetica 13 bold',
                       variable=chb_1, onvalue=1, offvalue=0, width=35, anchor='w')
-chbox_1.grid(column=1, row=10)
+chbox_1.grid(column=1, row=11)
 chbox_2 = Checkbutton(root, text='Ammunition Chapter', font='helvetica 13 bold',
                       variable=chb_2, onvalue=1, offvalue=0, width=35, anchor='w')
-chbox_2.grid(column=1, row=11)
+chbox_2.grid(column=1, row=12)
 chbox_3 = Checkbutton(root, text='Shipment/Movement & Storage Chapter', font='helvetica 13 bold',
                       variable=chb_3, onvalue=1, offvalue=0, width=35, anchor='w', state='disable')
-chbox_3.grid(column=1, row=12)
+chbox_3.grid(column=1, row=13)
 chbox_4 = Checkbutton(root, text='Ammunition Marking Chapter', font='helvetica 13 bold',
                       variable=chb_4, onvalue=1, offvalue=0, width=35, anchor='w', state='disable')
-chbox_4.grid(column=1, row=13)
+chbox_4.grid(column=1, row=14)
 chbox_5 = Checkbutton(root, text='Destruction of Equipment Chapter', font='helvetica 13 bold',
                       variable=chb_5, onvalue=1, offvalue=0, width=35, anchor='w')
-chbox_5.grid(column=1, row=14)
+chbox_5.grid(column=1, row=15)
 chbox_6 = Checkbutton(root, text='Software Information Chapter', font='helvetica 13 bold',
                       variable=chb_6, onvalue=1, offvalue=0, width=35, anchor='w', state='disable')
-chbox_6.grid(column=1, row=15)
+chbox_6.grid(column=1, row=16)
 
 # Autofill Button
 btn_autofill = Button(root, text='AUTOFILL FORM', font='helvetica 13 bold',bg='blue', fg='white',

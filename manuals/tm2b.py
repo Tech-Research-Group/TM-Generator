@@ -2,13 +2,11 @@
 from dotenv import dotenv_values
 
 import chapter_functions as cf
-import chapters.ammunition as a
-import chapters.auxiliary_equipment as ae
 
 config = dotenv_values(".env")  # take environment variables from .env.
 
 def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
-             chb_5) -> None:
+             chb_5, chb_tmi) -> None:
     """Calls methods to build each work package for a -10 TM shell using MIL-STD-2B."""
     # ENTITY DECLARATIONS
     cf.get_entity_declarations(SYS_ACRONYM, manual, milstd, save_path)
@@ -19,7 +17,8 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
     # OPERATOR INSTRUCTIONS
     cf.get_operator_instructions(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # TROUBLESHOOTING MASTER INDEX
-    cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
+    if chb_tmi.get() == 1:
+        cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # OPERATOR TROUBLESHOOTING
     cf.get_operator_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # OPERATOR PMCS
@@ -51,7 +50,7 @@ def build_10(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMB
 
 
 def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
-              chb_5) -> None:
+              chb_5, chb_tmi) -> None:
     """Calls methods to build each work package for a -13&P TM shell using MIL-STD-2B."""
     # ENTITY DECLARATIONS
     cf.get_entity_declarations(SYS_ACRONYM, manual, milstd, save_path)
@@ -62,7 +61,8 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
     # OPERATOR INSTRUCTIONS
     cf.get_operator_instructions(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # TROUBLESHOOTING MASTER INDEX
-    cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
+    if chb_tmi.get() == 1:
+        cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # OPERATOR TROUBLESHOOTING
     cf.get_operator_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # OPERATOR PMCS
@@ -106,7 +106,7 @@ def build_13p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
 
 
 def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws, chb_1, chb_2,
-              chb_5) -> None:
+              chb_5, chb_tmi) -> None:
     """Calls methods to build each work package for a -23&P TM shell using MIL-STD-2B."""
     # ENTITY DECLARATIONS
     cf.get_entity_declarations(SYS_ACRONYM, manual, milstd, save_path)
@@ -115,7 +115,8 @@ def build_23p(FSC, manual, milstd, NIIN, PART_NO, SYS_ACRONYM, SYS_NAME, SYS_NUM
     # CHAPTER1
     cf.get_chapter1(manual, milstd, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path)
     # TROUBLESHOOTING MASTER INDEX
-    cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
+    if chb_tmi.get() == 1:
+        cf.get_ts_master_index(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # MAINTAINER TROUBLESHOOTING
     cf.get_maintainer_ts(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_path, ws)
     # MAINTAINER PMCS
