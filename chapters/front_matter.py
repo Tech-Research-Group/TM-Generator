@@ -107,7 +107,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Electrical_Symbols"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>ELECTRICAL</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_ELECTRICAL') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_ELECTRICAL')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # FALLING
@@ -115,7 +115,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Falling"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>FALLING</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_FALLING') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_FALLING')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # FALLING PARTS
@@ -123,7 +123,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Falling_Parts"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>FALLING PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_FALLING_PARTS') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_FALLING_PARTS')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -132,7 +132,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Flying_Particles_wShield"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>FLYING PARTICLES</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_FLYING_PARTICLES') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_FLYING_PARTICLES')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -141,7 +141,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Heavy_Object"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HEAVY OBJECT</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HEAVY_OBJECT') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HEAVY_OBJECT')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # HEAVY PARTS ABOVE
@@ -149,7 +149,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Heavy_Parts-above"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HEAVY PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HEAVY_PARTS_ABOVE') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HEAVY_PARTS_ABOVE')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -158,7 +158,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Heavy_Parts-foot"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HEAVY PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HEAVY_PARTS_FOOT') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HEAVY_PARTS_FOOT')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -167,7 +167,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Heavy_Parts-hand"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HEAVY PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HEAVY_PARTS_HAND') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HEAVY_PARTS_HAND')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -176,7 +176,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Heavy_Parts-wall"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HEAVY PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HEAVY_PARTS_WALL') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HEAVY_PARTS_WALL')}</text>\n"
 
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
@@ -185,7 +185,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Hot_Area"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>HOT AREA</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_HOT_AREA') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_HOT_AREA')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # MOVING PARTS FINGERS
@@ -193,7 +193,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Moving_Parts-fingers"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>MOVING PARTS</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_MOVING_PARTS') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_MOVING_PARTS')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # SHARP OBJECT IN HAND
@@ -201,7 +201,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Sharp_Object-in_hand"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>SHARP OBJECT</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_SHARP_OBJECT') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_SHARP_OBJECT')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         # SLICK FLOOR
@@ -209,7 +209,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Slick_Floor"/>\n'
         tmp += self.TAB_3 + '<sftydesc>\n'
         tmp += self.TAB_4 + '<title>SLICK FLOOR</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('SW_SLICK_FLOOR') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('SW_SLICK_FLOOR')}</text>\n"
         tmp += self.TAB_3 + '</sftydesc>\n'
         tmp += self.TAB_2 + '</sfty-icons>\n'
         tmp += '\t</safety>\n'
@@ -249,7 +249,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Biological_Symbol"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>BIOLOGICAL</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_BIOLOGICAL') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_BIOLOGICAL')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -257,7 +257,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Chemical"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>CHEMICAL</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_CHEMICAL') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_CHEMICAL')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -265,7 +265,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Explosion"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>EXPLOSION</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_EXPLOSION') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_EXPLOSION')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -273,7 +273,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Eye_Protection"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>EYE PROTECTION</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_EYE_PROTECTION') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_EYE_PROTECTION')}</text>\n"
 
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
@@ -282,7 +282,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Fire"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>FIRE</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_FIRE') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_FIRE')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -290,7 +290,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Poison"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>POISON</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_POISON') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_POISON')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -298,7 +298,7 @@ class FrontMatter:
         tmp += self.TAB_3 + '<symbol boardno="Vapor"/>\n'
         tmp += self.TAB_3 + '<hazdesc>\n'
         tmp += self.TAB_4 + '<title>VAPOR</title>\n'
-        tmp += f'{self.TAB_4}<text>' + self.config.get('HM_VAPOR') + '</text>\n'
+        tmp += f"{self.TAB_4}<text>{self.config.get('HM_VAPOR')}</text>\n"
         tmp += self.TAB_3 + '</hazdesc>\n'
         tmp += self.TAB_2 + '</haz-icons>\n'
 
@@ -308,27 +308,27 @@ class FrontMatter:
         tmp += self.TAB_3 + '<hazid>CLEANING PRODUCTS</hazid>\n'
         tmp += self.TAB_3 + '<symbol boardno="Chemical"/>\n'
         tmp += self.TAB_3 + '<symbol boardno="Poison"/>\n'
-        tmp += f'{self.TAB_3}<para>' + self.config.get('HM_CLEANING') + '</para>\n'
+        tmp += f"{self.TAB_3}<para>{self.config.get('HM_CLEANING')}</para>\n"
         tmp += self.TAB_2 + '</hazard>\n'
 
         tmp += self.TAB_2 + '<hazard>\n'
         tmp += self.TAB_3 + '<hazid>WASTEWATER</hazid>\n'
         tmp += self.TAB_3 + '<symbol boardno="Biological_Symbol"/>\n'
-        tmp += f'{self.TAB_3}<para>' + self.config.get('HM_WASTEWATER') + '</para>\n'
-        tmp += f'{self.TAB_3}<para>' + self.config.get('HM_WASTEWATER_2') + '</para>\n'
+        tmp += f"{self.TAB_3}<para>{self.config.get('HM_WASTEWATER')}</para>\n"
+        tmp += f"{self.TAB_3}<para>{self.config.get('HM_WASTEWATER_2')}</para>\n"
         tmp += self.TAB_2 + '</hazard>\n'
 
         tmp += self.TAB_2 + '<hazard>\n'
         tmp += self.TAB_3 + '<hazid>ISOPROPYL ALCOHOL</hazid>\n'
         tmp += self.TAB_3 + '<symbol boardno="Eye_Protection"/>\n'
         tmp += self.TAB_3 + '<symbol boardno="Vapor"/>\n'
-        tmp += f'{self.TAB_3}<para>' + self.config.get('HM_ISOPROPYL') + '</para>\n'
+        tmp += f"{self.TAB_3}<para>{self.config.get('HM_ISOPROPYL')}</para>\n"
         tmp += self.TAB_2 + '</hazard>\n'
 
         tmp += self.TAB_2 + '<hazard>\n'
         tmp += self.TAB_3 + '<hazid>FUEL</hazid>\n'
         tmp += self.TAB_3 + '<symbol boardno="Fire"/>\n'
-        tmp += f'{self.TAB_3}<para>' + self.config.get('HM_FUEL') + '</para>\n'
+        tmp += f"{self.TAB_3}<para>{self.config.get('HM_FUEL')}</para>\n"
         tmp += self.TAB_2 + '</hazard>\n'
         tmp += '\t</hazmat>\n' + '</warnsum>\n'
 
@@ -467,7 +467,7 @@ class FrontMatter:
             tmp += f"{self.TAB_2}<para>{self.config.get('OBTAIN_TM_P2')}</para>\n"
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Instructions for Unit Publications Clerk</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('UNIT_PUB_CLERK_P1') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('UNIT_PUB_CLERK_P1')}</para>\n"
 
             tmp += f"{self.TAB_3}<para>{self.config.get('UNIT_PUB_CLERK_P2')}</para>\n"
 
@@ -475,154 +475,152 @@ class FrontMatter:
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>HOW TO USE THIS MANUAL</title>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('HOW_TO_USE') + '</para>\n'
+            tmp += f"{self.TAB_2}<para>{self.config.get('HOW_TO_USE')}</para>\n"
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>FRONT MATTER</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('FRONT_MATTER') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('FRONT_MATTER')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
                    '<title>CHAPTER 1 - GENERAL INFORMATION, EQUIPMENT DESCRIPTION, AND THEORY OF OPERATION</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('CHAPTER_1') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('CHAPTER_1')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 2 - OPERATOR INSTRUCTIONS</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('OPERATOR_INSTRUCTIONS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('OPERATOR_INSTRUCTIONS')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 3 - TROUBLESHOOTING INDEX</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('TS_INDEX') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('TS_INDEX')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 4 - CREW TROUBLESHOOTING PROCEDURES</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('CREW_TS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('CREW_TS')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 5 - MAINTAINER TROUBLESHOOTING PROCEDURES</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('MAINTAINER_TS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('MAINTAINER_TS')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
                    '<title>CHAPTER 6 - PREVENTIVE MAINTENANCE CHECKS AND SERVICES (PMCS) MAINTENANCE INSTRUCTIONS</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('PMCS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('PMCS')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 7 - CREW MAINTENANCE INSTRUCTIONS</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('CREW_MAINTENANCE') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('CREW_MAINTENANCE')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 8 - MAINTAINER MAINTENANCE INSTRUCTIONS</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('MAINTAINER_MAINTENANCE') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('MAINTAINER_MAINTENANCE')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + \
                    '<title>CHAPTER 9 - DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('DESTRUCTION') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('DESTRUCTION')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 10 - REPAIR PARTS AND SPECIAL TOOLS LIST</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('RPSTL') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('RPSTL')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>CHAPTER 11 - SUPPORTING INFORMATION</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('SUPPORTING_INFO') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('SUPPORTING_INFO')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>REAR MATTER</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('REAR_MATTER') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('REAR_MATTER')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>Manual Organization and Page Numbering System</title>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('PAGE_NUM_SYSTEM') + '</para>\n'
+            tmp += f"{self.TAB_2}<para>{self.config.get('PAGE_NUM_SYSTEM')}</para>\n"
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Finding Information</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('FINDING_INFO_1')}</para>\n"
             tmp += self.TAB_3 + \
                    '<!-- CHANGE: USE the index statement applicable to your TM or none if that applies. -->\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('FINDING_INFO_2')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Example:</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('EXAMPLE') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('EXAMPLE')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Alphabetical Index</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('ALPHABETICAL_INDEX') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('ALPHABETICAL_INDEX')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += '''\t</para0>
                 <para0>
             \t<!-- CHANGE: Remove items that are not used -->
             \t<title>Initial Setup Information</title>'''
-            tmp += '\t<para>' + self.config.get('INITIAL_SETUP_INFO') + '</para>\n'
+            tmp += f"\t<para>{self.config.get('INITIAL_SETUP_INFO')}</para>\n"
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_2 + '<title>Tools</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('TOOLS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('TOOLS')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Materials</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('MATERIALS') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('MATERIALS')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
 
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Mandatory Replacement Parts</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('MRP') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('MRP')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Personnel Required</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('PERSONNEL_REQUIRED') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('PERSONNEL_REQUIRED')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>References</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('REFERENCES') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('REFERENCES')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Equipment Condition</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('EQUPMENT_CONDITION') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('EQUPMENT_CONDITION')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Special Environmental Condition</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('SPECIAL_ENV_CONDITION') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('SPECIAL_ENV_CONDITION')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Drawings Required</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('DRAWINGS_REQUIRED') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('DRAWINGS_REQUIRED')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Estimated Time to Complete</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('EST_TIME_TO_COMPLETE') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('EST_TIME_TO_COMPLETE')}</para>\n"
 
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>Finding Information</title>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('FINDING_INFO_1') + '</para>\n'
+            tmp += f"{self.TAB_2}<para>{self.config.get('FINDING_INFO_1')}</para>\n"
             tmp += self.TAB_2 + '<!-- CHANGE: Use the index statement applicable to your TM or none if that applies -->\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get('FINDING_INFO_2') + '</para>\n'
+            tmp += f"{self.TAB_2}<para>{self.config.get('FINDING_INFO_2')}</para>\n"
             tmp += '\t</para0>\n'
             tmp += '\t<para0>\n'
             tmp += self.TAB_2 + '<title>How To Fix An Equipment Malfunction</title>\n'
-            tmp += f'{self.TAB_2}<para>' + self.config.get(
-                'HOW_TO_FIX_EQUIPMENT_MALFUNCTION') + ' <!--DELETE THIS SENTENCE IF NOT USED-->\n'
-
+            tmp += f"{self.TAB_2}<para>{self.config.get('HOW_TO_FIX_EQUIPMENT_MALFUNCTION')}<!--DELETE THIS SENTENCE IF NOT USED-->\n"
             tmp += self.TAB_2 + '</para>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Preparing for a Task</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('PREP_FOR_TASK') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('PREP_FOR_TASK')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += self.TAB_2 + '<subpara1>\n'
             tmp += self.TAB_3 + '<title>Performing the Task</title>\n'
-            tmp += f'{self.TAB_3}<para>' + self.config.get('PERFORMING_TASK') + '</para>\n'
+            tmp += f"{self.TAB_3}<para>{self.config.get('PERFORMING_TASK')}</para>\n"
             tmp += self.TAB_2 + '</subpara1>\n'
             tmp += '\t</para0>\n'
             tmp += '</howtouse>\n'
