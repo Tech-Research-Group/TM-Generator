@@ -63,12 +63,14 @@ def get_operator_instructions(manual, SYS_ACRONYM, SYS_NAME, SYS_NUMBER, save_pa
                 for row2 in islice(ws.rows, _o, None):
                     wp_title2 = row2[2].value
                     wpno = row2[1].value
+                    cond_type = row2[4].value
                     if wpno:
                         if wpno[0] == 'O':
                             wp_title2 = wp_title2.replace("/", " or")
-                            oper_instructions.operating_procedures(wpno, wp_title2)
                             if "unusual" in wp_title2:
                                 oper_instructions.unusual_conditions(wpno)
+                            else:
+                                oper_instructions.opusualwp(wpno, wp_title2, cond_type)
                         if wp_title2 and "chapter" in wp_title2:
                             break
     oper_instructions.end()

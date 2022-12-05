@@ -46,9 +46,9 @@ class OperatorInstructions:
         tmp += self.TAB_2 + '</para0-alt>\n'
         tmp += '\t</intro>\n'
         tmp += '\t<ctrlindtab>\n'
-        tmp += '<title>Lorem Ipsum</title>\n'
-        tmp += f'<figure id="O00001-{self.sys_number}-F0001">\n'
-        tmp += '''<title>Lorem Ipsum</title>
+        tmp += '\t\t<title>Lorem Ipsum</title>\n'
+        tmp += f'\t\t<figure id="O00001-{self.sys_number}-F0001">\n'
+        tmp += '''\t\t\t<title>Lorem Ipsum</title>
                 <graphic boardno="PLACEHOLDER"/>
             </figure>
             <ctrlindrow>
@@ -63,306 +63,160 @@ class OperatorInstructions:
             </ctrlindrow>
         </ctrlindtab>
         <ctrlindtab>
-            <title>Lorem Ipsum</title>'''
-        tmp += f'<figure id="O00001-{self.sys_number}-F0011">\n'
-        tmp += '''<title>Lorem Ipsum</title>
-                <graphic boardno="PLACEHOLDER"/>
-            </figure>
-            <ctrlindrow>
-                <key>1</key>
-                <ctrlind></ctrlind>
-                <function></function>
-            </ctrlindrow>
-            <ctrlindrow>
-                <key>2</key>
-                <ctrlind></ctrlind>
-                <function></function>
-            </ctrlindrow>
-        </ctrlindtab>
-    </ctrlindwp>'''
+            <title>Lorem Ipsum</title>\n'''
+        tmp += f'\t\t<figure id="O00001-{self.sys_number}-F0011">\n'
+        tmp += '''\t\t\t<title>Lorem Ipsum</title>
+            <graphic boardno="PLACEHOLDER"/>
+        </figure>
+        <ctrlindrow>
+            <key>1</key>
+            <ctrlind></ctrlind>
+            <function></function>
+        </ctrlindrow>
+        <ctrlindrow>
+            <key>2</key>
+            <ctrlind></ctrlind>
+            <function></function>
+        </ctrlindrow>
+    </ctrlindtab>
+</ctrlindwp>'''
         with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-O00001-ControlsIndicators.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def operating_procedures(self, wpno, wp_title):
+    def opusualwp(self, wpno, wp_title, cond_type):
         """Function to create operating procedures WP."""
-        tmp = f'<opusualwp chngno="0" wpno="{wpno}-{self.sys_number}">'
-        tmp += f'''<wpidinfo>
-            <maintlvl level="operator"/>
-            <title>OPERATION UNDER USUAL CONDITIONS<?Pub _newline?>{wp_title}</title>
-        </wpidinfo>\n'''
+        tmp = f'<opusualwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
+        tmp += '''<wpidinfo>
+        <maintlvl level="operator"/>\n'''
+        tmp += f'<title>OPERATION UNDER USUAL CONDITIONS<?Pub _newline?>{wp_title}</title>\n'
+        tmp += '</wpidinfo>\n'
         tmp += isb.show()
-        tmp += f'''\n<opertsk>
-            <initial>
-                <proc>
-                    <title>Lorem Ipsum</title>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua:
-                        <seqlist>
-                            <title>Lorem Ipsum</title>
-                            <item>Lorem ipsum dolor sit amet</item>
-                            <item>Lorem ipsum dolor sit amet:
-                                <randlist bullet="yes">
-                                    <item>Lorem ipsum dolor sit amet</item>
-                                    <item>Lorem ipsum dolor sit amet</item>
-                                </randlist>
-                            </item>
-                        </seqlist>
-                    </para>
-                </proc>
-                <proc>
-                    <title>Power On</title>
-                    <step1>
-                        <specpara>
-                            <warning>
-                                <icon-set boardno="Falling"/>
-                                <trim.para>Using a stepladder is a falling risk. Use caution when operating on a stepladder. Failure to comply may result in death or serious injury to personnel. If injury occurs, seek immediate medical attention.</trim.para>
-                            </warning>
-                            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                        </specpara>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0001">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                </proc>
-            </initial>
-        </opertsk>
-        <opertsk>
-            <oper>
-                <proc>
-                    <title>Perform Checkout Procedures</title>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0002">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0003">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                </proc>
-            </oper>
-        </opertsk>
-        <opertsk>
-            <prepforuse>
-                <proc>
-                    <title>Lorem Ipsum</title>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0004">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>	
-                </proc>
-            </prepforuse>
-        </opertsk>
-        <opertsk>
-            <prepmove>
-                <proc>
-                    <title>Lorem Ipsum</title>
-                    <step1>
-                        <specpara>
-                            <warning>
-                                <icon-set boardno="Hot_Area"/>
-                                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</trim.para>
-                            </warning>
-                            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                        </specpara>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0005">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0006">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                </proc>
-            </prepmove>
-        </opertsk>
-        <opertsk>
-            <site>
-                <proc>
-                    <title/>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <step1>
-                        <specpara>
-                            <caution>
-                                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</trim.para>
-                                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</trim.para>
-                            </caution>
-                            <note>
-                                <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</trim.para>
-                            </note>
-                            <para>
-                                <randlist bullet="yes">
-                                    <item>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</item>
-                                    <item>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</item>
-                                    <item>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</item>
-                                </randlist>
-                            </para>
-                        </specpara>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0007">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0008">
-                        <title>Lorem Ipsum</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                </proc>
-            </site>
-        </opertsk>
-    </opusualwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-OperationUnderUsualConditions-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
+        tmp += f'''\t<opertsk>
+        <{cond_type}>
+            <proc>
+                <title>Lorem Ipsum</title>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</para>
+            </proc>
+        </{cond_type}>
+    </opertsk>
+</opusualwp>'''
+        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
     def unusual_conditions(self, wpno):
         """Function to create the operating under unusual conditions section."""
-        tmp = f'<opunuwp chngno="0" wpno="{wpno}-{self.sys_number}">'
+        tmp = f'<opunuwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
         tmp += '''<wpidinfo>
-            <maintlvl level="operator"/>
-            <title>OPERATION UNDER UNUSUAL CONDITIONS</title>
-        </wpidinfo>\n'''
+        <maintlvl level="operator"/>
+        <title>OPERATION UNDER UNUSUAL CONDITIONS</title>
+    </wpidinfo>\n'''
         tmp += isb.show()
-        tmp += f'''\n<opunutsk>
-            <unusualenv>
-                <proc>
-                    <title>GENERAL INFORMATION</title>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation on Sloped Terrain</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in Cold</title>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in Extreme Cold</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Storage in Cold</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation on in Extreme Heat</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation on Sloped Terrain</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation on Sloped Terrain</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in Sandy or Dusty Areas</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in Rain</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in Freezing Rain and Snow</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <title>Operation in High Altitude</title>
-                    <note>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
-                    </note>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-                </proc>
-                <proc>
-                    <para>
-                        <emphasis emph="bold">ALTITUDE</emphasis>
-                    </para>
-                </proc>
-                <proc>
-                    <title>Adjust Air Damper</title>
-                    <step1>
-					    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <figure id="{wpno}-{self.sys_number}-F0001">
-                        <title>Air Damper Adjustment</title>
-                        <graphic boardno="PLACEHOLDER"/>
-                    </figure>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                    <step1>
-                        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-                    </step1>
-                </proc>
-            </unusualenv>
-        </opunutsk>
-    </opunuwp>'''
+        tmp += f'''\t<opunutsk>
+        <unusualenv>
+            <proc>
+                <title>GENERAL INFORMATION</title>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation on Sloped Terrain</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in Cold</title>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in Extreme Cold</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Storage in Cold</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation on in Extreme Heat</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation on Sloped Terrain</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation on Sloped Terrain</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in Sandy or Dusty Areas</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in Rain</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in Freezing Rain and Snow</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <title>Operation in High Altitude</title>
+                <note>
+                    <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</trim.para>
+                </note>
+                <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            </proc>
+            <proc>
+                <para>
+                    <emphasis emph="bold">ALTITUDE</emphasis>
+                </para>
+            </proc>
+            <proc>
+                <title>Adjust Air Damper</title>
+                <step1>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </step1>
+                <figure id="{wpno}-{self.sys_number}-F0001">
+                    <title>Air Damper Adjustment</title>
+                    <graphic boardno="PLACEHOLDER"/>
+                </figure>
+                <step1>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </step1>
+                <step1>
+                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                </step1>
+            </proc>
+        </unusualenv>
+    </opunutsk>
+</opunuwp>'''
         with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-OperationUnderUnusualConditions.txt', 'w', encoding='UTF-8') as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
