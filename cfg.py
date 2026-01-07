@@ -1,6 +1,8 @@
 """CONFIGURATION FILE"""
+
 prefix_file = 0
 
+auxiliary = ["auxiliary"]
 depot_main = ["depot maintenance", "nmwr maintenance", "dmwr maintenance"]
 depot_troub = ["depot troubleshooting", "nmwr troubleshooting", "dmwr troubleshooting"]
 destruction = ["destruction"]

@@ -1,76 +1,115 @@
 """CHAPTER 1"""
+
+import datetime
 import math
-from dotenv import dotenv_values
+
 import cfg
+import views.metadata as md
+
 
 class Chapter1:
     """Class to create various types of WP's included in Chapter 1 of a TM."""
-    config = dotenv_values(".env")  # take environment variables from .env.
-    lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-    TAB_2 = '\t\t'
-    TAB_3 = '\t\t\t'
-    TAB_4 = '\t\t\t\t'
-    TAB_5 = '\t\t\t\t\t'
-    TAB_6 = '\t\t\t\t\t\t'
-    TAB_7 = '\t\t\t\t\t\t\t'
-    TAB_8 = '\t\t\t\t\t\t\t\t'
 
-    def __init__(self, config, manual_type, mil_std, sys_acronym, sys_name, sys_number, save_path):
-        self.config = config
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+    TAB_2 = "\t\t"
+    TAB_3 = "\t\t\t"
+    TAB_4 = "\t\t\t\t"
+    TAB_5 = "\t\t\t\t\t"
+    TAB_6 = "\t\t\t\t\t\t"
+    TAB_7 = "\t\t\t\t\t\t\t"
+    TAB_8 = "\t\t\t\t\t\t\t\t"
+
+    def __init__(
+        self, manual_type, mil_std, sys_acronym, sys_name, tmno, save_path
+    ) -> None:
         self.manual_type = manual_type
         self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function that creates chapter 1 header of TM."""
-        cfg.prefix_file += 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-<gim revno="0" chngno="0" chap-toc="no">\n'''
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+<gim revno="0" chngno="0" chap-toc="no">\n"""
         tmp += '<titlepg maintlvl="operator">\n'
-        tmp += '\t\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')' + '</name>\n'
-        tmp += '\t\t</titlepg>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + ' WIP/{:05d}-CHAP_1_START.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp += (
+            "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
+        )
+        tmp += "\t\t</titlepg>\n"
+        with open(
+            self.save_path
+            + "/"
+            + self.sys_acronym
+            + " "
+            + self.manual_type
+            + " IADS/files/{:05d}-CHAP_1_START.xml".format(cfg.prefix_file),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def general_info(self):
+    def general_info(self) -> None:
         """Function that creates General Info WP in chapter 1 of TM."""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<ginfowp wpno="G00001-' + self.sys_number + '" chngno="0">\n'
-        tmp += '\t<wpidinfo>\n'
-        tmp += self.TAB_2 + '<maintlvl level="operator"/>\n'
-        tmp += self.TAB_2 + '<title>GENERAL INFORMATION</title>\n'
-        tmp += '\t</wpidinfo>\n'
-        tmp += '\t<scope>\n'
-        tmp += self.TAB_2 + '<title/>\n'
-        tmp += self.TAB_2 + '<para0>\n'
-        tmp += self.TAB_3 + '<title/>\n'
-        tmp += self.TAB_3 + \
-            '<para>This technical manual provides operator instructions, troubleshooting procedures, Preventive Maintenance Checks and Services (PMCS), and maintenance procedures for the ' + \
-            self.sys_name + "(" + self.sys_acronym + ').</para>\n'
-        tmp += self.TAB_2 + '</para0>\n'
-        tmp += self.TAB_2 + '<para0>\n'
-        tmp += self.TAB_3 + '<title>Model Number and Equipment Name </title>\n'
-        tmp += self.TAB_3 + '<para>' + self.lorem_ipsum + '</para>\n'
-        tmp += self.TAB_3 + '<para>' + self.lorem_ipsum + '</para>\n'
-        tmp += self.TAB_2 + '</para0>\n'
-        tmp += self.TAB_2 + '<para0>\n'
-        tmp += self.TAB_3 + '<title>Purpose of Equipment</title>\n'
-        tmp += self.TAB_3 + '<para>' + self.lorem_ipsum + '</para>\n'
-        tmp += self.TAB_2 + '</para0>\n'
-        tmp += '\t</scope>\n'
-        tmp += '''\t<mfrr>
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE ginfowp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE ginfowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE ginfowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += '<ginfowp wpno="G00001-' + self.tmno + '" chngno="0" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("ginfowp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
+        tmp += f"{self.TAB_2}<title>GENERAL INFORMATION</title>\n"
+        tmp += "\t</wpidinfo>\n"
+        tmp += "\t<scope>\n"
+        tmp += f"{self.TAB_2}<title/>\n"
+        tmp += f"{self.TAB_2}<para0>\n"
+        tmp += f"{self.TAB_3}<title/>\n"
+        tmp += (
+            self.TAB_3
+            + "<para>This technical manual provides operator instructions, troubleshooting procedures, Preventive Maintenance Checks and Services (PMCS), and maintenance procedures for the "
+            + self.sys_name
+            + "("
+            + self.sys_acronym
+            + ").</para>\n"
+        )
+        tmp += f"{self.TAB_2}</para0>\n"
+        tmp += f"{self.TAB_2}<para0>\n"
+        tmp += f"{self.TAB_3}<title>Model Number and Equipment Name </title>\n"
+        tmp += f"{self.TAB_3}<para></para>\n"
+        tmp += f"{self.TAB_3}<para></para>\n"
+        tmp += f"{self.TAB_2}</para0>\n"
+        tmp += f"{self.TAB_2}<para0>\n"
+        tmp += f"{self.TAB_3}<title>Purpose of Equipment</title>\n"
+        tmp += f"{self.TAB_3}<para></para>\n"
+        tmp += f"{self.TAB_2}</para0>\n"
+        tmp += "\t</scope>\n"
+        tmp += """\t<mfrr>
         <title/>
         <mfrr.para service="army">Department of the Army forms and procedures used for equipment maintenance will be those prescribed by (as applicable) <extref docno="DA PAM 750-8" posttext=", The Army Maintenance Management System (TAMMS) Users Manual"/>, <extref docno="DA PAM 738-751" posttext=", Functional Users Manual for the Army Maintenance Management Systems - Aviation (TAMMS-A)"/>; or <extref docno="AR 700-138" posttext=", Army Logistics Readiness and Sustainability"/>.</mfrr.para>
     </mfrr>
     <eir>
-        <title/>\n'''
-        tmp += self.TAB_2 + "<para>If your " + self.sys_acronym + \
-            " needs improvement, let us know. Send us an EIR. You, the user, are the only one who can tell us what you do not like about your equipment. Let us know why you don't like the design or performance.</para>\n"
-        tmp += self.TAB_2 + '''<para>All non-Aviation/Missile EIRs and PQDRs must be submitted through the Product Data Reporting and Evaluation Program (PDREP) Web site. The PDREP site is: 
+        <title/>\n"""
+        tmp += (
+            self.TAB_2
+            + "<para>If your "
+            + self.sys_acronym
+            + " needs improvement, let us know. Send us an EIR. You, the user, are the only one who can tell us what you do not like about your equipment. Let us know why you don't like the design or performance.</para>\n"
+        )
+        tmp += (
+            self.TAB_2
+            + """<para>All non-Aviation/Missile EIRs and PQDRs must be submitted through the Product Data Reporting and Evaluation Program (PDREP) Web site. The PDREP site is:
             <internet show.address="yes">
                 <homepage protocol="https" uri="www.pdrep.csd.disa.mil/"/>
             </internet>.
@@ -98,23 +137,24 @@ class Chapter1:
     </cpcdata>
     <destructmat>
         <title/>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+        <para></para>
     </destructmat>
     <pssref>
         <title/>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-    </pssref>\n'''
+        <para></para>
+    </pssref>\n"""
+        )
 
-        if self.mil_std == '2C' or self.mil_std == '2D':
-            tmp += '''\t<transportability>
+        if self.mil_std == "2C" or self.mil_std == "2D":
+            tmp += """\t<transportability>
         <title>TRANSPORTABILITY GUIDANCE</title>
         <para>Instructions for transportability guidence can be found in <xref wpid="MXXXXX-XX-XXXX-XXX"/>.</para>
-    </transportability>\n'''
-        tmp += '''\t<nomenreflist>
+    </transportability>\n"""
+        tmp += """\t<nomenreflist>
         <title/>
-        <para>'''
-        tmp += '<table id="G00001-' + self.sys_number + '-T0001">'
-        tmp += '''<title>Nomenclature Cross-Reference List</title>
+        <para>"""
+        tmp += '<table id="G00001-' + self.tmno + '-T0001">'
+        tmp += """<title>Nomenclature Cross-Reference List</title>
                 <tgroup cols="2">
                     <colspec colname="col1"/>
                     <colspec colname="col2"/>
@@ -137,26 +177,6 @@ class Chapter1:
                             <entry></entry>
                             <entry></entry>
                         </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
                     </tbody>
                 </tgroup>
             </table>
@@ -164,9 +184,9 @@ class Chapter1:
     </nomenreflist>
     <loa>
         <title/>
-        <para>'''
-        tmp += '<table id="G00001-' + self.sys_number + '-T0002">'
-        tmp += '''<title>List of Acronyms and Abbreviations</title>
+        <para>"""
+        tmp += '<table id="G00001-' + self.tmno + '-T0002">'
+        tmp += """<title>List of Acronyms and Abbreviations</title>
                 <tgroup cols="2">
                     <colspec colname="col1"/>
                     <colspec colname="col2"/>
@@ -189,314 +209,383 @@ class Chapter1:
                             <entry></entry>
                             <entry></entry>
                         </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
-                        <row>
-                            <entry></entry>
-                            <entry></entry>
-                        </row>
                     </tbody>
                 </tgroup>
             </table>
         </para>
-    </loa>\n'''
+    </loa>\n"""
 
-        if self.manual_type != '-10':
-            tmp += '''\t<qual.mat.info>
+        if self.manual_type != "-10":
+            tmp += """\t<qual.mat.info>
         <title>Quality of Material</title>
         <para>
             Material used for replacement, repair, or modification must meet the requirements of this <extref docno="TM 10-5419-224-13&amp;P"/>. If quality of material requirements are not stated in this <extref docno="TM 10-5419-224-13&amp;P"/>, the material must meet the requirements of the drawings, standards, specifications, or approved engineering change proposals applicable to the subject equipment.
         </para>
-    </qual.mat.info>\n'''
+    </qual.mat.info>\n"""
 
-        tmp += '''\t<!-- This section is OPTIONAL. -->
-    <iuid>
+        tmp += """\t<iuid>
         <title>ITEM UNIQUE IDENTIFICATION</title>
         <para>This equipment and/or its components/parts are marked with item unique identification (IUID) markings such as data plates, decals, or etchings. These markings must be scanned during performance of procedures to remove and replace items marked or when turning in items or receiving them from supply or another unit. For information on location of the IUID marking for the end item, refer to the decal/data plate guide contained in the operator manual for the equipment.</para>
-    </iuid>\n'''
+    </iuid>\n"""
 
-    # This should be correct according to MIL-STD 2D CHANGE 1 spec, but does NOT validate in ArborText
-    #     if self.mil_std == '2D':
-    #         tmp += '''\t<mrpref>
-    #     <title>MANDATORY REPLACEMENT PARTS</title>
-    #     <!-- This paragraph shall reference the mandatory replacement parts list work package, 
-    #             if it exists. If there are no MRPs for equipment covered by the manual, insert 
-    #             the following statement in this paragraph:
-    #     -->
-    #     <para>There are no mandatory replacement parts for (insert equipment name).</para>            
-    # </mrpref>\n'''
+        if self.mil_std == "2D":
+            tmp += """\t<mrpref>
+        <title>MANDATORY REPLACEMENT PARTS</title>
+        <!-- This paragraph shall reference the mandatory replacement parts list work package,
+                if it exists. If there are no MRPs for equipment covered by the manual, insert
+                the following statement in this paragraph:
+        -->
+        <para>There are no mandatory replacement parts for (insert equipment name).</para>
+    </mrpref>\n"""
 
-        if self.manual_type != '-10':
-            tmp += '''\t<supdata>
-        <title>SUPPORTING INFORMATION FOR COMMON TOOLS, REPAIR PARTS, SPECIAL TOOLS, TMDE, AND SUPPORT EQUIPMENT</title>     
+        if self.manual_type != "-10":
+            tmp += """\t<supdata>
+        <title>SUPPORTING INFORMATION FOR COMMON TOOLS, REPAIR PARTS, SPECIAL TOOLS, TMDE, AND SUPPORT EQUIPMENT</title>
         <para>For authorized common tools and equipment, refer to the Modified Table of Organization and Equipment (MTOE), <extref docno="50-970" pretext="Common Table of Allowances (CTA) " posttext=", Expendable/Durable Items (Except: Medical, Class V, Repair Parts, and Heraldic Items)"/>; <extref docno="50-909" pretext="CTA " posttext=", Field and Garrison Furnishings and Equipment"/>; or <extref docno="8-100" pretext="CTA " posttext=", Army Medical Department Expendable/Durable Items"/>; as applicable to your unit.</para>
         <para>Special tools, TMDE, and support equipment are required. The Maintenance Allocation Chart (MAC) Introduction and MAC can be found in <xref wpid="SXXXXX-XX-XXXX-XXX"/> and <xref wpid="SXXXXX-XX-XXXX-XXX"/>, respectively.</para>
         <para>Repair parts are listed and illustrated in <xref wpid="RXX-XX-XXXX-XXX"/> through <xref wpid="RXXXXX-XX-XXXX-XXX"/> of this manual.</para>
-    </supdata>'''
-        tmp += '</ginfowp>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-G00001-GeneralInfo.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+    </supdata>"""
+        tmp += "</ginfowp>\n"
+        with open(
+            self.save_path
+            + "/"
+            + self.sys_acronym
+            + " "
+            + self.manual_type
+            + " IADS/files/{:05d}-G00001-General Info.xml".format(cfg.prefix_file),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def equipment_description(self):
-        """ Function that create Equipment Description and Data section of Chapter 1 in TM Shell """
+    def equipment_description(self) -> None:
+        """Function that create Equipment Description and Data section of Chapter 1 in TM Shell"""
         tmp = '\n<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<descwp wpno="G00002-' + self.sys_number + '" chngno="0">\n'
-        tmp += '\t<wpidinfo>\n'
-        tmp += self.TAB_2 + '<maintlvl level="operator"/>\n'
-        tmp += self.TAB_2 + '<title>EQUIPMENT DESCRIPTION AND DATA</title>\n'
-        tmp += '\t</wpidinfo>\n'
-        tmp += '\t<eqpinfo>\n'
-        tmp += self.TAB_2 + \
-                '<title>EQUIPMENT CHARACTERISTICS, CAPABILITIES, AND FEATURES</title>\n'
-        tmp += self.TAB_2 + '<eqpdesc>\n'
-        tmp += self.TAB_3 + '<title>Characteristics</title>\n'
-        tmp += self.TAB_3 + '<para>\n'
-        tmp += self.TAB_4 + '<figure id="G00002-' + self.sys_number + '-F0001">\n'
-        tmp += f'{self.TAB_5}<title>{self.sys_acronym} Deployed</title>\n'
-        tmp += self.TAB_5 + '<graphic boardno="PLACEHOLDER"/>\n'
-        tmp += self.TAB_4 + '</figure>\n'
-        tmp += self.TAB_3 + '</para>\n'
-        tmp += self.TAB_2 + '</eqpdesc>\n'
-        tmp += self.TAB_2 + '<?Pub _newpage?>\n'
-        tmp += self.TAB_2 + '<eqpdesc>\n'
-        tmp += self.TAB_3 + '<title>Capabilities and Features</title>\n'
-        tmp += self.TAB_3 + '<para>\n'
-        tmp += self.TAB_4 + '<randlist bullet="yes">\n'
-        tmp += self.TAB_5 + '<item>Lorem ipsum.</item>\n'
-        tmp += self.TAB_5 + '<item>Lorem ipsum.</item>\n'
-        tmp += self.TAB_4 + '</randlist>\n'
-        tmp += self.TAB_3 + '</para>\n'
-        tmp += self.TAB_2 + '</eqpdesc>\n'
-        tmp += '\t</eqpinfo>\n'
-        tmp += '\t<locdesc>\n'
-        tmp += self.TAB_2 + '<title>LOCATION AND DESCRIPTION OF MAJOR COMPONENTS</title>\n'
-        tmp += self.TAB_2 + \
-                '<para>Refer to the following technical manuals for description of end items that are components of ' + \
-                self.sys_acronym + ':\n'
-        tmp += self.TAB_3 + '<randlist bullet="yes">\n'
-        tmp += self.TAB_4 + '<item>Lorem ipsum.</item>\n'
-        tmp += self.TAB_4 + '<item>Lorem ipsum.</item>\n'
-        tmp += self.TAB_3 + '</randlist>\n'
-        tmp += self.TAB_2 + '</para>\n'
-        tmp += self.TAB_2 + '<comp-item>\n'
-        tmp += self.TAB_3 + '<para>\n'
-        tmp += self.TAB_4 + '<figure id="G00002-' + self.sys_number + '-F0005">\n'
-        tmp += f'{self.TAB_5}<title>{self.sys_acronym}' + ' Exterior (Front)</title>\n'
-        tmp += self.TAB_5 + '<graphic boardno="PLACEHOLDER"/>\n'
-        tmp += self.TAB_4 + '</figure>\n'
-        tmp += self.TAB_4 + '<table id="G00002-' + self.sys_number + '-T0004">\n'
-        tmp += f'{self.TAB_5}<title>{self.sys_acronym}' + '</title>\n'
-        tmp += self.TAB_5 + '<tgroup cols="3">\n'
-        tmp += self.TAB_6 + '<colspec colname="col1" colwidth="0.30*"/>\n'
-        tmp += self.TAB_6 + '<colspec colname="col2" colwidth="0.40*"/>\n'
-        tmp += self.TAB_6 + '<colspec colname="col3" colwidth="2.30*"/>\n'
-        tmp += self.TAB_6 + '<thead>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>CALLOUT</entry>\n'
-        tmp += self.TAB_8 + '<entry>ITEM</entry>\n'
-        tmp += self.TAB_8 + '<entry>DESCRIPTION</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_6 + '</thead>\n'
-        tmp += self.TAB_6 + '<tbody>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>1</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>2</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_6 + '</tbody>\n'
-        tmp += self.TAB_5 + '</tgroup>\n'
-        tmp += self.TAB_4 + '</table>\n'
-        tmp += self.TAB_3 + '</para>\n'
-        tmp += self.TAB_2 + '</comp-item>\n'
-        tmp += self.TAB_2 + '<comp-item>\n'
-        tmp += self.TAB_3 + '<para></para>\n'
-        tmp += self.TAB_3 + '<para>\n'
-        tmp += self.TAB_4 + '<figure id="G00002-' + self.sys_number + '-F0006">\n'
-        tmp += self.TAB_5 + '<title>Lorem Ipsum</title>\n'
-        tmp += self.TAB_5 + '<graphic boardno="PLACEHOLDER"/>\n'
-        tmp += self.TAB_4 + '</figure>\n'
-        tmp += self.TAB_4 + '<table id="G00002-' + self.sys_number + '-T0005">\n'
-        tmp += self.TAB_5 + '<title>Lorem Ipsum</title>\n'
-        tmp += self.TAB_5 + '<tgroup cols="3">\n'
-        tmp += self.TAB_6 + '<colspec colname="col1" colwidth="0.30*"/>\n'
-        tmp += self.TAB_6 + '<colspec colname="col2" colwidth="0.40*"/>\n'
-        tmp += self.TAB_6 + '<colspec colname="col3" colwidth="2.30*"/>\n'
-        tmp += self.TAB_6 + '<thead>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>CALLOUT</entry>\n'
-        tmp += self.TAB_8 + '<entry>ITEM</entry>\n'
-        tmp += self.TAB_8 + '<entry>DESCRIPTION</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_6 + '</thead>\n'
-        tmp += self.TAB_6 + '<tbody>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>1</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>2</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>3</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_7 + '<row>\n'
-        tmp += self.TAB_8 + '<entry>4</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem Ipsum</entry>\n'
-        tmp += self.TAB_8 + '<entry>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</entry>\n'
-        tmp += self.TAB_7 + '</row>\n'
-        tmp += self.TAB_6 + '</tbody>\n'
-        tmp += self.TAB_5 + '</tgroup>\n'
-        tmp += self.TAB_4 + '</table>\n'
-        tmp += self.TAB_3 + '</para>\n'
-        tmp += self.TAB_2 + '</comp-item>\n'
-        tmp += '\t</locdesc>\n'
 
-        if self.mil_std == '2C':
-            tmp += '\t<eqpdiff>\n'
-            tmp += self.TAB_2 + '<title>EQUIPMENT DIFFERENCES</title>\n'
-            tmp += self.TAB_2 + '<para>' + self.lorem_ipsum + '</para>\n'
-            tmp += '\t</eqpdiff>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE descwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE descwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE descwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<descwp wpno="G00002-{self.tmno}" chngno="0" security="cui">\n'
 
-        tmp += '\t<eqpdata>\n'
-        tmp += self.TAB_2 + '<title>EQUIPMENT DATA</title>\n'
-        tmp += self.TAB_2 + '<para>' + self.lorem_ipsum + '</para>\n'
-        tmp += self.TAB_2 + '<para>\n'
-        tmp += self.TAB_3 + '<table id="G00002-' + self.sys_number + '-T0020">\n'
-        tmp += self.TAB_4 + '<title>' + self.sys_acronym + ' Support Equipment Data</title>\n'
-        tmp += self.TAB_4 + '<tgroup cols="2">\n'
-        tmp += self.TAB_5 + '<colspec colname="col1"/>\n'
-        tmp += self.TAB_5 + '<colspec colname="col2"/>\n'
-        tmp += self.TAB_5 + '<tbody>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry colsep="0"><emphasis emph="bold">Dimensions:</emphasis></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
+        # WP.METADATA Section
+        tmp += md.show("descwp", self.tmno)
 
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry colsep="0"><emphasis emph="bold">Environmental Requirements:</emphasis></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
+        tmp += f"{self.TAB_2}<title>EQUIPMENT DESCRIPTION AND DATA</title>\n"
+        tmp += "\t</wpidinfo>\n"
+        tmp += "\t<eqpinfo>\n"
+        tmp += f"{self.TAB_2}<title>EQUIPMENT CHARACTERISTICS, CAPABILITIES, AND FEATURES</title>\n"
+        tmp += f"{self.TAB_2}<eqpdesc>\n"
+        tmp += f"{self.TAB_3}<title>Characteristics</title>\n"
+        tmp += f"{self.TAB_3}<para>\n"
+        tmp += f'{self.TAB_4}<figure id="G00002-{self.tmno}-F0001">\n'
+        tmp += f"{self.TAB_5}<title>{self.sys_acronym} Deployed</title>\n"
+        tmp += f'{self.TAB_5}<graphic boardno="PLACEHOLDER"/>\n'
+        tmp += f"{self.TAB_4}</figure>\n"
+        tmp += f"{self.TAB_3}</para>\n"
+        tmp += f"{self.TAB_2}</eqpdesc>\n"
+        tmp += f"{self.TAB_2}<eqpdesc>\n"
+        tmp += f"{self.TAB_3}<title>Capabilities and Features</title>\n"
+        tmp += f"{self.TAB_3}<para>\n"
+        tmp += f'{self.TAB_4}<randlist bullet="yes">\n'
+        tmp += f"{self.TAB_5}<item></item>\n"
+        tmp += f"{self.TAB_5}<item></item>\n"
+        tmp += f"{self.TAB_4}</randlist>\n"
+        tmp += f"{self.TAB_3}</para>\n"
+        tmp += f"{self.TAB_2}</eqpdesc>\n"
+        tmp += "\t</eqpinfo>\n"
+        tmp += "\t<locdesc>\n"
+        tmp += (
+            f"{self.TAB_2}<title>LOCATION AND DESCRIPTION OF MAJOR COMPONENTS</title>\n"
+        )
+        tmp += (
+            self.TAB_2
+            + "<para>Refer to the following technical manuals for description of end items that are components of "
+            + self.sys_acronym
+            + ":\n"
+        )
+        tmp += f'{self.TAB_3}<randlist bullet="yes">\n'
+        tmp += f"{self.TAB_4}<item></item>\n"
+        tmp += f"{self.TAB_4}<item></item>\n"
+        tmp += f"{self.TAB_3}</randlist>\n"
+        tmp += f"{self.TAB_2}</para>\n"
+        tmp += f"{self.TAB_2}<comp-item>\n"
+        tmp += f"{self.TAB_3}<para>\n"
+        tmp += f'{self.TAB_4}<figure id="G00002-{self.tmno}-F0005">\n'
+        tmp += f"{self.TAB_5}<title>{self.sys_acronym} Exterior (Front)</title>\n"
+        tmp += f'{self.TAB_5}<graphic boardno="PLACEHOLDER"/>\n'
+        tmp += f"{self.TAB_4}</figure>\n"
+        tmp += f'{self.TAB_4}<table id="G00002-{self.tmno}-T0004">\n'
+        tmp += f"{self.TAB_5}<title>{self.sys_acronym}</title>\n"
+        tmp += f'{self.TAB_5}<tgroup cols="3">\n'
+        tmp += f'{self.TAB_6}<colspec colname="col1" colwidth="0.30*"/>\n'
+        tmp += f'{self.TAB_6}<colspec colname="col2" colwidth="0.40*"/>\n'
+        tmp += f'{self.TAB_6}<colspec colname="col3" colwidth="2.30*"/>\n'
+        tmp += f"{self.TAB_6}<thead>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>CALLOUT</entry>\n"
+        tmp += f"{self.TAB_8}<entry>ITEM</entry>\n"
+        tmp += f"{self.TAB_8}<entry>DESCRIPTION</entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_6}</thead>\n"
+        tmp += f"{self.TAB_6}<tbody>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>1</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>2</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_6}</tbody>\n"
+        tmp += f"{self.TAB_5}</tgroup>\n"
+        tmp += f"{self.TAB_4}</table>\n"
+        tmp += f"{self.TAB_3}</para>\n"
+        tmp += f"{self.TAB_2}</comp-item>\n"
+        tmp += f"{self.TAB_2}<comp-item>\n"
+        tmp += f"{self.TAB_3}<para></para>\n"
+        tmp += f"{self.TAB_3}<para>\n"
+        tmp += f'{self.TAB_4}<figure id="G00002-{self.tmno}-F0006">\n'
+        tmp += f"{self.TAB_5}<title></title>\n"
+        tmp += f'{self.TAB_5}<graphic boardno="PLACEHOLDER"/>\n'
+        tmp += f"{self.TAB_4}</figure>\n"
+        tmp += f'{self.TAB_4}<table id="G00002-{self.tmno}-T0005">\n'
+        tmp += f"{self.TAB_5}<title></title>\n"
+        tmp += f'{self.TAB_5}<tgroup cols="3">\n'
+        tmp += f'{self.TAB_6}<colspec colname="col1" colwidth="*"/>\n'
+        tmp += f'{self.TAB_6}<colspec colname="col2" colwidth="*"/>\n'
+        tmp += f'{self.TAB_6}<colspec colname="col3" colwidth="*"/>\n'
+        tmp += f"{self.TAB_6}<thead>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>CALLOUT</entry>\n"
+        tmp += f"{self.TAB_8}<entry>ITEM</entry>\n"
+        tmp += f"{self.TAB_8}<entry>DESCRIPTION</entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_6}</thead>\n"
+        tmp += f"{self.TAB_6}<tbody>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>1</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>2</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>3</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_7}<row>\n"
+        tmp += f"{self.TAB_8}<entry>4</entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_8}<entry></entry>\n"
+        tmp += f"{self.TAB_7}</row>\n"
+        tmp += f"{self.TAB_6}</tbody>\n"
+        tmp += f"{self.TAB_5}</tgroup>\n"
+        tmp += f"{self.TAB_4}</table>\n"
+        tmp += f"{self.TAB_3}</para>\n"
+        tmp += f"{self.TAB_2}</comp-item>\n"
+        tmp += "\t</locdesc>\n"
 
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry colsep="0"><emphasis emph="bold">References:</emphasis></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
-        tmp += self.TAB_6 + '<row>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_7 + '<entry></entry>\n'
-        tmp += self.TAB_6 + '</row>\n'
+        if self.mil_std == "2C":
+            tmp += "\t<eqpdiff>\n"
+            tmp += f"{self.TAB_2}<title>EQUIPMENT DIFFERENCES</title>\n"
+            tmp += f"{self.TAB_2}<para></para>\n"
+            tmp += "\t</eqpdiff>\n"
 
-        tmp += self.TAB_5 + '</tbody>\n'
-        tmp += self.TAB_4 + '</tgroup>\n'
-        tmp += self.TAB_3 + '</table>\n'
-        tmp += self.TAB_2 + '</para>\n'
+        tmp += "\t<eqpdata>\n"
+        tmp += f"{self.TAB_2}<title>EQUIPMENT DATA</title>\n"
+        tmp += f"{self.TAB_2}<para></para>\n"
+        tmp += f"{self.TAB_2}<para>\n"
+        tmp += f'{self.TAB_3}<table id="G00002-{self.tmno}-T0020">\n'
+        tmp += (
+            self.TAB_4
+            + "<title>"
+            + self.sys_acronym
+            + " Support Equipment Data</title>\n"
+        )
+        tmp += f'{self.TAB_4}<tgroup cols="2">\n'
+        tmp += f'{self.TAB_5}<colspec colname="col1"/>\n'
+        tmp += f'{self.TAB_5}<colspec colname="col2"/>\n'
+        tmp += f"{self.TAB_5}<tbody>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += (
+            self.TAB_7
+            + '<entry colsep="0"><emphasis emph="bold">Dimensions:</emphasis></entry>\n'
+        )
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
 
-        tmp += self.TAB_2 + '<para0>\n'
-        tmp += self.TAB_3 + '<title>Performance Data</title>\n'
-        tmp += self.TAB_3 + '<para>Operating the ' + self.sys_acronym + \
-                ' outside of these specifications may cause equipment damage due to freezing or overheating.</para>\n'
-        tmp += self.TAB_2 + '</para0>\n'
-        tmp += '\t</eqpdata>\n'
-        tmp += '</descwp>\n'
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-                ' WIP/{:05d}-G00002-EquipmentDescription.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += (
+            self.TAB_7
+            + '<entry colsep="0"><emphasis emph="bold">Environmental Requirements:</emphasis></entry>\n'
+        )
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += (
+            self.TAB_7
+            + '<entry colsep="0"><emphasis emph="bold">References:</emphasis></entry>\n'
+        )
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+        tmp += f"{self.TAB_6}<row>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_7}<entry></entry>\n"
+        tmp += f"{self.TAB_6}</row>\n"
+
+        tmp += f"{self.TAB_5}</tbody>\n"
+        tmp += f"{self.TAB_4}</tgroup>\n"
+        tmp += f"{self.TAB_3}</table>\n"
+        tmp += f"{self.TAB_2}</para>\n"
+
+        tmp += f"{self.TAB_2}<para0>\n"
+        tmp += f"{self.TAB_3}<title>Performance Data</title>\n"
+        tmp += f"{self.TAB_3}<para>Operating the {self.sys_acronym} outside of these specifications may cause equipment damage due to freezing or overheating.</para>\n"
+        tmp += f"{self.TAB_2}</para0>\n"
+        tmp += "\t</eqpdata>\n"
+        tmp += "</descwp>\n"
+        with open(
+            self.save_path
+            + "/"
+            + self.sys_acronym
+            + " "
+            + self.manual_type
+            + " IADS/files/{:05d}-G00002-Equipment Description.xml".format(
+                cfg.prefix_file
+            ),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def theory_operations(self):
-        """ Function to create the theory of operations section """
+    def theory_operations(self) -> None:
+        """Function to create the theory of operations section"""
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += '<thrywp wpno="G00003-' + self.sys_number + '" chngno="0">'
-        tmp += '\t<wpidinfo>\n'
-        tmp += self.TAB_2 + '<maintlvl level="operator"/>\n'
-        tmp += self.TAB_2 + '''<title>THEORY OF OPERATION</title>
-        </wpidinfo>
-        <intro>
-            <para0>
-                <title>Introduction</title>\n'''
-        tmp += self.TAB_2 + '<para>The ' + self.sys_name + ' is (' + \
-            self.sys_acronym + ') (<xref figid="G00003-' + \
-            self.sys_number + '-F0001"/>) consists of ... ' + 'The ' + \
-            self.sys_acronym + ' theory of operation by major component is described in the following paragraphs.</para>\n'
-        tmp += self.TAB_2 + '<para>\n'
-        tmp += self.TAB_3 + '<figure id="G00003-' + self.sys_number + '-F0001">\n'
-        tmp += self.TAB_4 + '''<title>Lorem Ipsum</title>
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE thrywp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE thrywp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE thrywp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<thrywp wpno="G00003-{self.tmno}" chngno="0" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("thrywp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
+        tmp += (
+            self.TAB_2
+            + """<title>THEORY OF OPERATION</title>
+    </wpidinfo>
+    <intro>
+        <para0>
+            <title>Introduction</title>\n"""
+        )
+        tmp += (
+            self.TAB_2
+            + "<para>The "
+            + self.sys_name
+            + " is ("
+            + self.sys_acronym
+            + ') (<xref figid="G00003-'
+            + self.tmno
+            + '-F0001"/>) consists of ... '
+            + "The "
+            + self.sys_acronym
+            + " theory of operation by major component is described in the following paragraphs.</para>\n"
+        )
+        tmp += f"{self.TAB_2}<para>\n"
+        tmp += f'{self.TAB_3}<figure id="G00003-{self.tmno}-F0001">\n'
+        tmp += (
+            self.TAB_4
+            + """<title></title>
                         <graphic boardno="PLACEHOLDER"/>
                     </figure>
                 </para>
             </para0>
         </intro>
         <systhry>
-            <title>LOREM IPSUM</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            <title></title>
+            <para></para>d
         </systhry>
         <systhry>
-            <title>LOREM IPSUM</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
-            <para>\n'''
-        tmp += self.TAB_3 + '<figure id="G00003-' + self.sys_number + '-F0002">\n'
-        tmp += self.TAB_4 + '''<title>Lorem Ipsum</title>
-                    <graphic boardno="PLACEHOLDER"/>
-                </figure>
-            </para>
-        </systhry>
-    </thrywp>'''
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-G00003-TheoryOfOperations.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+            <title></title>
+            <para></para>
+            <para>\n"""
+        )
+        tmp += f'{self.TAB_3}<figure id="G00003-{self.tmno}-F0002">\n'
+        tmp += (
+            self.TAB_4
+            + """<title></title>
+                <graphic boardno="PLACEHOLDER"/>
+            </figure>
+        </para>
+    </systhry>
+</thrywp>"""
+        )
+        with open(
+            self.save_path
+            + "/"
+            + self.sys_acronym
+            + " "
+            + self.manual_type
+            + " IADS/files/{:05d}-G00003-Theory Of Operations.xml".format(
+                cfg.prefix_file
+            ),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-        
-    def end(self):
-        """ Function to create chapter 1 end tags """
-        tmp = '</gim>'
-        cfg.prefix_file = (math.ceil(cfg.prefix_file/1000) * 1000) - 1
-        with open(self.save_path + '/' + self.sys_acronym + ' ' + self.manual_type + \
-            ' WIP/{:05d}-CHAP_1_END.txt'.format(cfg.prefix_file), 'w', encoding='UTF-8') as _f:
+
+    def end(self) -> None:
+        """Function to create chapter 1 end tags"""
+        tmp = "</gim>"
+        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
+        with open(
+            self.save_path
+            + "/"
+            + self.sys_acronym
+            + " "
+            + self.manual_type
+            + " IADS/files/{:05d}-CHAP_1_END.xml".format(cfg.prefix_file),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 1

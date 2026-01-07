@@ -7,7 +7,7 @@ def show():
             <testeqp-setup-item>
                 <name></name>
                 <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
+                    <xref itemid="" wpid=""/>
                 </itemref>
             </testeqp-setup-item>
         </testeqp>
@@ -15,33 +15,33 @@ def show():
             <tools-setup-item>
                 <name></name>
                 <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
+                    <xref itemid="" wpid=""/>
                 </itemref>
             </tools-setup-item>
         </tools>
-        <!--<spectools>
+        <spectools>
             <spectools-setup-item>
                 <name></name>
             </spectools-setup-item>
-        </spectools>-->
+        </spectools>
         <mtrlpart>
             <mtrlpart-setup-item>
                 <name></name>
                 <qty></qty>
                 <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
+                    <xref itemid="" wpid=""/>
                 </itemref>
             </mtrlpart-setup-item>
         </mtrlpart>
-        <!--<mrp>
+        <mrp>
             <mrp-setup-item>
                 <name></name>
                 <qty></qty>
                 <itemref>
-                    <xref itemid="XX-XXXX-XXX" wpid="XX-XXXX-XXX"/>
+                    <xref itemid="" wpid=""/>
                 </itemref>
             </mrp-setup-item>
-        </mrp>-->
+        </mrp>
         <persnreq>
             <persnreq-setup-item>
                 <name></name>
@@ -49,16 +49,15 @@ def show():
         </persnreq>
         <ref>
             <ref-setup-item>
-                <xref wpid="XX-XXXX-XXX"/>
+                <xref wpid=""/>
             </ref-setup-item>
         </ref>
         <eqpconds>
             <eqpconds-setup-item>
                 <condition></condition>
                 <itemref>
-                    <xref wpid="XX-XXXX-XXX"/>
+                    <xref wpid=""/>
                 </itemref>
             </eqpconds-setup-item>
         </eqpconds>
     </initial_setup>\n'''
-

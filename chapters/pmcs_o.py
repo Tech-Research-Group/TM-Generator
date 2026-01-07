@@ -1,56 +1,84 @@
 """PREVENTIVE MAINTENANCE CHECKS & SERVICES"""
+
+import datetime
 import math
+
 import cfg
 import views.isb as isb
+import views.metadata as md
+
 
 class PMCS:
     """Class to create various types of WP's included in the PMCS section of a TM."""
-    def __init__(self, manual_type, milstd, sys_acronym, sys_name, sys_number, save_path):
+
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+
+    def __init__(
+        self, manual_type, mil_std, sys_acronym, sys_name, tmno, save_path
+    ) -> None:
         self.manual_type = manual_type
-        self.milstd = milstd
+        self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function to create the PMCS start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-    <mim chngno="0" revno="0" chap-toc="no">\n'''
+        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+    <mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
-        tmp += '\t</titlepg>\n' + '<pmcscategory>\n'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-PMCS_START.txt', 'w', encoding='UTF-8') as _f:
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n" + "<pmcscategory>\n" ""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-OPERATOR_PMCS_START.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcsintrowp(self):
-        """ Function to create a PMCS intro WP """
-        tmp = '<pmcsintrowp wpno="M00001-' + self.sys_number + '" chngno="0">'
-        tmp += '\t<wpidinfo>\n'
+    def pmcsintrowp(self) -> None:
+        """Function to create a PMCS intro WP"""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcsintrowp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcsintrowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcsintrowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += '<pmcsintrowp wpno="C00001-' + self.tmno + '" chngno="0" security="cui">'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcsintrowp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>INTRODUCTION</title>
+        tmp += """\t\t<title>INTRODUCTION</title>
     </wpidinfo>
     <intro>
         <para0>
             <title>GENERAL</title>
-            <para>A Preventive Maintenance Checks and Services (PMCS) table is provided in <xref wpid="MXXXXX-XX-XXXX-XXX"/>. Following procedures in table ensures equipment is kept in good operating condition and ready for its primary mission.</para>
+            <para>A Preventive Maintenance Checks and Services (PMCS) table is provided in <xref wpid=""/>. Following procedures in table ensures equipment is kept in good operating condition and ready for its primary mission.</para>
             <para>Always observe WARNINGS and CAUTIONS appearing in PMCS tables. WARNINGS and CAUTIONS appear before applicable procedures. These WARNINGS and CAUTIONS must be observed to prevent serious personal injury or to prevent equipment damage.</para>
         </para0>
     </intro>
     <para0>
-        <title>INTRODUCTION</title>'''
-        tmp += f'<para>PMCS are performed to keep {self.sys_name} ({self.sys_acronym}) in good operating condition and ready for its primary mission. Checks are used to find, correct, and report problems. PMCS is performed every day (SYSTEM NAME) is in operation, and is done according to PMCS table provided. Pay attention to WARNING, CAUTION, and NOTE statements. A WARNING indicates that someone could be hurt or killed. A CAUTION indicates that equipment could be damaged. A NOTE may make your maintenance or repair task easier.</para>\n'
+        <title>INTRODUCTION</title>"""
+        tmp += f"<para>PMCS are performed to keep {self.sys_name} ({self.sys_acronym}) in good operating condition and ready for its primary mission. Checks are used to find, correct, and report problems. PMCS is performed every day (insert equipment name) is in operation, and is done according to PMCS table provided. Pay attention to WARNING, CAUTION, and NOTE statements. A WARNING indicates that someone could be hurt or killed. A CAUTION indicates that equipment could be damaged. A NOTE may make your maintenance or repair task easier.</para>\n"
 
-        tmp += '''<para>Be sure to perform scheduled PMCS. Always perform PMCS in same order so it becomes a habit. With practice, you will quickly recognize problems with equipment.</para>
+        tmp += """<para>Be sure to perform scheduled PMCS. Always perform PMCS in same order so it becomes a habit. With practice, you will quickly recognize problems with equipment.</para>
         <para>Use <extref docno="DA Form 5988-E" posttext=", Equipment Maintenance and Inspection Worksheet"/> or <extref docno="DA Form 2404" posttext=", Equipment Inspection and Maintenance Worksheet"/>, to record any discovered faults. Do not record faults that you fix.</para>
     </para0>
     <para0>
         <title>PMCS PROCEDURES</title>
-        <para>Tables in <xref wpid="MXXXXX-XX-XXXX-XXX"/> list inspections and care required to be performed by operator to keep your equipment in good operating condition. It is arranged so that you can perform operational checks as you walk around equipment.</para>
-        <para>Tables in <xref wpid="MXXXXX-XX-XXXX-XXX"/> list inspections and care required to be performed by maintainer.</para>
-        <para>Tables in <xref wpid="MXXXXX-XX-XXXX-XXX"/> list inspections and care required to be performed by operator to keep Burner, Gas Heating in good operating condition.</para>
+        <para>Tables in <xref wpid=""/> list inspections and care required to be performed by operator to keep your equipment in good operating condition. It is arranged so that you can perform operational checks as you walk around equipment.</para>
+        <para>Tables in <xref wpid=""/> list inspections and care required to be performed by maintainer.</para>
+        <para>Tables in <xref wpid=""/> list inspections and care required to be performed by operator to keep Burner, Gas Heating in good operating condition.</para>
         <subpara1>
             <title>Item Number</title>
             <para>Indicates reference number. When completing <extref docno="DA Form 5988-E"/> or <extref docno="DA Form 2404"/>, include item number for item to check/service indicating a fault. Item numbers appear in the order you must perform checks/services listed.</para>
@@ -89,7 +117,7 @@ class PMCS:
         </subpara1>
         <subpara1>
             <title>Cleaning</title>
-            <para>Proper cleaning of SYSTEM NAME and its components is an integral part of maintenance. It helps prevent possible problems in the future, so make it a habit to clean (SYSTEM NAME) and its components whenever necessary.</para>
+            <para>Proper cleaning of (insert equipment name) and its components is an integral part of maintenance. It helps prevent possible problems in the future, so make it a habit to clean (insert equipment name) and its components whenever necessary.</para>
         </subpara1>
         <subpara1>
             <title>Corrosion Prevention and Control (CPC)</title>
@@ -104,25 +132,40 @@ class PMCS:
                     <item>Class I. Seepage of fluid (as indicated by wetness or discoloration) but not great enough to form drops.</item>
                     <item>Class II. Leakage of fluid great enough to form drops, but not enough to cause drops to drip from item being checked/inspected.</item>
                     <item>Class III. Leakage of fluid great enough to form drops that fall from item being checked/inspected.</item>
-                </randlist> 			 			
+                </randlist>
             </para>
         </subpara1>
     </para0>
-</pmcsintrowp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-M00001-PMCS-Introduction.txt', 'w', encoding='UTF-8') as _f:
+</pmcsintrowp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-C00001-PMCS Introduction.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_before(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_before(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Before Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Before Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''\t\t<title>Before Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """\t\t<title>Before Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Before</interval>
         </pmcs-intervals>
@@ -132,13 +175,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -151,41 +194,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Before.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Before.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_during(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_during(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>During Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>\n'''
+        tmp += """\t\t<title>During Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>\n"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''\t\t<title>During Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """\t\t<title>During Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>During</interval>
         </pmcs-intervals>
@@ -195,13 +248,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -214,41 +267,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-During.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS During.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_after(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_after(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>After Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>\n'''
+        tmp += """\t\t<title>After Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>\n"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''\t\t<title>After Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """\t\t<title>After Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>After</interval>
         </pmcs-intervals>
@@ -258,13 +321,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -277,41 +340,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-After.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS After.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-                
-    def pmcs_daily(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+
+    def pmcs_daily(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Daily Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Daily Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Daily Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Daily Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Daily</interval>
         </pmcs-intervals>
@@ -321,13 +394,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -340,41 +413,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Daily.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Daily.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_weekly(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_weekly(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Weekly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Weekly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Weekly Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Weekly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Weekly</interval>
         </pmcs-intervals>
@@ -384,13 +467,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -403,41 +486,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para> </trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Weekly.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Weekly.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_monthly(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_monthly(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Monthly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Monthly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Monthly Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Monthly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Monthly</interval>
         </pmcs-intervals>
@@ -447,13 +540,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -466,41 +559,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para> </trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Monthly.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Monthly.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-    
-    def pmcs_quarterly(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+
+    def pmcs_quarterly(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Quarterly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Quarterly Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Quarterly Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Quarterly Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Quarterly</interval>
         </pmcs-intervals>
@@ -510,13 +613,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -529,41 +632,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Quarterly.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Quarterly.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_semi_annually(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_semi_annually(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Semi-annually Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Semi-annually Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Semi-annually Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Semi-annually Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Semi-annually</interval>
         </pmcs-intervals>
@@ -573,13 +686,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -592,41 +705,51 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Semi-annually.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</pmcswp>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Semi-annually.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcs_annually(self, wpno):
-        """ Function to create a PMCS WP. """
-        tmp = f'<pmcswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+    def pmcs_annually(self, wpno) -> None:
+        """Function to create a PMCS WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pmcswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pmcswp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += '''\t\t<title>Annually Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
-    </wpidinfo>'''
+        tmp += """\t\t<title>Annually Operator Preventive Maintenance Checks and Services (PMCS) Procedures</title>
+    </wpidinfo>"""
         tmp += isb.show()
-        tmp += f'\t<pmcstable id="{wpno}-{self.sys_number}-T0001">\n'
-        tmp += '''<title>Annually Preventive Maintenance Checks and Services Procedures</title>
+        tmp += f'\t<pmcstable id="{wpno}-{self.tmno}-T0001">\n'
+        tmp += """<title>Annually Preventive Maintenance Checks and Services Procedures</title>
         <pmcs-intervals>
             <interval>Annually</interval>
         </pmcs-intervals>
@@ -636,13 +759,13 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
                         <trim.para/>
                     </eqpnotavail>
@@ -655,35 +778,38 @@ class PMCS:
             <checked></checked>
             <pmcsproc>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
                 <pmcsstep1>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                     <eqpnotavail>
-                        <trim.para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </trim.para>
+                        <trim.para></trim.para>
                     </eqpnotavail>
                 </pmcsstep1>
             </pmcsproc>
         </pmcs-entry>
-    </pmcstable>\n'''
+    </pmcstable>
+<pmcswp>\n"""
 
-        if self.milstd != "2D":
-            tmp += '''\t<mrplpart>
-        <title>Lorem Ipsum</title>
-        <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
-    </mrplpart>\n'''
-        tmp += '</pmcswp>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PMCS-Annually.txt', 'w', encoding='UTF-8') as _f:
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Annually.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def end(self):
-        """ Function to create the PMCS section end tags """
+    def end(self) -> None:
+        """Function to create the PMCS section end tags"""
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
-        tmp = '\t</pmcscategory>\n' + '</mim>'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-PMCS_END.txt', 'w', encoding='UTF-8') as _f:
+        tmp = "\t</pmcscategory>\n" + "</mim>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-OPERATOR_PMCS_END.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 1

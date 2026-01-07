@@ -1,37 +1,64 @@
 """SUPPORTING INFORMATION"""
+
+import datetime
 import math
-from dotenv import dotenv_values
+
 import cfg
 import views.isb as isb
+import views.metadata as md
+
 
 class SupportingInformation:
     """Class to create various types of WP's included in Supporting Info section of a TM."""
-    config = dotenv_values(".env")  # take environment variables from .env.
 
-    def __init__(self, manual_type, sys_acronym, sys_name, sys_number, save_path):
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+
+    def __init__(
+        self, manual_type, mil_std, sys_acronym, sys_name, tmno, save_path
+    ) -> None:
         self.manual_type = manual_type
+        self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function to create Supporting Info section start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-    <sim chngno="0" revno="0" chap-toc="no">\n'''
+        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+    <sim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += '\t\t<name>' + self.sys_name + ' (' + self.sys_acronym + ')</name>\n'
-        tmp += '\t</titlepg>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-SUPPORT_INFO_START.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")</name>\n"
+        tmp += "\t</titlepg>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORT_INFO_START.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def refwp(self, wpno):
+    def refwp(self, wpno) -> None:
         """Function to create References WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<refwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE refwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE refwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE refwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<refwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("refwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>REFERENCES</title>
     </wpidinfo>
@@ -150,7 +177,7 @@ class SupportingInformation:
         <pubident>
             <name><extref docno="TM 750-244-3"/></name>
             <title>PROCEDURES FOR DESTRUCTION OF EQUIPMENT TO PREVENT ENEMY USE (MOBILITY EQUIPMENT COMMAND)</title>
-        </pubident>	
+        </pubident>
     </publist>
     <publist>
         <title>TRAINING CIRCULARS</title>
@@ -159,163 +186,198 @@ class SupportingInformation:
             <title>FIRST AID</title>
         </pubident>
     </publist>
-</refwp>'''
-        with open((f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-References.txt'), 'w', encoding='UTF-8') as _f:
+</refwp>"""
+        with open(
+            (
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-References.xml"
+            ),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def macintrowp(self, wpno):
+    def macintrowp(self, wpno) -> None:
         """Function to create the Introduction WP for the MAC."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<macintrowp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE macintrowp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE macintrowp PUBLIC "{self.FPI_2D}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE macintrowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<macintrowp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("macintrowp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MAINTENANCE ALLOCATION CHART (MAC) INTRODUCTION</title>
     </wpidinfo>
     <intro>
         <para0>
-            <title>INTRODUCTION<?Pub _newline?>The Army Maintenance System MAC</title>\n'''
-        tmp += '\t\t\t<para>' + str(self.config.get("MAC_INTRO1")) + '</para>\n'
-        tmp += '\t\t\t<para>' + str(self.config.get("MAC_INTRO2")) + '\n'
-        tmp += '\t\t\t\t<seqlist>' + '\n'
-        tmp += '''\t\t\t\t\t<item>Field level maintenance classes:
-                        <seqlist>
-                            <item>Crew (operator) maintenance. This is the responsibility of a using organization to perform maintenance on its assigned equipment. It normally consists of inspecting, servicing, lubricating, adjusting, and replacing parts, minor assemblies, and subassemblies. Items with a &ldquo;C&rdquo; (&ldquo;O&rdquo; for joint service reporting) in the third position of the Source, Maintenance, and Recoverability (SMR) code may be replaced at the crew (operator) class. A code of &ldquo;C&rdquo; (&ldquo;O&rdquo; for joint service) in the fourth position of the SMR code indicates complete repair is authorized at the crew (operator) class.</item>
-                            <item>Maintainer maintenance. This is maintenance accomplished on a component, accessory, assembly, subassembly, plug-in unit, or other portion by field level units. This maintenance is performed either on the system or after it is removed. An &ldquo;F&rdquo; in the third position of the SMR code indicates replacement of assemblies, subassemblies, or other components is authorized at this level. An &ldquo;F&rdquo; in the fourth position of the SMR code indicates complete repair of the identified item is allowed at the Maintainer class. Items repaired at this level are normally returned to the user after maintenance is performed.</item>
-                        </seqlist>
-                    </item>
-                    <item>Sustainment level maintenance classes:
-                        <seqlist>
-                            <item>Below depot sustainment. This is maintenance accomplished on a component, accessory, assembly, subassembly, plug-in unit, or other portion either on the system or after it is removed. The item subject to maintenance has normally been forwarded to a maintenance facility away from the field level supporting units. An "H" in the third position of the SMR code indicates replacement of assemblies, subassemblies, or other components is authorized at this class. An "H" appearing in the fourth position of the SMR code indicates complete repair is possible at this class. Items are normally returned to the supply system after maintenance is performed at this class.</item>
-                            <item>Depot. This is maintenance accomplished on a component, accessory, assembly, subassembly, plug-in unit, or other portion either on the system or after it is removed. Assets to be repaired at this class are normally returned to an Army Depot or authorized contractor facility. The replace function for this class of maintenance is indicated by the letter "D" or "K" appearing in the third position of the SMR code. A "D" or "K" appearing in the fourth position of the SMR code indicates complete repair is possible at the depot sustainment maintenance level. Items are returned to the supply system after maintenance is performed at this class.</item>
-                        </seqlist>
-                    </item>
-                </seqlist>
-            </para>
-            <para>The tools and test equipment requirements table (immediately following the MAC) lists the tools and test equipment (both special tools and common tool sets) required for each maintenance task as referenced from the MAC.</para>
-            <para>The remarks table (immediately following the tools and test equipment requirements) contains supplemental instructions and explanatory notes for a particular maintenance task.</para>
-            <para>
-                <emphasis emph="bold">Maintenance Functions (Tasks)</emphasis>
-            </para>
-            <para>Maintenance functions are limited to and defined as follows:
-                <seqlist>\n'''
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("INSPECT")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("TEST")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("SERVICE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("ADJUST")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("ALIGN")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("CALIBRATE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("REMOVE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("INSTALL")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("REPLACE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("REPAIR")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PAINT")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("OVERHAUL")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("REBUILD")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("LUBRICATE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("MARK")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PACK")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("UNPACK")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PRESERVE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PREPARE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("ASSEMBLE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("DISASSEMBLE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("CLEAN")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("NONDESTRUCTIVE_INSPECTION")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("RADIO_INTERFERENCE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PLACE_IN_SERVICE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("TOWING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("JACKING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PARKING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("MOORING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("COVERING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("HOISTING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("SLING_LOADING")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("EXTERNAL_POWER")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PREPSTORE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PREPSHIP")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("PREPSTORE")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("TRANSPORT")) + '</item>\n'
-        tmp += '\t\t\t\t\t<item>' + str(self.config.get("ARM")) + '</item>\n'
-        tmp += '''\t\t\t\t\t<item>Load. Step-by-step instructions for one of two tasks:
-                        <seqlist>
-                            <item>For transportation, the act of placing assets onto a transportation medium (e.g., pallet, truck, container).</item>
-                            <item>For weapons/weapons systems, the act of placing munitions into the weapon/weapons system.</item>
-                        </seqlist>
-                    </item>
-                    <item>Unload. Step-by-step instructions for one of two tasks:
-                        <seqlist>
-                            <item>For transportation, the act of removing assets from a transportation medium (e.g., pallet, truck, container).</item>
-                            <item>For weapons/weapons systems, the act of removing munitions from the weapon/weapons system.</item>
-                        </seqlist>
-                    </item>
-                    <item>Install peripheral device. Step-by-step instructions for installing peripheral devices such as printers, scanners, modems, etc.</item>
-                    <item>Uninstall peripheral device. Step-by-step instructions for uninstalling peripheral devices such as printers, scanners, modems, etc.</item>
-                    <item>Upgrade/patch. Step-by-step instructions for performing an upgrade to software or installing a patch to software.</item>
-                    <item>Configure. Step-by-step instructions for configuring software for different uses/purposes and/or different users.</item>
-                    <item>Debug. Step-by-step instructions for debugging software/correcting errors in the software.</item>
-                </seqlist>
-            </para>
-            <para>
-                <emphasis emph="bold">Explanation of Columns in the MAC</emphasis>
-            </para>
-            <para>Column (1) Group Number. Column (1) lists Functional Group Code (FGC) numbers, the purpose of which is to identify maintenance significant components, assemblies, subassemblies, and modules with the Next Higher Assembly (NHA).</para>
-            <para>Column (2) Component/Assembly. Column (2) contains the item names of components, assemblies, subassemblies, and modules for which maintenance is authorized.</para>
-            <para>Column (3) Maintenance Function. Column (3) lists the functions to be performed on the item listed in column (2). (For a detailed explanation of these functions, refer to maintenance functions (tasks) outlined previously.)</para>
-            <para>Column (4) Maintenance Level. Column (4) specifies each level/class of maintenance authorized to perform each function listed in column (3), by indicating man-hours required in the appropriate sub-column. The man-hour figure is the task time multiplied by the number of maintainers required to perform that maintenance task. This time includes preparation (equipment conditions, inspections), task performance, follow-on maintenance and quality assurance (inspections) time. Crew maintenance time will be entered as task (clock) time only. If different maintenance classes perform the same maintenance functions due to the number or complexity of the tasks, appropriate man-hour figures are to be shown for each class. The symbol designations for the various maintenance levels and classes are as follows:
-                <randlist bullet="no">
-                    <title>
-                        <emphasis emph="uline">Field:</emphasis>
-                    </title>
-                    <item>C Crew maintenance</item>
-                    <item>F Maintainer maintenance</item>
-                </randlist>
-                <randlist bullet="no">
-                    <title>
-                        <emphasis emph="uline">Sustainment:</emphasis>
-                    </title>
-                    <item>L Specialized Repair Activity (SRA)</item>
-                    <item>H Below depot maintenance</item>
-                    <item>D Depot maintenance</item>
-                </randlist>
-            </para>
-            <note>
-                <trim.para>The "L" maintenance class is not included in column (4) of the MAC. Functions to this class of maintenance are identified by work time figure in the "H" column of column (4), and an associated reference code is used in the REMARKS column (6). This code is keyed to the remarks and the SRA complete repair application is explained there.</trim.para>
-            </note>
-            <para>Column (5) Tools and Equipment Reference Code. Column (5) specifies, by a number code, those common tool sets, kits, or outfits (not individual tools), common Test, Measurement and Diagnostic Equipment (TMDE), common tools that are not part of a set, kit, or outfit, special tools, special TMDE, and special support equipment required to perform the designated function. Codes are keyed to the entries in the tools and test equipment table.</para>
-            <para>Column (6) Remarks Code. When applicable, this Column (6) contains a letter code, in alphabetical order, which is keyed to the remarks table entries.</para>
-            <para>
-                <emphasis emph="bold">Explanation of Columns in the Tools and Test Equipment Requirements</emphasis>
-            </para>
-            <para>Column (1) Tool or Test Equipment Reference Code. The tool or test equipment reference code correlates with a code used in column (5) of the MAC.</para>
-            <para>Column (2) Maintenance Level. The lowest class of maintenance authorized to use the tool or test equipment.</para>
-            <para>Column (3) Nomenclature. Name or identification of the tool or test equipment.</para>
-            <para>Column (4) National Stock Number (NSN). The NSN of the tool or test equipment.</para>
-            <para>Column (5) Tool Number. The manufacturer's part number.</para>
-            <?Pub _newpage?>
-            <para>
-                <emphasis emph="bold">Explanation of Columns in the Remarks</emphasis>
-            </para>
-            <para>Column (1) Remarks Code. The code recorded in column (6) of the MAC.</para>
-            <para>Column (2) Remarks. This column lists information pertinent to the maintenance task being performed as indicated in the MAC.</para>
+            <title>INTRODUCTION</title>
+            <subpara1>
+                <title>The Army Maintenance System MAC</title>
+                <para>This introduction provides a general explanation of the maintenance levels/classes, tasks, and other information contained in the MAC. The MAC designates overall authority and responsibility for the performance of all maintenance tasks on the identified end item or component. The application of the maintenance tasks to the end item or component shall be consistent with the capacities and capabilities of the designated maintenance levels/classes that are shown in the MAC in column (4). Column (4) is divided into two secondary columns. These columns indicate the maintenance levels/classes of &quot;Field&quot; and &quot;Sustainment.&quot; Each maintenance level column is further divided into two sub-columns. These sub-columns identify the maintenance classes and are as follows:
+                     <seqlist>
+                        <item>Field level maintenance classes:
+						<seqlist>
+							<item>Crew (operator) maintenance. This is the responsibility of a using organization to perform maintenance on its assigned equipment. It normally consists of inspecting, servicing, lubricating, adjusting, and replacing parts, minor assemblies, and subassemblies. Items with a &quot;C&quot; (&quot;O&quot; for joint service reporting) in the third position of the Source, Maintenance, and Recoverability (SMR) code may be replaced at the crew(operator) class. A code of &quot;C&quot; (&quot;O&quot; for joint service) in the fourth position of the SMR code indicates complete repair is authorized at the crew (operator) class.</item>
+							<item>Maintainer maintenance. This is maintenance accomplished on a component, accessory, assembly, subassembly, plug-in unit, or other portion by field-level units. This maintenance is performed either on the system or after it is removed. An &quot;F&quot; in the third position of the SMR code indicates replacement of assemblies, subassemblies, or other components is authorized at this level. An &quot;F&quot; in the fourth position of the SMR code indicates complete repair of the identified item is allowed at the Maintainer class. Items repaired at this level are normally returned to the user after maintenance is performed.</item>
+                            </seqlist>
+                        </item>
+                        <item>Sustainment level maintenance classes: <seqlist>
+                                <item>Depot. This is maintenance accomplished on a component, accessory, assembly, subassembly, plug-in unit, or other portion either on the system or after it is removed. Assets to be repaired at this class are normally returned to an Army Depot or authorized contractor facility. The &quot;replace&quot; task for this class of maintenance is indicated by the letter &quot;D&quot; or &quot;K&quot; appearing in the third position of the SMR code. A &quot;D&quot; or &quot;K&quot; appearing in the fourth position of the SMR code indicates complete repair is possible at the depot sustainment maintenance level. Items are returned to the supply system after maintenance is performed at this class.</item>
+                            </seqlist>
+                        </item>
+                    </seqlist>
+                </para>
+                <para>The tools and test equipment requirements table (immediately following the MAC) lists the tools and test equipment (both special tools/kits and common tool sets) required for each maintenance task as referenced from the MAC. The remarks table (immediately following the tools and test equipment requirements) contains supplemental instructions and explanatory notes for a particular maintenance task.</para>
+            </subpara1>
+            <subpara1>
+                <title>Maintenance tasks</title>
+                <para>Maintenance tasks are limited to and defined as follows:
+					<seqlist>
+                        <item>Inspect. Step-by-step instructions to determine the serviceability of an item by comparing its physical, mechanical, and/or electrical characteristics with established standards through examination (e.g., by sight, sound, or feel).</item>
+                        <item>Test. Step-by-step instructions to verify serviceability by measuring the mechanical, pneumatic, hydraulic, or electrical characteristics of an item and comparing those characteristics with prescribed standards, e.g., load testing of lift devices or hydrostatic testing of pressure hoses. For software, to verify usability/operability/functionality of the software.</item>
+                        <item>Service. Step-by-step instructions to be performed periodically to keep an item in proper operating condition, such as replenishing fuel, lubricants, chemical fluids, or gases.</item>
+                        <item>Remove. Step-by-step instructions for taking a component off an asset to facilitate other maintenance on a different component or on the same component (except for &quot;Replace&quot; and &quot;Repair.&quot; For software, it is step-by-step instructions for uninstalling/removing the software from a workstation or other viewing hardware.</item>
+                        <item>Install. Step-by-step instructions for placing, positioning, or otherwise locating a component to make it part of a higher level end item. The &quot;install&quot; task is authorized by the LPD/MAC and the assigned maintenance level is shown as the third position code of the SMR code. For software, it is step-by-step instructions putting the software on a workstation or other viewing hardware.</item>
+                        <item>Replace. Step-by-step instructions for taking off an unserviceable component and putting a serviceable component in its place. The &quot;replace&quot; task is authorized by the LPD/MAC and the assigned maintenance level is shown as the third position code of the SMR code.</item>
+                        <item>Repair. Step-by-step instructions for restoring an item or software to a completely serviceable or fully mission capable status. The &quot;repair&quot; task is authorized by the LPD/MAC and the assigned maintenance level is shown as the fourth position code of the SMR code. The following definitions are applicable to the &quot;repair&quot; maintenance task: welding, grinding, riveting, straightening, facing, machining, and/or resurfacing.</item>
+                        <item>Prepare for use. Step-by-step instructions required to make an asset ready for other maintenance (e.g., &quot;remove preservatives,&quot; &quot;lubricate,&quot; etc.).</item>
+                        <item>Clean. Step-by-step instructions on how to remove dirt, corrosion, or other contaminants from equipment. Refer to appropriate painting, lubrication, and preservation methods to restore original corrosion prevention and control methods when removed as a result of cleaning and/or when using cleaning to remove corrosion from the item.</item>
+                        <item>Place in service. Step-by-step instructions required to place an item into service that are not covered in the service upon receipt work package.</item>
+                        <item>Preparation for storage. Step-by-step instructions for preparing the equipment for placement into administrative, short term, and/or long-term storage.</item>
+                        <item>Preparation for shipment. Step-by-step instructions for preparing the equipment to be shipped or transported.</item>
+						<item>Transport. Step-by-step instructions and guidance for transporting/shipping the equipment.</item>
+						<item>Adjust. Step-by-step instructions to maintain or regulate, within prescribed limits, by bringing into proper position, or by setting the operating characteristics to specified parameters.</item>
+						<item>Align. Step-by-step instructions to adjust specified variable elements of an item to bring about optimum or desired performance.</item>
+						<item>Calibrate. Step-by-step instructions to determine and cause corrections to be made or to be adjusted on instruments of test, measuring, and diagnostic equipment used in precision measurement. It consists of comparisons of two instruments, one of which is a certified standard of known accuracy, to detect and adjust any discrepancy in the accuracy of the instrument being compared.</item>
+						<item>Paint. Step-by-step instructions to prepare and apply coats of paint. When used for ammunition, the paint is applied to the ammunition and its packaging so they can be identified and protected.</item>
+						<item>Overhaul. Step-by-step instructions to restore an item to a completely serviceable/operational condition as required by maintenance standards in the appropriate technical publications. &quot;Overhaul&quot; is normally the highest degree of maintenance performed by the Army. &quot;Overhaul&quot; does not normally return an item to a like new condition.</item>
+						<item>Rebuild. Step-by-step instructions required for the restoration of unserviceable equipment to a like new condition in accordance with original manufacturing standards. &quot;Rebuild&quot; is the highest degree of materiel maintenance applied to Army equipment. The &quot;rebuild&quot; operation includes the act of returning to zero those age measurements (e.g., hours/miles) considered in classifying Army equipment/components.</item>
+						<item>Lubricate. Step-by-step instructions for applying a material (e.g., oil or grease) to reduce friction and allow a component to operate in a more efficient manner.</item>
+						<item>Mark. Step-by-step instructions for restoring obliterated identification on an asset.</item>
+                        <item>Pack. Step-by-step instructions to place an item into a container for either storage or shipment after service and other maintenance operations have been completed.</item>
+                        <item>Unpack. Step-by-step instructions for removing an asset from a storage or shipping container in preparation to perform further maintenance (e.g., &quot;repair&quot; or &quot;install&quot;).</item>
+						<item>Preserve. Step-by-step instructions for treating systems and equipment, whether installed or stored, to ensure a serviceable condition.</item>
+						<item>Assemble. Step-by-step instructions to join the component pieces of an asset together to make a complete serviceable asset.</item>
+						<item>Disassemble. Step-by-step instructions to break down (take apart) a spare/functional group coded item to the level of its least component, which is assigned an SMR code for the level of maintenance under consideration (i.e., identified as maintenance significant).</item>
+						<item>Nondestructive inspection. Step-by-step instructions on preparation and accomplishment inspections that do not destroy or damage the equipment.</item>
+						<item>Radio interference suppression. Step-by-step instructions to ensure installed equipment, either communication or other electronics, does not interfere with installed communication equipment.</item>
+						<item>Towing. Step-by-step instructions to connect one vehicle to another for the purpose of having one vehicle moved through the motive power of the other vehicle.</item>
+						<item>Jacking. Step-by-step instructions to mechanically raise or lift a vehicle to facilitate maintenance on the vehicle.</item>
+						<item>Parking. Step-by-step instructions to safely place a vehicle in a lot, ramp area or other designated location.</item>
+						<item>Mooring. Step-by-step instructions to secure a vehicle by chains, ropes or other means to protect the vehicle from environmental conditions or secure for transportation.</item>
+						<item>Covering. Step-by-step instructions to place a protective wrapping over a vehicle to protect it from environmental conditions or to hide (e.g., camouflage) it.</item>
+						<item>Hoisting. Step-by-step instructions to allow a vehicle to be raised by cables or ropes through attaching points.</item>
+						<item>Sling loading. Step-by-step instructions to place a sling around a vehicle to allow it to be raised.</item>
+						<item>External power. Step-by-step instructions on how to apply electrical power from any authorized power source (e.g., external generator or facility power).</item>
+                        <item>Arm. Step-by-step instructions on activating ammunition prior to use.</item>
+                        <item>Load. Step-by-step instructions for one of two tasks:
+							<seqlist>
+                                <item>For transportation, the act of placing assets onto a transportation medium (e.g., pallet, truck, container).</item>
+                                <item>For weapons/weapons systems, the act of placing ammunition into the weapon/weapons system.</item>
+                            </seqlist>
+                        </item>
+                        <item>Unload. Step-by-step instructions for one of two tasks:
+							<seqlist>
+                                <item>For transportation, the act of removing assets from a transportation medium (e.g., pallet, truck, container).</item>
+                                <item>For weapons/weapons systems, the act of removing ammunition from the weapon/weapons system.</item>
+                            </seqlist>
+                        </item>
+						<item>Install peripheral device. Step-by-step instructions for installing peripheral devices such as printers, scanners, modems, etc.</item>
+						<item>Uninstall peripheral device. Step-by-step instructions for uninstalling peripheral devices such as printers, scanners, modems, etc.</item>
+						<item>Upgrade/patch. Step-by-step instructions for performing an upgrade to software or installing a patch to software.</item>
+						<item>Configure. Step-by-step instructions for configuring software for different uses/purposes and/or different users.</item>
+						<item>Debug. Step-by-step instructions for debugging software/correcting errors in the software.</item>
+                    </seqlist>
+                </para>
+            </subpara1>
+            <subpara1>
+                <title>Explanation of Columns in the MAC</title>
+                <para>Column (1) Group Number. Column (1) lists Functional Group Code (FGC) numbers, the purpose of which is to identify maintenance significant components, assemblies, subassemblies, and modules with the Next Higher Assembly (NHA).</para>
+                <para>Column (2) Component/Assembly. Column (2) contains the item names of components, assemblies, subassemblies, and modules for which maintenance is authorized.</para>
+                <para>Column (3) Maintenance task. Column (3) lists the tasks to be performed on the item listed in column (2). (For a detailed explanation of these tasks, refer to maintenance tasks outlined above.)</para>
+                <para>Column (4) Maintenance Level. Column (4) specifies each level/class of maintenance authorized to perform each task listed in column (3), by indicating man-hours required in the appropriate sub-column. The man-hour figure is the task time multiplied by the number of maintainers required to perform that maintenance task. This time includes preparation (equipment conditions, inspections), task performance, follow-on maintenance and quality assurance (inspections) time. Crew maintenance time will be entered as task (clock) time only. If different maintenance classes perform the same maintenance tasks due to the number or complexity of the tasks, appropriate man-hour figures are to be shown for each class. The symbol designations for the various maintenance levels and classes are as follows:
+					<randlist>
+                        <item><emphasis emph="uline">Field</emphasis>: <randlist>
+                                <item>C Crew Maintenance</item>
+                                <item>F Maintainer maintenance</item>
+                            </randlist>
+                        </item>
+                        <item><emphasis emph="uline">Sustainment</emphasis>:
+							<randlist>
+                                <item>L Special Repair Authority (SRA)</item>
+                                <item>D Depot maintenance</item>
+                            </randlist>
+                            <note>
+                                <trim.para>The &quot;L&quot; maintenance class is not included in column (4) of the MAC. Functions to this class of maintenance are identified by work time figure in the &quot;H&quot; column of column (4), and an associated reference code is used in the REMARKS column (6). This code is keyed to the remarks and the SRA complete repair application is explained there.</trim.para>
+                            </note>
+                        </item>
+                    </randlist>
+                </para>
+                <para>Column (5) Tools and Equipment Reference Code. Column (5) specifies, by a number code, those common tool sets, kits, or outfits (not individual tools), common Test, Measurement and Diagnostic Equipment (TMDE), common tools that are not part of a set, kit, or outfit, special tools/kits, special TMDE, and special support equipment required to perform the designated function. Codes are keyed to the entries in the tools and test equipment table.</para>
+                <para>Column (6) Remarks Code. When applicable, this Column (6) contains a letter code, in alphabetical order, that is keyed to the remarks table entries.</para>
+            </subpara1>
+            <subpara1>
+                <title>Explanation of Columns in the Tools and Test Equipment Requirements</title>
+                <para>
+                    <randlist>
+                        <item>Column (1) Tool or Test Equipment Reference Code. The tool or test equipment reference code correlates with a code used in column (5) of the MAC.</item>
+                        <item>Column (2) Maintenance Level. The lowest class of maintenance authorized to use the tool or test equipment.</item>
+                        <item>Column (3) Nomenclature. Name or identification of the tool or test equipment.</item>
+                        <item>Column (4) National Stock Number (NSN). The NSN of the tool or test equipment.</item>
+                        <item>Column (5) Tool Number. The manufacturer&apos;s part number</item>
+                    </randlist>
+                </para>
+            </subpara1>
+            <subpara1>
+                <title>Explanation of Columns in the Remarks</title>
+                <para>
+                    <randlist>
+                        <item>Column (1) Remarks Code. The code recorded in column (6) of the MAC.</item>
+                        <item>Column (2) Remarks. This column lists information pertinent to the maintenance task being performed as indicated in the MAC.</item>
+                    </randlist>
+                </para>
+            </subpara1>
         </para0>
     </intro>
-</macintrowp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MAC-Introduction.txt', 'w', encoding='UTF-8') as _f:
+</macintrowp>"""
+
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MAC Introduction.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def macwp(self, wpno):
+    def macwp(self, wpno) -> None:
         """Function to create the MAC WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<macwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE macwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE macwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE macwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<macwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("macwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MAINTENANCE ALLOCATION CHART (MAC)</title>
     </wpidinfo>
     <mac>
         <title>Maintenance Allocation Chart for ...</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
         <mac-group-2lvl>
             <groupno>00</groupno>
             <compassemgroup-2lvl>
@@ -350,28 +412,13 @@ class SupportingInformation:
                 </qualify-2lvl>
             </compassemgroup-2lvl>
         </mac-group-2lvl>
-        <mac-group-2lvl>
-            <groupno>02</groupno>
-            <compassemgroup-2lvl>
-                <compassem>
-                    <name></name>
-                </compassem>
-                <qualify-2lvl>
-                    <maintfunc func="none"/>
-                    <maintclass-2lvl>
-                        <c></c>
-                    </maintclass-2lvl>
-                </qualify-2lvl>
-            </compassemgroup-2lvl>
-        </mac-group-2lvl>
     </mac>
     <?Pub _newpage?>
     <tereqtab>
         <title>Tools and Test Equipment for ...</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
         <teref-group>
-            <terefcode id="MAC_TOOL_01">1</terefcode>
-            <maintenance lvl="c"/>
+            <terefcode id=""></terefcode>
+            <maintenance lvl=""/>
             <name></name>
             <nsn>
                 <fsc></fsc>
@@ -380,8 +427,8 @@ class SupportingInformation:
             <toolno></toolno>
         </teref-group>
         <teref-group>
-            <terefcode id="MAC_TOOL_02">2</terefcode>
-            <maintenance lvl="c"/>
+            <terefcode id=""></terefcode>
+            <maintenance lvl=""/>
             <name></name>
             <nsn>
                 <fsc></fsc>
@@ -390,8 +437,8 @@ class SupportingInformation:
             <toolno></toolno>
         </teref-group>
         <teref-group>
-            <terefcode id="MAC_TOOL_03">3</terefcode>
-            <maintenance lvl="c"/>
+            <terefcode id=""></terefcode>
+            <maintenance lvl=""/>
             <name></name>
             <nsn>
                 <fsc></fsc>
@@ -400,8 +447,8 @@ class SupportingInformation:
             <toolno></toolno>
         </teref-group>
         <teref-group>
-            <terefcode id="MAC_TOOL_04">4</terefcode>
-            <maintenance lvl="c"/>
+            <terefcode id=""></terefcode>
+            <maintenance lvl=""/>
             <name></name>
             <nsn>
                 <fsc></fsc>
@@ -410,8 +457,8 @@ class SupportingInformation:
             <toolno></toolno>
         </teref-group>
         <teref-group>
-            <terefcode id="MAC_TOOL_05">5</terefcode>
-            <maintenance lvl="c"/>
+            <terefcode id=""></terefcode>
+            <maintenance lvl=""/>
             <name></name>
             <nsn>
                 <fsc></fsc>
@@ -423,38 +470,51 @@ class SupportingInformation:
     <?Pub _newpage?>
     <remarktab>
         <title>Remarks for ...</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
         <remark-group>
-            <remarkcode id="X">A</remarkcode>
+            <remarkcode id=""></remarkcode>
             <remarks></remarks>
         </remark-group>
         <remark-group>
-            <remarkcode id="X">B</remarkcode>
+            <remarkcode id=""></remarkcode>
             <remarks></remarks>
         </remark-group>
         <remark-group>
-            <remarkcode id="X">C</remarkcode>
+            <remarkcode id=""></remarkcode>
             <remarks></remarks>
         </remark-group>
         <remark-group>
-            <remarkcode id="X">D</remarkcode>
+            <remarkcode id=""></remarkcode>
             <remarks></remarks>
         </remark-group>
         <remark-group>
-            <remarkcode id="X">E</remarkcode>
+            <remarkcode id=""></remarkcode>
             <remarks></remarks>
         </remark-group>
     </remarktab>
-</macwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MAC.txt', 'w', encoding='UTF-8') as _f:
+</macwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MAC.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def coeibiiwp(self, wpno):
+    def coeibiiwp(self, wpno) -> None:
         """Function to create the COEI & BII Lists WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<coeibiiwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE coeibiiwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE coeibiiwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE coeibiiwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<coeibiiwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("coeibiiwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>COMPONENTS OF END ITEM (COEI) AND BASIC ISSUE ITEMS (BII) LIST</title>
     </wpidinfo>
@@ -471,7 +531,7 @@ class SupportingInformation:
                 <para>Components of End Item (COEI). This list is for information purposes only and is not authority to requisition replacements. These items are part of the CK. As part of the end item, these items must be with the end item whenever it is issued or transferred between property accounts. Items of COEI are removed and separately packaged for transportation or shipment only when necessary. Illustrations are furnished to help you find and identify the items.</para>
                 <para>Basic Issue Items (BII). These essential items are required to place the CK in operation, operate it, and to do emergency repairs. Although shipped separately packaged, BII must be with the CK during operation and when it is transferred between property accounts. Listing these items is your authority to request/requisition them for replacement based on authorization of the end item by the Table of Organization and Equipment/Modified Table of Organization and Equipment (TOE/MTOE). Illustrations are furnished to help you find and identify the items.</para>
             </subpara1>
-            <subpara1>               
+            <subpara1>
                 <title>Explanation of Columns in the COEI List and BII List:</title>
                 <para>Column (1) Item Number. Gives you the reference number of the item listed.</para>
                 <para>Column (2) National Stock Number (NSN) and Illustration. Identifies the stock number of the item to be used for requisitioning purposes and provides an illustration of the item.</para>
@@ -485,9 +545,8 @@ class SupportingInformation:
     <?Pub _newpage?>
     <coei-opt id="coeitab">
         <title>Components of End Item (COEI) List</title>
-            <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
         <coei-opt-entry>
-            <itemno id="COEI-1"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -504,7 +563,7 @@ class SupportingInformation:
             <qty></qty>
         </coei-opt-entry>
         <coei-opt-entry>
-            <itemno id="COEI-2"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -521,7 +580,7 @@ class SupportingInformation:
             <qty></qty>
         </coei-opt-entry>
         <coei-opt-entry>
-            <itemno id="COEI-3"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -539,11 +598,10 @@ class SupportingInformation:
         </coei-opt-entry>
     </coei-opt>
     <?Pub _newpage?>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
     <bii-opt id="biitab">
         <title>Basic Issue Items (BII) List</title>
         <bii-opt-entry>
-            <itemno id="BII-1"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -560,7 +618,7 @@ class SupportingInformation:
             <qty></qty>
         </bii-opt-entry>
         <bii-opt-entry>
-            <itemno id="BII-2"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -577,7 +635,7 @@ class SupportingInformation:
             <qty></qty>
         </bii-opt-entry>
         <bii-opt-entry>
-            <itemno id="BII-3"></itemno>
+            <itemno id=""></itemno>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -594,15 +652,32 @@ class SupportingInformation:
             <qty></qty>
         </bii-opt-entry>
     </bii-opt>
-</coeibiiwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-COEI-BII-List.txt', 'w', encoding='UTF-8') as _f:
+</coeibiiwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-COEI BII List.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def aalwp(self, wpno):
+    def aalwp(self, wpno) -> None:
         """Function to create the Additional Authorization List (AAL) WP."""
-        tmp = f'<aalwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE aalwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE aalwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE aalwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<aalwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("aalwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>ADDITIONAL AUTHORIZATION LIST (AAL)</title>
     </wpidinfo>
@@ -611,11 +686,11 @@ class SupportingInformation:
             <title>INTRODUCTION</title>
             <subpara1>
                 <title>Scope</title>
-                <para>This work package lists additional items you are authorized for the support of the ETSSLS.</para>
+                <para>This work package lists additional items you are authorized for the support of the INSERT TM NAME HERE.</para>
             </subpara1>
             <subpara1>
                 <title>General</title>
-                <para>This list identifies items that do not have to accompany the ETSSLS and that do not have to be turned in with it. These items are all authorized to you by CTA, MTOE, TDA, or JTA.</para>
+                <para>This list identifies items that do not have to accompany the INSERT TM NAME HERE and that do not have to be turned in with it. These items are all authorized to you by CTA, MTOE, TDA, or JTA.</para>
             </subpara1>
             <subpara1>
                 <title>Explanation of Columns in the AAL</title>
@@ -652,88 +727,75 @@ class SupportingInformation:
     </intro>
     <aal>
         <title>Additional Authorization List (AAL)</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
         <aal-entry>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0248</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <dcpno>
-                <name>Expeditionary TRICON Food Sanitation System (GREEN)</name>
-                <partno>9-1-1121-1</partno>
+                <name></name>
+                <partno></partno>
                 <cageno></cageno>
-                <uoc>SHELTER, EXPANDABLE, ETFSS</uoc>
+                <uoc></uoc>
             </dcpno>
             <ui></ui>
-            <qty>1</qty>
+            <qty></qty>
         </aal-entry>
         <aal-entry>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0260</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <dcpno>
-                <name>Expeditionary TRICON Food Sanitation System (TAN)</name>
-                <partno>9-1-1121-2</partno>
+                <name></name>
+                <partno></partno>
                 <cageno></cageno>
-                <uoc>SHELTER, EXPANDABLE, ETFSS</uoc>
+                <uoc></uoc>
             </dcpno>
             <ui></ui>
-            <qty>1</qty>
+            <qty></qty>
         </aal-entry>
-         <aal-entry>
+        <aal-entry>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0272</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <dcpno>
-                <name>Expeditionary TRICON Food Sanitation System (RED)</name>
-                <partno>9-1-1121-3</partno>
+                <name></name>
+                <partno></partno>
                 <cageno></cageno>
-                <uoc>SHELTER, EXPANDABLE, ETFSS</uoc>
-            </dcpno>
-            <ui></ui>
-            <qty>1</qty>
-        </aal-entry>
-         <aal-entry>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0284</niin>
-            </nsn>
-            <dcpno>
-                <name>Expeditionary TRICON Food Sanitation System (WHITE)</name>
-                <partno>9-1-1121-4</partno>
-                <cageno></cageno>
-                <uoc>SHELTER, EXPANDABLE, ETFSS</uoc>
-            </dcpno>
-            <ui></ui>
-            <qty>1</qty>
-        </aal-entry>
-         <aal-entry>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0296</niin>
-            </nsn>
-            <dcpno>
-                <name>Expeditionary TRICON Food Sanitation System (BLUE)</name>
-                <partno>9-1-1121-5</partno>
-                <cageno></cageno>
-                <uoc>SHELTER, EXPANDABLE, ETFSS</uoc>
+                <uoc></uoc>
             </dcpno>
             <ui></ui>
             <qty>1</qty>
         </aal-entry>
     </aal>
-</aalwp>'''
-        with open((f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-AAL.txt'), 'w', encoding='UTF-8') as _f:
+</aalwp>"""
+        with open(
+            (
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-AAL.xml"
+            ),
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def explistwp(self, wpno):
+    def explistwp(self, wpno) -> None:
         """Function to create the EDIL List WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<explistwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE explistwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE explistwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE explistwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<explistwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("explistwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>EXPENDABLE AND DURABLE ITEMS LIST</title>
     </wpidinfo>
@@ -761,83 +823,70 @@ class SupportingInformation:
     </intro>
     <explist>
         <title>Expendable and Durable Items List.</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
-        <expdur-entry id="S00004-10-7360-226-EXP1">
-            <itemno>1</itemno>
-            <maintenance lvl="c"/>
+        <expdur-entry id="">
+            <itemno></itemno>
+            <maintenance lvl=""/>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0248</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
-            <name>Expeditionary TRICON Food Sanitation System (GREEN)</name>
+            <name></name>
             <desc></desc>
-            <partno>9-1-1121-1</partno>
+            <partno></partno>
             <cageno></cageno>
             <ui></ui>
         </expdur-entry>
-        <expdur-entry id="S00004-10-7360-226-EXP2">
-            <itemno>2</itemno>
-            <maintenance lvl="c"/>
+        <expdur-entry id="">
+            <itemno></itemno>
+            <maintenance lvl=""/>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0260</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
-            <name>Expeditionary TRICON Food Sanitation System (TAN)</name>
+            <name></name>
             <desc></desc>
-            <partno>9-1-1121-2</partno>
+            <partno></partno>
             <cageno></cageno>
             <ui></ui>
         </expdur-entry>
-        <expdur-entry id="S00004-10-7360-226-EXP3">
-            <itemno>3</itemno>
-            <maintenance lvl="c"/>
+        <expdur-entry id="">
+            <itemno></itemno>
+            <maintenance lvl=""/>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0272</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
-            <name>Expeditionary TRICON Food Sanitation System (RED)</name>
+            <name></name>
             <desc></desc>
-            <partno>9-1-1121-3</partno>
-            <cageno></cageno>
-            <ui></ui>
-        </expdur-entry>
-        <expdur-entry id="S00004-10-7360-226-EXP4">
-            <itemno>4</itemno>
-            <maintenance lvl="c"/>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0284</niin>
-            </nsn>
-            <name>Expeditionary TRICON Food Sanitation System (WHITE)</name>
-            <desc></desc>
-            <partno>9-1-1121-4</partno>
-            <cageno></cageno>
-            <ui></ui>
-        </expdur-entry>
-        <expdur-entry id="S00004-10-7360-226-EXP5">
-            <itemno>5</itemno>
-            <maintenance lvl="c"/>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0296</niin>
-            </nsn>
-            <name>Expeditionary TRICON Food Sanitation System (BLUE)</name>
-            <desc></desc>
-            <partno>9-1-1121-5</partno>
+            <partno></partno>
             <cageno></cageno>
             <ui></ui>
         </expdur-entry>
     </explist>
-</explistwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-EDIL.txt', 'w', encoding='UTF-8') as _f:
+</explistwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-EDIL.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def toolidwp(self, wpno):
+    def toolidwp(self, wpno) -> None:
         """Function to create the Tool Identification List WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<toolidwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE toolidwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE toolidwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE toolidwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<toolidwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("toolidwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>TOOL IDENTIFICATION LIST</title>
     </wpidinfo>
@@ -846,7 +895,7 @@ class SupportingInformation:
             <title>INTRODUCTION</title>
             <subpara1>
                 <title>SCOPE</title>
-                <para>This work package lists common tools and supplements and special tools/fixtures needed to maintain Expeditionary TRICON Self Serve Laundry System (ETSSLS).</para>
+                <para>This work package lists common tools and supplements and special tools/fixtures needed to maintain Expeditionary TRICON Self Serve Laundry System (INSERT TM NAME HERE).</para>
             </subpara1>
             <subpara1>
                 <title>Explanation of Columns in the Tool Identification List</title>
@@ -870,83 +919,70 @@ class SupportingInformation:
     </intro>
     <toolidlist>
         <title>Tool Identification List</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
-        <tool-entry id="TIL_01">
-            <itemno>1</itemno>
-            <name>Expeditionary TRICON Food Sanitation System (GREEN)</name>
+        <tool-entry id="">
+            <itemno></itemno>
+            <name></name>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0248</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <partcage>
-                <partno>9-1-1121-1</partno>
+                <partno></partno>
                 <cageno></cageno>
             </partcage>
-            <extref docno="TM XX-XXXX-XXX" pretext="X"/>
+            <extref docno="" pretext=""/>
         </tool-entry>
-        <tool-entry id="TIL_02">
-            <itemno>2</itemno>
-            <name>Expeditionary TRICON Food Sanitation System (TAN)</name>
+        <tool-entry id="">
+            <itemno></itemno>
+            <name></name>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0260</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <partcage>
-                <partno>9-1-1121-2</partno>
+                <partno></partno>
                 <cageno></cageno>
             </partcage>
-            <extref docno="TM XX-XXXX-XXX" pretext="X"/>
+            <extref docno="" pretext=""/>
         </tool-entry>
-        <tool-entry id="TIL_03">
-            <itemno>3</itemno>
-            <name>Expeditionary TRICON Food Sanitation System (RED)</name>
+        <tool-entry id="">
+            <itemno></itemno>
+            <name></name>
             <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0272</niin>
+                <fsc></fsc>
+                <niin></niin>
             </nsn>
             <partcage>
-                <partno>9-1-1121-3</partno>
+                <partno></partno>
                 <cageno></cageno>
             </partcage>
-            <extref docno="TM XX-XXXX-XXX" pretext="X"/>
-        </tool-entry>
-        <tool-entry id="TIL_04">
-            <itemno>4</itemno>
-            <name>Expeditionary TRICON Food Sanitation System (WHITE)</name>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0284</niin>
-            </nsn>
-            <partcage>
-                <partno>9-1-1121-4</partno>
-                <cageno></cageno>
-            </partcage>
-            <extref docno="TM XX-XXXX-XXX" pretext="X"/>
-        </tool-entry>
-        <tool-entry id="TIL_05">
-            <itemno>5</itemno>
-            <name>Expeditionary TRICON Food Sanitation System (BLUE)</name>
-            <nsn>
-                <fsc>5419</fsc>
-                <niin>01-686-0296</niin>
-            </nsn>
-            <partcage>
-                <partno>9-1-1121-5</partno>
-                <cageno></cageno>
-            </partcage>
-            <extref docno="TM XX-XXXX-XXX" pretext="X"/>
+            <extref docno="" pretext=""/>
         </tool-entry>
     </toolidlist>
-</toolidwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-TIL.txt', 'w', encoding='UTF-8') as _f:
+</toolidwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-TIL.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def mrplwp(self, wpno):
+    def mrplwp(self, wpno) -> None:
         """Function to create the Mandatory Replacement Parts WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<mrplwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE mrplwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE mrplwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE mrplwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<mrplwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("mrplwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>
         <title>MANDATORY REPLACEMENT PARTS LIST</title>
     </wpidinfo>
@@ -969,20 +1005,8 @@ class SupportingInformation:
     </intro>
     <mrpl>
         <title>Mandatory Replacement Parts</title>
-        <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
-        <mrpl-entry id="S00008-XX-XXXX-XXX-MRP_01">
-            <itemno>1</itemno>
-            <partno>MS21044C3</partno>
-            <cageno>80205</cageno>
-            <nsn>
-                <fsc>5310</fsc>
-                <niin>00-208-9255</niin>
-            </nsn>
-            <name>NUT, SELF-LOCKING, HEXAGON (#10-32, CRES)</name>
-            <qty>1</qty>
-        </mrpl-entry>
-        <mrpl-entry id="S00008-XX-XXXX-XXX-MRP_02">
-            <itemno>1</itemno>
+        <mrpl-entry id="">
+            <itemno></itemno>
             <partno></partno>
             <cageno></cageno>
             <nsn>
@@ -992,8 +1016,8 @@ class SupportingInformation:
             <name></name>
             <qty></qty>
         </mrpl-entry>
-        <mrpl-entry id="S00008-XX-XXXX-XXX-MRP_03">
-            <itemno>1</itemno>
+        <mrpl-entry id="">
+            <itemno></itemno>
             <partno></partno>
             <cageno></cageno>
             <nsn>
@@ -1003,8 +1027,8 @@ class SupportingInformation:
             <name></name>
             <qty></qty>
         </mrpl-entry>
-        <mrpl-entry id="S00008-XX-XXXX-XXX-MRP_04">
-            <itemno>1</itemno>
+        <mrpl-entry id="">
+            <itemno></itemno>
             <partno></partno>
             <cageno></cageno>
             <nsn>
@@ -1014,8 +1038,8 @@ class SupportingInformation:
             <name></name>
             <qty></qty>
         </mrpl-entry>
-        <mrpl-entry id="S00008-XX-XXXX-XXX-MRP_05">
-            <itemno>1</itemno>
+        <mrpl-entry id="">
+            <itemno></itemno>
             <partno></partno>
             <cageno></cageno>
             <nsn>
@@ -1025,18 +1049,43 @@ class SupportingInformation:
             <name></name>
             <qty></qty>
         </mrpl-entry>
-        
+        <mrpl-entry id="">
+            <itemno></itemno>
+            <partno></partno>
+            <cageno></cageno>
+            <nsn>
+                <fsc></fsc>
+                <niin></niin>
+            </nsn>
+            <name></name>
+            <qty></qty>
+        </mrpl-entry>
+
     </mrpl>
-</mrplwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-MRP.txt', 'w', encoding='UTF-8') as _f:
+</mrplwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MRP.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def csi_wp(self, wpno):
+    def csi_wp(self, wpno) -> None:
         """Function to create the Critical Safety Items WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<csi.wp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE csi.wp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE csi.wp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE csi.wp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<csi.wp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("csi.wp", self.tmno)
+
+        tmp += """\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>CRITICAL SAFETY ITEMS</title>
 	</wpidinfo>
@@ -1044,54 +1093,67 @@ class SupportingInformation:
         <intro>
             <para0>
                 <title>Introduction</title>
-                <para>There are no critical safety items for the...</para>
+                <para></para>
             </para0>
-        </intro>   
+        </intro>
 		<csi.tab>
 			<title>Critical Safety Items List</title>
-            <!-- THESE ENTRIES ARE JUST EXAMPLES. YOU MUST FILL THEM IN WITH YOUR OWN DATA. -->
 			<csi-entry>
-				<name>Expeditionary TRICON Food Sanitation System (GREEN)</name>
-				<partno>9-1-1121-1</partno>
+				<name></name>
+				<partno></partno>
                 <cageno></cageno>
                 <desc></desc>
 			</csi-entry>
             <csi-entry>
-				<name>Expeditionary TRICON Food Sanitation System (TAN)</name>
-				<partno>9-1-1121-2</partno>
+				<name></name>
+				<partno></partno>
                 <cageno></cageno>
                 <desc></desc>
 			</csi-entry>
             <csi-entry>
-				<name>Expeditionary TRICON Food Sanitation System (RED)</name>
-				<partno>9-1-1121-3</partno>
+				<name></name>
+				<partno></partno>
                 <cageno></cageno>
                 <desc></desc>
 			</csi-entry>
             <csi-entry>
-				<name>Expeditionary TRICON Food Sanitation System (WHITE)</name>
-				<partno>9-1-1121-4</partno>
+				<name></name>
+				<partno></partno>
                 <cageno></cageno>
                 <desc></desc>
 			</csi-entry>
             <csi-entry>
-				<name>Expeditionary TRICON Food Sanitation System (BLUE)</name>
-				<partno>9-1-1121-6</partno>
+				<name></name>
+				<partno></partno>
                 <cageno></cageno>
                 <desc></desc>
 			</csi-entry>
 		</csi.tab>
 	</csi>
-</csi.wp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-CSI.txt', 'w', encoding='UTF-8') as _f:
+</csi.wp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-CSI.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def supitemwp(self, wpno):
+    def supitemwp(self, wpno) -> None:
         """Function to create the Support Items WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<supitemwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE supitemwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE supitemwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE supitemwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<supitemwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("supitemwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>SUPPORT ITEMS</title>
 	</wpidinfo>
@@ -1099,51 +1161,75 @@ class SupportingInformation:
     <!-- intro?, (coei, bii)?, aal?, explist?, toolidlist?, mrpl?, csi? -->
     <intro>
         <para0>
-            <title>Lorem Ipsum</title>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</para>
+            <title></title>
+            <para></para>
         </para0>
-    </intro>  
-</supitemwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-SupportItems.txt', 'w', encoding='UTF-8') as _f:
+    </intro>
+</supitemwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Support Items.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def genwp(self, wpno):
+    def genwp(self, wpno) -> None:
         """Function to create the Support Items WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<genwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE genwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE genwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE genwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<genwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("genwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
 		<maintlvl level="operator"/>
 		<title>ADDITIONAL SUPPORTING WORK PACKAGES</title>
-	</wpidinfo>\n'''
+	</wpidinfo>\n"""
         tmp += isb.show()
-        tmp += '''<proc>
-        <title>Lorem Ipsum</title>
+        tmp += """<proc>
+        <title></title>
         <step1>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+            <para></para>
         </step1>
         <step1>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+            <para></para>
         </step1>
         <step1>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+            <para></para>
         </step1>
         <step1>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+            <para></para>
         </step1>
         <step1>
-            <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+            <para></para>
         </step1>
-    </proc>  
-</genwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-AdditionalSupportingWP.txt', 'w', encoding='UTF-8') as _f:
+    </proc>
+</genwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Additional Supporting WP.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def end(self):
-        """ Function to create Supporting Info section end tags. """
-        tmp = '</sim>'
+    def end(self) -> None:
+        """Function to create Supporting Info section end tags."""
+        tmp = "</sim>"
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-SUPPORT_INFO_END.txt', 'w', encoding='UTF-8') as _f:
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORT_INFO_END.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 1

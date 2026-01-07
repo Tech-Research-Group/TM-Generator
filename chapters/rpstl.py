@@ -1,34 +1,67 @@
 """REPLACEMENT PARTS AND SPECIAL TOOLS LIST"""
+
+import datetime
 import math
+
 import cfg
+import views.metadata as md
+
 
 class Rpstl:
     """Class to create various types of WP's included in RPSTL of a TM."""
-    def __init__(self, config, manual_type, sys_acronym, sys_name, sys_number, save_path):
-        self.config = config
+
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+
+    def __init__(
+        self,
+        manual_type,
+        mil_std,
+        sys_acronym,
+        sys_name,
+        tmno,
+        save_path,
+    ) -> None:
         self.manual_type = manual_type
+        self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function to create RPSTL section start tags."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file / 1000) * 1000) + 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-<pim chngno="0" revno="0" chap-toc="no" dmwr-inclus="none">\n'''
+        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+<pim chngno="0" revno="0" chap-toc="no" dmwr-inclus="none">\n"""
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
-        tmp += '\t</titlepg>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-RPSTL_START.txt', 'w', encoding='UTF-8') as _f:
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-RPSTL_START.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def introwp(self, wpno):
+    def introwp(self) -> None:
         """Function that creates the RPSTL Introduction WP."""
-        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
-        tmp += f'<introwp chngno="0" wpno="R00001-{self.sys_number}">\n'
-        tmp += f'''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE introwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE introwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE introwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<introwp chngno="0" wpno="R00001-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("introwp", self.tmno)
+
+        tmp += f"""\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>REPAIR PARTS AND SPECIAL TOOLS LIST (RPSTL) INTRODUCTION</title>
     </wpidinfo>
@@ -652,7 +685,7 @@ class Rpstl:
                             </entry>
                             <entry colsep="0" rotate="no" rowsep="0"/>
                             <entry colsep="0" morerows="0" rotate="no" rowsep="0" valign="top">OPERATOR`S AND UNIT MAINTENANCE MANUAL (INCLUDING REPAIR PARTS AND SPECIAL TOOLS LIST) FOR TANK, FABRIC, COLLAPSIBLE</entry>
-                        </row>                         
+                        </row>
                         <row>
                             <entry colsep="0" rotate="no" rowsep="0"/>
                             <entry colsep="0" morerows="0" rotate="no" rowsep="0" valign="top">
@@ -699,25 +732,46 @@ class Rpstl:
             </seqlist>
         </para>
     </para0>
-</introwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-RPSTL-Introduction.txt', 'w', encoding='UTF-8') as _f:
+</introwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-R00001-RPSTL Introduction.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def plwp(self, wpno, wp_title):
-        """ Function to create list of parts for a subsystem WP. """
-        tmp = f'<plwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += f'''\t<wpidinfo>
+    def plwp(self, wpno, wp_title) -> None:
+        """Function to create list of parts for a subsystem WP."""
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += (
+                f'<!DOCTYPE plwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+            )
+        elif self.mil_std == "2D":
+            tmp += (
+                f'<!DOCTYPE plwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+            )
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE plwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<plwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("plwp", self.tmno)
+
+        tmp += f"""\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>{wp_title}</title>
     </wpidinfo>
     <pi.category>
-        <figure id="XXXXXX-XX-XXXX-XXX-XXXXX">
-            <title>Lorem Ipsum</title>
-            <subfig sheet="1" totalsheets="3">
+        <figure id="">
+            <title></title>
+            <subfig sheet="1" totalsheets="">
                 <graphic boardno="RPSTL_Placeholder"/>
             </subfig>
-            <subfig sheet="2" totalsheets="2">
+            <subfig sheet="2" totalsheets="">
                 <graphic boardno="RPSTL_Placeholder"/>
             </subfig>
         </figure>
@@ -726,9 +780,9 @@ class Rpstl:
             <fnctitle></fnctitle>
         </fncgrp>
         <pi.item id="RPL_1" indent="0">
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="1"/>
+            <callout assocfig="" label="1"/>
             <qty>1</qty>
-            <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+            <smr sourcecode="" maintcode="" recovercode=""/>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -739,9 +793,9 @@ class Rpstl:
             <desc></desc>
         </pi.item>
         <pi.item id="RPL_2" indent="0">
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+            <callout assocfig="" label="2"/>
             <qty>1</qty>
-            <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+            <smr sourcecode="" maintcode="" recovercode=""/>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -752,9 +806,9 @@ class Rpstl:
             <desc></desc>
         </pi.item>
         <pi.item id="RPL_3" indent="0">
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+            <callout assocfig="" label=""/>
             <qty>1</qty>
-            <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+            <smr sourcecode="" maintcode="" recovercode=""/>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -765,9 +819,9 @@ class Rpstl:
             <desc></desc>
         </pi.item>
         <pi.item id="RPL_4" indent="0">
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+            <callout assocfig="" label=""/>
             <qty>1</qty>
-            <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+            <smr sourcecode="" maintcode="" recovercode=""/>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -778,9 +832,9 @@ class Rpstl:
             <desc></desc>
         </pi.item>
         <pi.item id="RPL_5" indent="0">
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+            <callout assocfig="" label=""/>
             <qty>1</qty>
-            <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+            <smr sourcecode="" maintcode="" recovercode=""/>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
@@ -791,15 +845,30 @@ class Rpstl:
             <desc></desc>
         </pi.item>
     </pi.category>
-</plwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-{wp_title}.txt', 'w', encoding='UTF-8') as _f:
+</plwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def bulk_itemswp(self, wpno):
+    def bulk_itemswp(self, wpno, wp_title) -> None:
         """Function to create Bulk Items List WP."""
-        tmp = f'<bulk_itemswp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE bulk_itemswp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE bulk_itemswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE bulk_itemswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<bulk_itemswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("bulk_itemswp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>BULK ITEMS</title>
     </wpidinfo>
@@ -808,9 +877,9 @@ class Rpstl:
         <fnctitle id="X">BULK MATERIAL</fnctitle>
     </fncgrp>
     <pi.item id="BIL_1" indent="0">
-        <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="1"/>
+        <callout assocfig="" label=""/>
         <qty></qty>
-        <smr sourcecode="PA" maintcode="FD" recovercode="X"/>
+        <smr sourcecode="" maintcode="" recovercode=""/>
         <nsn>
             <fsc></fsc>
             <niin/>
@@ -821,9 +890,9 @@ class Rpstl:
         <desc></desc>
     </pi.item>
     <pi.item id="BIL_2" indent="0">
-        <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+        <callout assocfig="" label=""/>
         <qty></qty>
-        <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+        <smr sourcecode="" maintcode="" recovercode=""/>
         <nsn>
             <fsc></fsc>
             <niin/>
@@ -834,9 +903,9 @@ class Rpstl:
         <desc></desc>
     </pi.item>
     <pi.item id="BIL_3" indent="0">
-        <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="1"/>
+        <callout assocfig="" label=""/>
         <qty></qty>
-        <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+        <smr sourcecode="" maintcode="" recovercode=""/>
         <nsn>
             <fsc></fsc>
             <niin/>
@@ -847,9 +916,9 @@ class Rpstl:
         <desc></desc>
     </pi.item>
     <pi.item id="BIL_4" indent="0">
-        <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="2"/>
+        <callout assocfig="" label=""/>
         <qty></qty>
-        <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+        <smr sourcecode="" maintcode="" recovercode=""/>
         <nsn>
             <fsc></fsc>
             <niin/>
@@ -860,9 +929,9 @@ class Rpstl:
         <desc></desc>
     </pi.item>
     <pi.item id="BIL_5" indent="0">
-        <callout assocfig="XXXXXX-XX-XXXX-XXX-XXXXX" label="3"/>
+        <callout assocfig="" label=""/>
         <qty></qty>
-        <smr sourcecode="PA" maintcode="FD" recovercode="D"/>
+        <smr sourcecode="" maintcode="" recovercode=""/>
         <nsn>
             <fsc></fsc>
             <niin/>
@@ -872,15 +941,30 @@ class Rpstl:
         <name></name>
         <desc></desc>
     </pi.item>
-</bulk_itemswp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-BulkItems.txt', 'w', encoding='UTF-8') as _f:
+</bulk_itemswp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def nsnindxwp(self, wpno):
+    def nsnindxwp(self, wpno, wp_title) -> None:
         """Function to create NSN Index WP."""
-        tmp = f'<nsnindxwp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE nsnindxwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE nsnindxwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE nsnindxwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<nsnindxwp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("nsnindxwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>
         <title>NATIONAL STOCK NUMBER INDEX</title>
     </wpidinfo>
@@ -890,46 +974,61 @@ class Rpstl:
                 <fsc></fsc>
                 <niin></niin>
             </nsn>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0001" label="1"/>
+            <callout assocfig="" label=""/>
         </nsnindxrow>
         <nsnindxrow>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
             </nsn>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0002" label="1"/>
+            <callout assocfig="" label=""/>
         </nsnindxrow>
         <nsnindxrow>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
             </nsn>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0003" label="1"/>
+            <callout assocfig="" label=""/>
         </nsnindxrow>
         <nsnindxrow>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
             </nsn>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0004" label="1"/>
+            <callout assocfig="" label=""/>
         </nsnindxrow>
         <nsnindxrow>
             <nsn>
                 <fsc></fsc>
                 <niin></niin>
             </nsn>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0005" label="1"/>
+            <callout assocfig="" label=""/>
         </nsnindxrow>
     </nsnindx>
-</nsnindxwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-NSNIndex.txt', 'w', encoding='UTF-8') as _f:
+</nsnindxwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pnindxwp(self, wpno):
+    def pnindxwp(self, wpno, wp_title) -> None:
         """Function to create Part Number Index WP."""
-        tmp = f'<pnindxwp wpno="{wpno}-{self.sys_number}" chngno="0">\n'
-        tmp += '''\t<wpidinfo>
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE pnindxwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE pnindxwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE pnindxwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<pnindxwp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("pnindxwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
         <maintlvl level="maintainer" />
         <title>PART NUMBER INDEX</title>
     </wpidinfo>
@@ -937,43 +1036,46 @@ class Rpstl:
         <pnindxrow>
             <partno></partno>
             <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0001" label="1"/>
+            <callout assocfig="" label=""/>
         </pnindxrow>
         <pnindxrow>
             <partno></partno>
             <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0002" label="1"/>
+            <callout assocfig="" label=""/>
         </pnindxrow>
         <pnindxrow>
             <partno></partno>
             <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0003" label="1"/>
+            <callout assocfig="" label=""/>
         </pnindxrow>
         <pnindxrow>
             <partno></partno>
             <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0004" label="1"/>
+            <callout assocfig="" label=""/>
         </pnindxrow>
         <pnindxrow>
             <partno></partno>
             <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0005" label="1"/>
-        </pnindxrow>
-        <pnindxrow>
-            <partno></partno>
-            <cageno></cageno>
-            <callout assocfig="XXXXXX-XX-XXXX-XXX-F0006" label="1"/>
+            <callout assocfig="" label=""/>
         </pnindxrow>
     </pnindx>
-</pnindxwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-PartNumberIndex.txt', 'w', encoding='UTF-8') as _f:
+</pnindxwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
-        
-    def end(self):
+
+    def end(self) -> None:
         """Function to create RPSTL section end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
-        tmp = '</pim>'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-RPSTL_END.txt', 'w', encoding='UTF-8') as _f:
+        tmp = "</pim>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-RPSTL_END.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 1

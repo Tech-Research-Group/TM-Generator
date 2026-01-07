@@ -1,35 +1,64 @@
 """TROUBLESHOOTING MASTER INDEX"""
+
+import datetime
 import math
+
 import cfg
+import views.metadata as md
+
 
 class TSMasterIndex:
     """Class to create various types of WP's included in the TS Master Index of a TM."""
-    def __init__(self, manual_type, sys_acronym, sys_name, sys_number, save_path):
+
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+
+    def __init__(
+        self, manual_type, mil_std, sys_acronym, sys_name, tmno, save_path
+    ) -> None:
         self.manual_type = manual_type
+        self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function that creates TS Master Index WP starting tags of TM."""
-        cfg.prefix_file = (math.floor(cfg.prefix_file/1000) * 1000) + 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-<tim chngno="0" revno="0" chap-toc="no">\n'''
+        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+<tim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="operator">\n'
-        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
-        tmp += '\t</titlepg>\n'
-        tmp += '\t<masterindexcategory>\n'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_MASTER_INDEX_START.txt', 'w', encoding='UTF-8') as _f:
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n"
+        tmp += "\t<masterindexcategory>\n"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-TS_MASTER_INDEX_START.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def tsindxwp(self):
+    def tsindxwp(self) -> None:
         """Function to create a Troubleshooting Index WP."""
-        tmp = f'<tsindxwp chngno="0" wpno="T00000-{self.sys_number}">\n'
-        tmp += '\t<wpidinfo>\n'
+        tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE tsindxwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE tsindxwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE tsindxwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp = f'<tsindxwp chngno="0" wpno="T00000-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("tsindxwp", self.tmno)
+
+        tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
-        tmp += f'''\t\t<title>TROUBLESHOOTING INDEX</title>
+        tmp += f"""\t\t<title>TROUBLESHOOTING INDEX</title>
     </wpidinfo>
     <geninfo>
         <title>GENERAL</title>
@@ -42,39 +71,47 @@ class TSMasterIndex:
     <tsindx.symptom>
         <title>Troubleshooting Index</title>
         <tsindx.symptom-category>
-            <title>Lorem Ipsum</title>
+            <title></title>
             <tsindx.symptom-entry>
-                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <malfunc label="symptom"></malfunc>
                 <action>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                 </action>
             </tsindx.symptom-entry>
         </tsindx.symptom-category>
         <tsindx.symptom-category>
-            <title>Lorem Ipsum</title>
+            <title></title>
             <tsindx.symptom-entry>
-                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <malfunc label="symptom"></malfunc>
                 <action>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                 </action>
             </tsindx.symptom-entry>
             <tsindx.symptom-entry>
-                <malfunc label="symptom">Lorem Ipsum</malfunc>
+                <malfunc label="symptom"></malfunc>
                 <action>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                 </action>
             </tsindx.symptom-entry>
         </tsindx.symptom-category>
     </tsindx.symptom>
-</tsindxwp>'''
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-T00000-TSMasterIndex.txt", 'w', encoding='UTF-8') as _f:
+</tsindxwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-T00000-TS Master Index.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def end(self):
+    def end(self) -> None:
         """Function to create TS Master Index WP end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
-        tmp = '\t</masterindexcategory>\n' + '</tim>'
-        with open(f"{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-TS_MASTER_INDEX_END.txt", 'w', encoding='UTF-8') as _f:
+        tmp = "\t</masterindexcategory>\n" + "</tim>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-TS_MASTER_INDEX_END.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
-        cfg.prefix_file += 1       
+        cfg.prefix_file += 1

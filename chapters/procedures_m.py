@@ -1,137 +1,301 @@
 """MAINTAINER PROCEDURES"""
+
+import datetime
 import math
+
 import cfg
 import views.followon_maintsk as followon_maintsk
 import views.isb as isb
+import views.metadata as md
 import views.proc as proc
+
 
 class MaintainerProcedures:
     """Class to create various types of WP's included in Maintainer Procedures of a TM."""
-    def __init__(self, manual_type, mil_std, sys_acronym, sys_name, sys_number, save_path):
+
+    date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
+    FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
+    FPI_2D = "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN"
+    FPI_E = "-//USA-DOD//DTD -E TM Assembly REV E 8.0 20250417//EN"
+
+    def __init__(
+        self, manual_type, mil_std, sys_acronym, sys_name, tmno, save_path
+    ) -> None:
         self.manual_type = manual_type
         self.mil_std = mil_std
         self.sys_acronym = sys_acronym
         self.sys_name = sys_name
-        self.sys_number = sys_number
+        self.tmno = tmno
         self.save_path = save_path
 
-    def start(self):
+    def start(self) -> None:
         """Function to create Maintainer Procedures start tags."""
-        cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) + 10
-        tmp = '''<?xml version="1.0" encoding="UTF-8"?>
-<mim chngno="0" revno="0" chap-toc="no">\n'''
+        # cfg.prefix_file = math.ceil(cfg.prefix_file / 1000) * 1000
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+<mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="maintainer">\n'
-        tmp += f'\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n'
-        tmp += '\t</titlepg>\n' + '\t<maintenancecategory>'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-MAINTAINER_START.txt', 'w', encoding='UTF-8') as _f:
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n" + "\t<maintenancecategory>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-MAINTAINER_MAINTENANCE_START.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def surwp(self, wpno):
+    def surwp(self, wpno) -> None:
         """Function to create Service Upon Receipt WP."""
-        tmp = '''<!-- SERVICE UPON RECEIPT -->
-    <!-- 
-        PROHIBITED for -10      (MIL-STD 2B)
-        OPTIONAL   for -10      (MIL-STD 2C/2D)
-        REQUIRED   for -12/12&P (MIL-STD 2D)
-        REQUIRED   for -13/13&P (MIL-STD 2B)
-        OPTIONAL   for -13/13&P (MIL-STD 2C)
-        REQUIRED   for -23/23&P (MIL-STD 2B)
-        OPTIONAL   for -23/23&P (MIL-STD 2C) 
-    -->
-    <?xml version="1.0" encoding="UTF-8"?>'''
-        tmp += f'<surwp chngno="0" wpno="{wpno}-{self.sys_number}">'
-        tmp += '''\t<wpidinfo>
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>"""
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE surwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE surwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += (
+                f'<!DOCTYPE surwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+            )
+        tmp += f'<surwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">'
+
+        # WP.METADATA Section
+        tmp += md.show("surwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
             <maintlvl level="maintainer"/>
             <title>SERVICE UPON RECEIPT</title>
-        </wpidinfo>\n'''
+        </wpidinfo>\n"""
         tmp += isb.show()
-        tmp += '''<surtsk>
-            <siting>'''
+        tmp += """<surtsk>
+            <siting>"""
         tmp += proc.show()
-        tmp += '''</siting>
+        tmp += """</siting>
         </surtsk>
         <surtsk>
             <surmat>
-                <unpack>'''
+                <unpack>"""
         tmp += proc.show()
-        tmp += '''</unpack>
+        tmp += """</unpack>
                 <chkeqp>
                     <title/>
-                    <para>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</para>
+                    <para></para>
                 </chkeqp>
             </surmat>
         </surtsk>
         <surtsk>
-            <preserv>'''
+            <preserv>"""
         tmp += proc.show()
-        tmp += '''</preserv>
+        tmp += """</preserv>
         </surtsk>
         <surtsk>
-            <prechkadj>'''
+            <prechkadj>"""
         tmp += proc.show()
-        tmp += '''</prechkadj>
+        tmp += """</prechkadj>
         </surtsk>
         <surtsk>
-            <precal>'''
+            <precal>"""
         tmp += proc.show()
-        tmp += '''</precal>
+        tmp += """</precal>
         </surtsk>
         <surtsk>
             <calign>
-                <alignproc>'''
+                <alignproc>"""
         tmp += proc.show()
-        tmp += '''</alignproc>
+        tmp += """</alignproc>
             </calign>
-        </surtsk>'''
+        </surtsk>"""
 
-        if self.mil_std == '2D' and self.manual_type == ('-12', '-12&P'):
-            tmp += '''<surtsk>
-                <ammo.sur>'''
+        if self.mil_std == "2D" and self.manual_type == ("-12", "-12&P", "-20", "-20P"):
+            tmp += """<surtsk>
+                <ammo.sur>"""
             tmp += proc.show()
-            tmp += '''</ammo.sur>
-            </surtsk>'''
+            tmp += """</ammo.sur>
+            </surtsk>"""
 
-        tmp += '''<surtsk>
-            <other.surtsk>'''
+        tmp += """<surtsk>
+            <other.surtsk>"""
         tmp += proc.show()
-        tmp += '''</other.surtsk>
+        tmp += """</other.surtsk>
         </surtsk>
-    </surwp>'''
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-ServiceUponReceipt.txt', 'w', encoding='UTF-8') as _f:
+    </surwp>"""
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-SERVICE UPON RECEIPT.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def maintwp(self, wpno, wp_title, proc_type):
+    def maintwp(self, wpno, wp_title, proc_type) -> None:
         """Function to create Maintainer Procedures WP."""
-        tmp = f'<maintwp chngno="0" wpno="{wpno}-{self.sys_number}">\n'
-        tmp += '''\t<wpidinfo>
-        <maintlvl level="maintainer"/>\n'''
-        if proc_type.lower == 'prepforuse':
-            tmp += f'<title>{wp_title}<?Pub _newline?>PREP FOR USE</title>\n'
-        elif proc_type.lower == 'prepship':
-            tmp += f'<title>{wp_title}<?Pub _newline?>PREP FOR SHIPMENT</title>\n'
-        elif proc_type.lower == 'prepstore':
-            tmp += f'<title>{wp_title}<?Pub _newline?>PREP FOR STORAGE</title>\n'
+        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE maintwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE maintwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE maintwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += '<maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("maintwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
+        <maintlvl level="maintainer"/>\n"""
+        if proc_type == "prepforuse":
+            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR USE</title>\n"
+        elif proc_type == "prepship":
+            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR SHIPMENT</title>\n"
+        elif proc_type == "prepstore":
+            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR STORAGE</title>\n"
         else:
-            tmp += f'<title>{wp_title}<?Pub _newline?>{proc_type.upper()}</title>\n'
-        tmp += '\t</wpidinfo>\n'
+            tmp += f"<title>{wp_title} <brk/> {proc_type.upper()}</title>\n"
+        tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
-        tmp += '\t<maintsk>\n'
-        tmp += f'\t\t<{proc_type.lower()}>\n'
+        tmp += "\t<maintsk>\n"
+        tmp += f"\t\t<{proc_type}>\n"
         tmp += proc.show()
-        tmp += f'\t\t</{proc_type.lower()}>\n'
-        tmp += '\t</maintsk>\n'
+        tmp += f"\t\t</{proc_type}>\n"
+        tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
-        tmp += '</maintwp>'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-{wpno}-{wp_title}-{proc_type}.txt', 'w', encoding='UTF-8') as _f:
+        tmp += "</maintwp>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def end(self):
+    def gen_maintwp(self, wpno, wp_title) -> None:
+        """Function to create Maintainer Procedures WP."""
+        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE gen.maintwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE gen.maintwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE gen.maintwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<gen.maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("gen.maintwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
+        <maintlvl level="maintainer"/>\n"""
+        tmp += f"<title>{wp_title}</title>\n"
+        tmp += "\t</wpidinfo>\n"
+        tmp += isb.show()
+        tmp += proc.show()
+        tmp += "</maintwp>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.prefix_file += 10
+
+    def manu_items_introwp(self, wpno, wp_title) -> None:
+        """Function to create Maintainer Procedures WP."""
+        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE manu_items_introwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE manu_items_introwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE manu_items_introwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<manu_items_introwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("manu_items_introwp", self.tmno)
+
+        tmp += """\t<wpidinfo>
+        <maintlvl level="maintainer"/>\n"""
+        tmp += f"<title>{wp_title}</title>\n"
+        tmp += "\t</wpidinfo>\n"
+        tmp += isb.show()
+        tmp += """\t<intro>
+        <para0>
+            <title>ILLUSTRATED LIST OF MANUFACTURED ITEMS INTRODUCTION</title>
+            <subpara1>
+				<title>Scope</title>
+				<para>This work package includes complete instructions for making items authorized to be manufactured or fabricated at the field level.</para>
+			</subpara1>
+			<subpara1>
+				<title>How to Use the Index of Manufactured Items</title>
+				<para>A part number index in alphanumeric order is provided for cross-referencing the part number of the item to be manufactured to the information that covers fabrication criteria.</para>
+			</subpara1>
+			<subpara1>
+				<title>Explanation of Illustrations of Manufactured Items</title>
+				<para>All instructions needed by maintenance personnel to manufacture the item shall be provided and shall include illustrations as required. Parts information can be found in <xref wpid=""/>. All bulk materials needed for manufacture of an item are listed by part number or specification number in a tabular list on the illustration.</para>
+			</subpara1>
+        </para0>"""
+        tmp += "</manu_items_introwp>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.prefix_file += 10
+
+    def manuwp(self, wpno, wp_title) -> None:
+        """Function to create Manufacturing Procedures WP."""
+        tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        if self.mil_std == "2C":
+            tmp += f'<!DOCTYPE manuwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
+        elif self.mil_std == "2D":
+            tmp += f'<!DOCTYPE manuwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
+        elif self.mil_std == "E":
+            tmp += f'<!DOCTYPE manuwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        tmp += f'<manuwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+
+        # WP.METADATA Section
+        tmp += md.show("manuwp", self.tmno)
+        tmp += """\t<wpidinfo>
+        <maintlvl level="maintainer"/>\n"""
+        tmp += f"<title>{wp_title}</title>\n"
+        tmp += "\t</wpidinfo>\n"
+        tmp += """\t<manuitem>
+        <title></title>
+        <material-list-category>
+            <title></title>
+            <material-list id="">
+                <name></name>
+                <partno></partno>
+                <cageno></cageno>
+                <nsn>
+                    <fsc></fsc>
+                    <niin></niin>
+                </nsn>
+                <qty></qty>
+                <itemref>
+                    <xref wpid="" itemid=""/>
+                </itemref>
+            </material-list>
+        </material-list-category>
+        <proc>
+			<title></title>
+			<para></para>
+		</proc>
+    </manuitem>"""
+        tmp += "</manuwp>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.prefix_file += 10
+
+    def end(self) -> None:
         """Function to create Maintainer Procedures end tags."""
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
-        tmp = '\t</maintenancecategory>\n' + '</mim>'
-        with open(f'{self.save_path}/{self.sys_acronym} {self.manual_type} WIP/{cfg.prefix_file:05d}-MAINTAINER_END.txt', 'w', encoding='UTF-8') as _f:
+        tmp = "\t</maintenancecategory>\n" + "</mim>"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-MAINTAINER_MAINTENANCE_END.xml",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 1
