@@ -28,12 +28,11 @@ class TSDepot:
 
     def start(self) -> None:
         """Function that creates Depot Troubleshooting starting tags of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
-    <tim chngno="0" revno="0" chap-toc="no">"""
+<tim chngno="0" revno="0" chap-toc="no">"""
         tmp += '\t<titlepg maintlvl="depot">\n'
         tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
-        tmp += "\t</titlepg>\n" + "<troubledmwrnmwrcategory>\n"
+        tmp += "\t</titlepg>\n" + "\t<troubledmwrnmwrcategory>\n"
         with open(
             f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-TS_DEPOT_START.xml",
             "w",
@@ -54,7 +53,7 @@ class TSDepot:
         tmp += f'<tsintrowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsintrowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """<wpidinfo>
         <maintlvl level="depot"/>
@@ -79,12 +78,14 @@ class TSDepot:
         <para></para>
     </para0>
 </tsintrowp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Troubleshooting Introduction.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Troubleshooting Introduction.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_depot.append(file_name)
         cfg.prefix_file += 10
 
     def tsindxwp(self, wpno) -> None:
@@ -99,7 +100,7 @@ class TSDepot:
         tmp += f'<tsindxwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n" + '\t\t<maintlvl level="depot"/>\n'
         tmp += f"""\t\t<title>TROUBLESHOOTING INDEX</title>
@@ -140,12 +141,14 @@ class TSDepot:
         </tsindx.symptom-category>
     </tsindx.symptom>
 </tsindxwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Troubleshooting Index.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Troubleshooting Index.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_depot.append(file_name)
         cfg.prefix_file += 10
 
     def pshopanalwp(self, wpno) -> None:
@@ -160,7 +163,7 @@ class TSDepot:
         tmp += f'<pshopanalwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pshopanalwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """<wpidinfo>
             <maintlvl level="depot"/>
@@ -297,12 +300,14 @@ class TSDepot:
 		</chklist>
 	</pshopanal>
 </pshopanalwp>\n"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Preshop Analysis.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Preshop Analysis.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_depot.append(file_name)
         cfg.prefix_file += 10
 
     def compchklistwp(self, wpno) -> None:
@@ -317,7 +322,7 @@ class TSDepot:
         tmp += f'<compchklistwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("compchklistwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="depot"/>\n'
@@ -347,12 +352,14 @@ class TSDepot:
 		<damage/>
 	</compchklist>
 </compchklistwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Depot Component Checklist.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Component Checklist.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_depot.append(file_name)
         cfg.prefix_file += 10
 
     def tswp(self, wpno, wp_title) -> None:
@@ -373,7 +380,7 @@ class TSDepot:
         tmp += f'<tswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += f"""\t<wpidinfo>
             <maintlvl level="depot"/>
@@ -428,12 +435,14 @@ class TSDepot:
         </faultproc>
     </tsproc>
 </tswp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno} {wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno} {wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_depot.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

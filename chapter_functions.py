@@ -1,6 +1,5 @@
 from itertools import islice
 
-import cfg
 import chapters.auxiliary_equipment as ae
 import chapters.chapter1 as ch1
 import chapters.destruction as d
@@ -86,25 +85,30 @@ def get_operator_instructions(
         manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path
     )
     oper_instructions.start()
-    oper_instructions.controls_indicators()
     _o = 1
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         _o += 1
-        if wp_title:
-            if any(s in wp_title.lower() for s in cfg.operation):
-                _o += 1
-                for row2 in islice(ws.rows, _o, None):
-                    wp_title2 = row2[2].value
-                    wpno = row2[1].value
-                    cond_type = row2[4].value
-                    if wpno:
-                        if wpno[0] == "O":
-                            wp_title2 = wp_title2.replace("/", " or")
-                            if "unusual" in wp_title2:
-                                oper_instructions.unusual_conditions(wpno)
-                            else:
-                                oper_instructions.opusualwp(wpno, wp_title2, cond_type)
+        if wp_title.lower() == "operator instructions":
+            for row2 in islice(ws.rows, _o, None):
+                wp_title2 = row2[2].value
+                wpno = row2[1].value
+                if wpno:
+                    if wpno[0] == "O":
+                        wp_title2 = wp_title2.replace("/", " or")
+                        if "controls and indicators" in wp_title2.lower():
+                            oper_instructions.ctrlindwp(wpno)
+                        elif "unusual" in wp_title2.lower():
+                            oper_instructions.opunuwp(wpno)
+                        elif "emergency" in wp_title2.lower():
+                            oper_instructions.emergencywp(wpno)
+                        elif (
+                            "data plate" in wp_title2.lower()
+                            or "stowage" in wp_title2.lower()
+                        ):
+                            oper_instructions.stowagewp(wpno)
+                        else:
+                            oper_instructions.opusualwp(wpno, wp_title2)
     oper_instructions.end()
 
 
@@ -114,12 +118,13 @@ def get_ts_master_index(
     """Calls TSMasterIndex and all of it's methods to create a Troubleshooting Master Index section in XML."""
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
-        if wp_title and any(s in wp_title.lower() for s in cfg.master_index):
+        wpno = row[1].value
+        if wp_title.lower() == "troubleshooting master index":
             mi = tsmi.TSMasterIndex(
                 manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path
             )
             mi.start()
-            mi.tsindxwp()
+            mi.tsindxwp(wpno)
             mi.end()
 
 
@@ -131,7 +136,7 @@ def get_operator_ts(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) 
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         T += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.troubleshooting):
+        if wp_title.lower() == "operator troubleshooting":
             T += 1
             for row2 in islice(ws.rows, T, None):
                 wp_title2 = row2[2].value
@@ -159,7 +164,7 @@ def get_maintainer_ts(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         T += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.main_troub):
+        if wp_title.lower() == "maintainer troubleshooting":
             T += 1
             for row2 in islice(ws.rows, T, None):
                 wp_title2 = row2[2].value
@@ -188,7 +193,7 @@ def get_depot_ts(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) -> 
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         Mt += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.depot_troub):
+        if wp_title.lower() == "depot troubleshooting":
             Mt += 1
             for row2 in islice(ws.rows, Mt, None):
                 wp_title2 = row2[2].value
@@ -222,20 +227,22 @@ def get_operator_pmcs(
     """Calls PMCS and all of its medthods to create an Operator PMCS chapter in XML."""
     oper_pmcs = po.PMCS(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path)
     oper_pmcs.start()
-    oper_pmcs.pmcsintrowp()
+
     P = 0
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         P += 1
         if wp_title:
-            if any(s in wp_title.lower() for s in cfg.operation):
+            if wp_title.lower() == "operator pmcs":
                 P += 1
                 for row2 in islice(ws.rows, P, None):
                     wpno = row2[1].value
                     wp_title2 = row2[2].value
                     if wpno:
                         if wpno[0] == "C":
-                            if "before" in wp_title2.lower():
+                            if "intro" in wp_title2.lower():
+                                oper_pmcs.pmcsintrowp(wpno)
+                            elif "before" in wp_title2.lower():
                                 oper_pmcs.pmcs_before(wpno)
                             elif "during" in wp_title2.lower():
                                 oper_pmcs.pmcs_during(wpno)
@@ -264,20 +271,22 @@ def get_maintainer_pmcs(
     """Calls PMCS and all of its medthods to create a Maintainer PMCS chapter in XML."""
     main_pmcs = pm.PMCS(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path)
     main_pmcs.start()
-    main_pmcs.pmcsintrowp()
+
     P = 0
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         P += 1
         if wp_title:
-            if any(s in wp_title.lower() for s in cfg.main_pmcs):
+            if wp_title.lower() == "maintainer pmcs":
                 P += 1
                 for row2 in islice(ws.rows, P, None):
                     wpno = row2[1].value
                     wp_title2 = row2[2].value
                     if wpno:
                         if wpno[0] == "C":
-                            if "before" in wp_title2.lower():
+                            if "intro" in wp_title2.lower():
+                                main_pmcs.pmcsintrowp(wpno)
+                            elif "before" in wp_title2.lower():
                                 main_pmcs.pmcs_before(wpno)
                             elif "during" in wp_title2.lower():
                                 main_pmcs.pmcs_during(wpno)
@@ -312,7 +321,7 @@ def get_operator_maintenance(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         M += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.oper_main):
+        if wp_title.lower() == "operator maintenance":
             M += 1
             for row2 in islice(ws.rows, M, None):
                 wpno = row2[1].value
@@ -339,9 +348,7 @@ def get_maintainer_maintenance(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         y += 1
-        if "maintainer maintenance" in wp_title.lower() and any(
-            s in wp_title.lower() for s in cfg.main_main
-        ):
+        if wp_title.lower() == "maintainer maintenance":
             y += 1
             for row2 in islice(ws.rows, y, None):
                 wpno = row2[1].value
@@ -370,7 +377,7 @@ def get_depot_maintenance(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         y += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.depot_main):
+        if wp_title.lower == "depot maintenance":
             y += 1
             for row2 in islice(ws.rows, y, None):
                 wpno = row2[1].value
@@ -401,59 +408,96 @@ def get_depot_maintenance(
     depot_maintenance.end()
 
 
+# def get_auxiliary(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) -> None:
+#     """Build the Auxiliary Equipment chapter from the worksheet."""
+#     aux = ae.AuxiliaryEquipment(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path)
+#     aux.start()
+
+#     # Expecting columns: [?, WP No, Title, Proc Type, ...]
+#     # Adjust indexes if your sheet differs.
+#     rows = list(ws.iter_rows(min_row=2, values_only=True))
+
+#     in_aux_section = False
+
+#     for row in rows:
+#         # Unpack defensively: handle sheets with extra cols
+#         # col0 is ignored; adjust if your sheet’s layout differs
+#         _, wpno, title, proc_type, *rest = (list(row) + [None, None, None, None])[:4]
+
+#         title_l = (title or "").strip().lower()
+
+#         # Not in Auxiliary section yet — look for the section header line
+#         if not in_aux_section:
+#             print(title_l)
+#             # if title_l and any(s in title_l for s in cfg.auxiliary):
+#             if title_l == "auxiliary equipment maintenance":
+#                 in_aux_section = True
+#             continue  # keep scanning until header is found
+
+#         # We are in Auxiliary section: process WP rows.
+#         wpno_s = (wpno or "").strip()
+#         if not wpno_s:
+#             # Blank / spacer row: ignore
+#             continue
+
+#         # If WP number no longer starts with M, we’ve hit the next chapter.
+#         if not wpno_s.startswith("M"):
+#             break
+
+#         # Use the per-row title for routing, with safe replace
+#         t = title or ""
+#         t_for_print = t.replace("/", " or")
+#         tl = t.lower()
+
+#         # Route to the correct writer
+#         if "manufactured items intro" in tl:
+#             aux.manu_items_introwp(wpno_s, t_for_print)
+#         elif "manufacturing procedure" in tl:
+#             aux.manuwp(wpno_s, t_for_print)
+#         elif "torque limits" in tl:
+#             aux.torquewp(wpno_s, t_for_print)
+#         elif "wiring diagram" in tl:
+#             aux.wiringwp(wpno_s, t_for_print)
+#         else:
+#             # Only call generic WP if we have a proc_type
+#             if proc_type:
+#                 aux.auxeqpwp(wpno_s, t_for_print, proc_type)
+
+#     aux.end()
+
+
 def get_auxiliary(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) -> None:
     """Build the Auxiliary Equipment chapter from the worksheet."""
     aux = ae.AuxiliaryEquipment(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path)
     aux.start()
-
-    # Expecting columns: [?, WP No, Title, Proc Type, ...]
-    # Adjust indexes if your sheet differs.
-    rows = list(ws.iter_rows(min_row=2, values_only=True))
-
-    in_aux_section = False
-
-    for row in rows:
-        # Unpack defensively: handle sheets with extra cols
-        # col0 is ignored; adjust if your sheet’s layout differs
-        _, wpno, title, proc_type, *rest = (list(row) + [None, None, None, None])[:4]
-
-        title_l = (title or "").strip().lower()
-
-        # Not in Auxiliary section yet — look for the section header line
-        if not in_aux_section:
-            if title_l and any(s in title_l for s in cfg.auxiliary):
-                in_aux_section = True
-            continue  # keep scanning until header is found
-
-        # We are in Auxiliary section: process WP rows.
-        wpno_s = (wpno or "").strip()
-        if not wpno_s:
-            # Blank / spacer row: ignore
-            continue
-
-        # If WP number no longer starts with M009, we’ve hit the next chapter.
-        if not wpno_s.startswith("M009"):
-            break
-
-        # Use the per-row title for routing, with safe replace
-        t = title or ""
-        t_for_print = t.replace("/", " or")
-        tl = t.lower()
-
-        # Route to the correct writer
-        if "manufactured items intro" in tl:
-            aux.manu_items_introwp(wpno_s, t_for_print)
-        elif "manufacturing procedure" in tl:
-            aux.manuwp(wpno_s, t_for_print)
-        elif "torque limits" in tl:
-            aux.torquewp(wpno_s, t_for_print)
-        elif "wiring diagram" in tl:
-            aux.wiringwp(wpno_s, t_for_print)
-        else:
-            # Only call generic WP if we have a proc_type
-            if proc_type:
-                aux.auxeqpwp(wpno_s, t_for_print, proc_type)
-
+    y = 0
+    for row in islice(ws.rows, 1, None):
+        wp_title = row[2].value
+        print(wp_title)
+        y += 1
+        if "auxiliary equipment maintenance" in wp_title.lower():
+            y += 1
+            for row2 in islice(ws.rows, y, None):
+                wpno = row2[1].value
+                wp_title2 = row2[2].value
+                proc_type = row2[3].value
+                if wpno and wpno[0] == "M":
+                    wp_title2 = wp_title2.replace("/", " or")
+                    # Route to the correct writer
+                    if "manufactured items intro" in wp_title2:
+                        aux.manu_items_introwp(wpno, wp_title2)
+                    elif "manufacturing procedure" in wp_title2:
+                        aux.manuwp(wpno, wp_title2)
+                    elif "torque limits" in wp_title2:
+                        aux.torquewp(wpno, wp_title2)
+                    elif "wiring diagram" in wp_title2:
+                        aux.wiringwp(wpno, wp_title2)
+                    else:
+                        # Only call generic WP if we have a proc_type
+                        if proc_type:
+                            aux.auxeqpwp(wpno, wp_title2, proc_type)
+                else:
+                    break
     aux.end()
 
 
@@ -466,7 +510,6 @@ def get_destruction(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) 
         wp_title = row[2].value
         wpno = row[1].value
         if wpno and wpno[0] == "D" and wpno[5] >= "2":
-            # if wpno and wpno[0] == "D":
             destruct.destruct_materialwp(wpno, wp_title)
     destruct.end()
 
@@ -475,13 +518,12 @@ def get_rpstl(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) -> Non
     """Calls Rpstl and all of it's methods to create a RPSTL Chapter in XML."""
     repair_parts = rpstl.Rpstl(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path)
     repair_parts.start()
-    repair_parts.introwp()
 
     R = 0
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         R += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.rpstl_check):
+        if wp_title.lower() == "repair parts and special tools list":
             R += 1
             break
     for row2 in islice(ws.rows, R, None):
@@ -489,7 +531,9 @@ def get_rpstl(manual, milstd, SYS_ACRONYM, SYS_NAME, tmno, save_path, ws) -> Non
         wp_title2 = row2[2].value
         wp_title2 = wp_title2.replace("/", " or")
         if wpno2 and wpno2[0] == "R":
-            if "bulk items" in wp_title2.lower():
+            if "intro" in wp_title2.lower():
+                repair_parts.introwp()
+            elif "bulk items" in wp_title2.lower():
                 repair_parts.bulk_itemswp(wpno2, wp_title2)
             elif (
                 "nsn index" in wp_title2.lower()
@@ -517,7 +561,7 @@ def get_supporting_information(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         S += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.support_info):
+        if wp_title.lower() == "supporting information":
             S += 1
             for row2 in islice(ws.rows, S, None):
                 wpno = row2[1].value
@@ -563,7 +607,7 @@ def get_supporting_information_mac(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         S += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.support_info):
+        if wp_title.lower() == "supporting information":
             S += 1
             for row2 in islice(ws.rows, S, None):
                 wpno = row2[1].value
@@ -626,7 +670,7 @@ def get_supporting_information_nmwr(
     for row in islice(ws.rows, 1, None):
         wp_title = row[2].value
         S += 1
-        if wp_title and any(s in wp_title.lower() for s in cfg.support_info):
+        if wp_title.lower() == "supporting information":
             S += 1
             for row2 in islice(ws.rows, S, None):
                 wpno = row2[1].value

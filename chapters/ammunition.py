@@ -27,19 +27,23 @@ class Ammunition:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates the Ammunition Maintenance
         Instructions chapter header of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <mim revno="0" chngno="0" chap-toc="no">\n"""
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t<titlepg maintlvl="operator">\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t<titlepg maintlvl="maintainer">\n'
-        tmp += (
-            "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
-        )
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
         tmp += "\t</titlepg>\n"
         tmp += "\t<ammunitioncategory>\n"
         with open(
@@ -48,14 +52,14 @@ class Ammunition:
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-AMMUNITION_START.xml".format(cfg.prefix_file),
+            + f" IADS/files/{cfg.prefix_file:05d}-AMMUNITION_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def ammoidentwp(self) -> None:
+    def ammoidentwp(self, wpno) -> None:
         """Function to create the Ammo Identification WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -64,41 +68,34 @@ class Ammunition:
             tmp += f'<!DOCTYPE ammoidentwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE ammoidentwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<ammoidentwp chngno="0" wpno="O02000.5-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<ammoidentwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ammoidentwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>AMMUNITION IDENTIFICATION</title>
     </wpidinfo>\n"""
         tmp += isb.show()
 
         tmp += "</ammoidentwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Ammo Identification.xml"
         with open(
             self.save_path
             + "/"
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-O02000.5-Ammo Identification.xml".format(
-                cfg.prefix_file
-            ),
+            + f" IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition.append(file_name)
         cfg.prefix_file += 10
 
-    def surwp(self) -> None:
+    def surwp(self, wpno) -> None:
         """Function to create the Service Upon Receipt WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -109,16 +106,13 @@ class Ammunition:
             tmp += (
                 f'<!DOCTYPE surwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
             )
-        tmp += '<surwp chngno="0" wpno="O02001-' + self.tmno + '"  security="cui">\n'
+        tmp += f'<surwp chngno="0" wpno="{wpno}-{self.tmno}"  security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("surwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>SERVICE UPON RECEIPT</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -149,20 +143,22 @@ class Ammunition:
         tmp += "\t<!-- OTHER OPTIONAL SURTSK's THAT CAN BE INCLUDED: -->\n"
         tmp += "\t<!-- arm | calign | install | mark | other.surtsk | precal | prechkadj | preserv | shltr | siting | surmat -->\n"
         tmp += "</surwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Ammunition SUR WP.xml"
         with open(
             self.save_path
             + "/"
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-O02001-Ammunition SUR WP.xml".format(cfg.prefix_file),
+            + f" IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition.append(file_name)
         cfg.prefix_file += 10
 
-    def ammowp(self) -> None:
+    def ammowp(self, wpno) -> None:
         """Function to create the Ammunition Maintenance WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -171,16 +167,13 @@ class Ammunition:
             tmp += f'<!DOCTYPE ammowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE ammowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<ammowp chngno="0" wpno="O02002-' + self.tmno + '" security="cui">\n'
+        tmp += f'<ammowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ammowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>AMMUNITION MAINTENANCE</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -226,22 +219,22 @@ class Ammunition:
         tmp += "\t</clean>\n"
 
         tmp += "</ammowp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Ammunition Maintenance.xml"
         with open(
             self.save_path
             + "/"
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-O02002-Ammunition Maintenance.xml".format(
-                cfg.prefix_file
-            ),
+            + f" IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition.append(file_name)
         cfg.prefix_file += 10
 
-    def ammo_markingwp(self) -> None:
+    def ammo_markingwp(self, wpno) -> None:
         """Function to create the Ammunition Marking Information WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -250,20 +243,13 @@ class Ammunition:
             tmp += f'<!DOCTYPE ammo.markingwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE ammo.markingwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<ammo.markingwp chngno="0" wpno="O02003-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<ammo.markingwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ammo.markingwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>AMMUNITION MARKING INFORMATION</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -291,22 +277,22 @@ class Ammunition:
         tmp += "\t</ammotype>\n"
 
         tmp += "</ammo.markingwp>\n"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Ammunition Marking Info.xml"
         with open(
             self.save_path
             + "/"
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-O02003-Ammunition Marking Info.xml".format(
-                cfg.prefix_file
-            ),
+            + f" IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition.append(file_name)
         cfg.prefix_file += 10
 
-    def natowp(self) -> None:
+    def natowp(self, wpno) -> None:
         """Function to create the Foreign Ammunition (NATO) WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -315,16 +301,13 @@ class Ammunition:
             tmp += f'<!DOCTYPE natowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE natowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<natowp chngno="0" wpno="O02004-' + self.tmno + '" security="cui">\n'
+        tmp += f'<natowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("natowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>FOREIGN AMMUNITION (NATO)</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -353,19 +336,19 @@ class Ammunition:
         tmp += "\t</ammotype>\n"
 
         tmp += "</natowp>\n"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Foreign Ammunition.xml"
         with open(
             self.save_path
             + "/"
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-O02004-Foreign Ammunition.xml".format(
-                cfg.prefix_file
-            ),
+            + f" IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -379,7 +362,7 @@ class Ammunition:
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-AMMUNITION_END.xml".format(cfg.prefix_file),
+            + f" IADS/files/{cfg.prefix_file:05d}-AMMUNITION_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

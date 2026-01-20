@@ -30,9 +30,8 @@ class DepotProcedures:
 
     def start(self) -> None:
         """Function to create Depot Procedures start tags."""
-        # cfg.prefix_file = math.ceil(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
-    <mim chngno="0" revno="0" chap-toc="no">\n"""
+<mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="depot">\n'
         tmp += "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")</name>\n"
         tmp += "\t</titlepg>\n" + "\t<depotcategory>\n"
@@ -57,7 +56,7 @@ class DepotProcedures:
         tmp += f'<ppmgeninfowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ppmgeninfowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """<wpidinfo>
         <maintlvl level="depot"/>
@@ -100,12 +99,16 @@ class DepotProcedures:
         </para0>
     </geninfo>
 </ppmgeninfowp>\n"""
+        file_name = (
+            f"{cfg.prefix_file:05d}-{wpno}-Preservation Packaging Marking Gen Info.xml"
+        )
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Preservation Packaging Marking Gen Info.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_d.append(file_name)
         cfg.prefix_file += 10
 
     def maintwp(self, wpno, wp_title, proc_type) -> None:
@@ -121,16 +124,16 @@ class DepotProcedures:
         tmp += f'<maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="depot"/>\n"""
         if proc_type.lower() == "prepforuse":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR USE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type.lower() == "prepship":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR SHIPMENT</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type.lower() == "prepstore":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR STORAGE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         else:
             tmp += f"<title>{wp_title} <brk/> {proc_type.upper()}</title>\n"
         tmp += "\t</wpidinfo>\n"
@@ -142,12 +145,28 @@ class DepotProcedures:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
-        with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title} {proc_type.upper()}.xml",
-            "w",
-            encoding="UTF-8",
-        ) as _f:
-            _f.write(tmp)
+
+        if (
+            proc_type == "prepforuse"
+            or proc_type == "prepship"
+            or proc_type == "prepstore"
+        ):
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        else:
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}-{proc_type.upper()}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        cfg.procedures_d.append(file_name)
         cfg.prefix_file += 10
 
     def qawp(self, wpno) -> None:
@@ -169,7 +188,7 @@ class DepotProcedures:
         tmp += f'<qawp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("qawp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="depot"/>
@@ -247,12 +266,14 @@ class DepotProcedures:
         </para>
     </acceptance>
 </qawp>\n"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Quality Assurance Requirements.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Quality Assurance Requirements.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_d.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

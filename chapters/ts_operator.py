@@ -54,7 +54,7 @@ class TSOperator:
         tmp += f'<tsindxwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="operator"/>\n'
@@ -116,7 +116,7 @@ class TSOperator:
         tmp += f'<tsintrowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsintrowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += f"""\t<wpidinfo>
         <maintlvl level="operator"/>
@@ -182,7 +182,7 @@ class TSOperator:
         tmp += f'<tswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += f"""\t<wpidinfo>
         <maintlvl level="operator"/>

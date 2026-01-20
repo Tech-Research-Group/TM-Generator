@@ -76,23 +76,25 @@ class FrontMatter:
 		</applic>\n"""
 
         if self.manual_type == "-10":
-            tmp += f'\t<paper.manual maintlvls="10" maintitl="OPERATOR MANUAL FOR {self.sys_name.upper()} ({self.sys_acronym})" \
-                multivolume="no" pubno="TM {self.tmno} {self.manual_type}" revno="0" rpstl="no" \
-                    security="cui">\n'
+            tmp += f'\t<paper.manual maintlvls="10" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+                    pubno="TM {self.tmno} {self.manual_type}" revno="0" rpstl="no" security="cui">\n'
         elif self.manual_type == "-12&P":
-            tmp += f'\t<paper.manual maintlvls="12" maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL INCLUDING REPAIR PARTS AND \
-                SPECIAL TOOLS LIST FOR {self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
-                    pubno="TM {self.tmno}-12&amp;P" revno="0" rpstl="no" security="cui">\n'
+            tmp += f'\t<paper.manual maintlvls="12" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+                    pubno="TM {self.tmno}-12&amp;P" revno="0" rpstl="yes" security="cui">\n'
         elif self.manual_type == "-13&P":
-            tmp += f'\t<paper.manual maintlvls="13" maintitl="OPERATOR AND FIELD MAINTENANCE MANUAL INCLUDING REPAIR PARTS AND \
-                SPECIAL TOOLS LIST FOR {self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+            tmp += f'\t<paper.manual maintlvls="13" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
                     pubno="TM {self.tmno}-13&amp;P" revno="0" rpstl="yes" security="cui">\n'
+        elif self.manual_type == "-20":
+            tmp += f'\t<paper.manual maintlvls="20" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+                    pubno="TM {self.tmno}-20" revno="0" rpstl="no" security="cui">\n'
+        elif self.manual_type == "-20P":
+            tmp += f'\t<paper.manual maintlvls="20" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+                    pubno="TM {self.tmno}-20P" revno="0" rpstl="only" security="cui">\n'
         elif self.manual_type == "-23&P":
-            tmp += f'\t<paper.manual maintlvls="23" maintitl="REPAIR PARTS LIST FOR {self.sys_name.upper()} ({self.sys_acronym})" \
-                multivolume="no" pubno="TM {self.tmno}-23&amp;P" revno="0" rpstl="only" security="cui">\n'
+            tmp += f'\t<paper.manual maintlvls="23" maintitl="{self.sys_name.upper()} ({self.sys_acronym})" multivolume="no" \
+                    pubno="TM {self.tmno}-23&amp;P" revno="0" rpstl="yes" security="cui">\n'
         elif self.manual_type == "NMWR":
-            tmp += f'\t<paper.manual maintlvls="nmwr" maintitl="NATIONAL MAINTENANCE WORK REQUIREMENT INCLUDING REPAIR PARTS AND \
-                SPECIAL TOOLS LIST FOR {self.sys_name.upper()}" multivolume="no" pubno="NMWR \
+            tmp += f'\t<paper.manual maintlvls="nmwr" maintitl="{self.sys_name.upper()}" multivolume="no" pubno="NMWR \
                     {self.tmno}" revno="0" rpstl="yes" security="cui">\n'
         tmp += f"{self.TAB_2}<paper.frnt>\n"
 
@@ -131,8 +133,19 @@ class FrontMatter:
         tmp += f'{self.TAB_4}<graphic boardno=""/>\n'
         tmp += f"{self.TAB_4}<notices>\n"
         tmp += f"{self.TAB_5}<dist>\n"
-        tmp += f"{self.TAB_6}<a.statement/>\n"
+        tmp += f"{self.TAB_6}<a.statement>\n"
+        tmp += f"{self.TAB_7}<cti/>\n"
+        tmp += f"{self.TAB_7}<reasondate></reasondate>\n"
+        tmp += f"{self.TAB_7}<releaseagent></releaseagent>\n"
+        tmp += f"{self.TAB_6}</a.statement>\n"
         tmp += f"{self.TAB_5}</dist>\n"
+        tmp += f"{self.TAB_5}<export/>\n"
+        tmp += f"{self.TAB_5}<destr>\n"
+        tmp += f"""{self.TAB_6}<para>For classified documents, follow the procedures in <xref wpid="S00001-9-4120-433" itemid="NISPOM"/>,
+                National Industrial Security Program Operating Manual and/or <xref wpid="S00001-9-4120-433" itemid="Info_Security"/>,
+                Information Security Program. For unclassified, limited documents, destroy by any method that will prevent disclosure
+                of contents or reconstruction of the document.</para>\n"""
+        tmp += f"{self.TAB_5}</destr>\n"
         tmp += f"{self.TAB_4}</notices>\n"
         tmp += (
             self.TAB_4
@@ -147,13 +160,14 @@ class FrontMatter:
         )
         tmp += f"{self.TAB_4}<date>{self.date}</date>\n"
         tmp += f"{self.TAB_3}</frntcover>\n"
-
+        file_name = "00010-Front Cover.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00010-FRONT COVER.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 10
 
     def warning_summary(self) -> None:
@@ -447,13 +461,14 @@ class FrontMatter:
         tmp += f"{self.TAB_3}<para>Potable water hoses or fittings should not be handled directly after handling wastewater hoses or fittings. Wastewater items may contain bacteria or viruses that present a danger to life or health if not properly sanitized. Seek immediate medical attention if illness occurs.</para>\n"
         tmp += f"{self.TAB_2}</hazard>\n"
         tmp += "\t</hazmat>\n" + "</warnsum>\n"
-
+        file_name = "00020-Warning Summary.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00020-WARNING SUMMARY.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 10
 
     def loepwp(self) -> None:
@@ -497,13 +512,14 @@ class FrontMatter:
         <chgno>0</chgno>
     </chghistory>
 </loepwp>"""
-
+        file_name = "00030-List of Effective Packages.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00030-LIST OF EFFECTIVE PACKAGES.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 10
 
     def titleblk(self) -> None:
@@ -520,6 +536,7 @@ class FrontMatter:
 
         # WP.METADATA Section
         tmp += md.show("titleblk", self.tmno)
+
         tmp += f"""<servnomen>HEADQUARTERS, DEPARTMENT OF THE ARMY</servnomen>
     <city>WASHINGTON</city>
     <state>DC</state>
@@ -531,8 +548,10 @@ class FrontMatter:
         tmp += f"{self.TAB_3}<nsn>\n"
         tmp += f"{self.TAB_4}<fsc>{self.fsc}</fsc>\n"
         tmp += f"{self.TAB_4}<niin>{self.niin}</niin>\n"
-        tmp += f"""{self.TAB_3}</nsn>
-        </sysnomen>
+        tmp += f"{self.TAB_3}</nsn>\n"
+        tmp += f"{self.TAB_3}<partno>{self.partno}</partno>\n"
+        tmp += f"{self.TAB_3}<eic></eic>\n"
+        tmp += """\t\t</sysnomen>
     </prtitle>
     <reporting>
         <title>REPORTING ERRORS AND RECOMMENDING IMPROVEMENTS</title>
@@ -556,21 +575,29 @@ class FrontMatter:
     </reporting>
     <notices>
         <dist>
-            <a.statement/>
+            <a.statement>
+                <cti/>
+                <reasondate></reasondate>
+                <releaseagent></releaseagent>
+            </a.statement>
         </dist>
         <export/>
         <destr>
-            <para></para>
+            <para>For classified documents, follow the procedures in <xref wpid="S00001-9-4120-433" itemid="NISPOM"/>,
+                National Industrial Security Program Operating Manual and/or <xref wpid="S00001-9-4120-433" itemid="Info_Security"/>,
+                Information Security Program. For unclassified, limited documents, destroy by any method that will prevent disclosure
+                of contents or reconstruction of the document.</para>
         </destr>
     </notices>
-</titleblk>"""
-
+</titleblk>\n"""
+        file_name = "00040-Title Block.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00040-TITLE BLOCK.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 10
 
     def contents(self) -> None:
@@ -591,13 +618,14 @@ class FrontMatter:
         <title/>
     </contententry>
 </contents>\n"""
-
+        file_name = "00050-TOC.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00050-TOC.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 10
 
     def howtouse(self) -> None:
@@ -869,10 +897,12 @@ class FrontMatter:
     </para0>
 </howtouse>\n"""
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
+        file_name = "00060-How To Use This Manual.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/00060-HOW TO USE THIS MANUAL.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.front_matter.append(file_name)
         cfg.prefix_file += 1

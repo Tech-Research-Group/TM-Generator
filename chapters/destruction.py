@@ -9,7 +9,7 @@ import views.metadata as md
 
 
 class Destruction:
-    """Class to create various types of WP's included in Desctruction section of a TM."""
+    """Class to create various types of WP's included in Destruction section of a TM."""
 
     date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
     FPI_2C = "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN"
@@ -26,30 +26,25 @@ class Destruction:
         self.tmno = tmno
         self.save_path = save_path
 
-    def start(self) -> None:
-        """Function to create Desctruction section start tags."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
-        tmp = """<?xml version="1.0" encoding="UTF-8"?>
-    <dim chngno="0" revno="0" chap-toc="no">\n"""
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
         if self.manual_type == "-10":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif (
-            self.manual_type == "-12&P"
-            or self.manual_type == "-13&P"
-            or self.manual_type == "-23&P"
-        ):
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
-        tmp += (
-            "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
-        )
-        tmp += "</titlepg>\n"
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
+    def start(self) -> None:
+        """Function to create Destruction section start tags."""
+        tmp = """<?xml version="1.0" encoding="UTF-8"?>
+<dim chngno="0" revno="0" chap-toc="no">\n"""
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-DESTRUCTION_START.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-DESTRUCTION_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
@@ -65,24 +60,13 @@ class Destruction:
             tmp += f'<!DOCTYPE destruct-introwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE destruct-introwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<destruct-introwp chngno="0" wpno="D00001-'
-            + self.tmno
-            + '" security="cui">'
-        )
+        tmp += f'<destruct-introwp chngno="0" wpno="D00001-{self.tmno}" security="cui">'
 
         # WP.METADATA Section
-        tmp += md.show("destruct-introwp", self.tmno)
+        tmp += md.show("D00001", self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif (
-            self.manual_type == "-12&P"
-            or self.manual_type == "-13&P"
-            or self.manual_type == "-23&P"
-        ):
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += f"""\t\t<title>INTRODUCTION</title>
     </wpidinfo>
     <authorize_to_destroy>
@@ -113,20 +97,14 @@ class Destruction:
         </para>
     </degree_of_destruct>\n"""
         tmp += "</destruct-introwp>"
-
+        file_name = f"{cfg.prefix_file:05d}-D00001-Destruction Introduction.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-D00001-Destruction Introduction.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.destruction.append(file_name)
         cfg.prefix_file += 10
 
     def destruct_materialwp(self, wpno, wp_title) -> None:
@@ -145,17 +123,10 @@ class Destruction:
         )
 
         # WP.METADATA Section
-        tmp += md.show("destruct-materialwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif (
-            self.manual_type == "-12&P"
-            or self.manual_type == "-13&P"
-            or self.manual_type == "-23&P"
-        ):
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += f"""\t\t<title>{wp_title}</title>
     </wpidinfo>"""
         tmp += isb.show()
@@ -164,17 +135,14 @@ class Destruction:
         <para></para>
     </proc>
 </destruct-materialwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-{}-{}.xml".format(cfg.prefix_file, wpno, wp_title),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.destruction.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -182,12 +150,7 @@ class Destruction:
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = "</dim>"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-DESTRUCTION_END.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-DESTRUCTION_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

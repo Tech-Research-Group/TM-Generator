@@ -26,16 +26,25 @@ class SupportingInformation:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function to create Supporting Info section start tags."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
-    <sim chngno="0" revno="0" chap-toc="no">\n"""
-        tmp += '\t<titlepg maintlvl="operator">\n'
+<sim chngno="0" revno="0" chap-toc="no">\n"""
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
         tmp += "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")</name>\n"
         tmp += "\t</titlepg>\n"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORT_INFO_START.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORTING_INFORMATION_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
@@ -56,11 +65,11 @@ class SupportingInformation:
         tmp += f'<refwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("refwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>REFERENCES</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>REFERENCES</title>
     </wpidinfo>
     <scope>
         <title>Scope</title>
@@ -187,14 +196,14 @@ class SupportingInformation:
         </pubident>
     </publist>
 </refwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-References.xml"
         with open(
-            (
-                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-References.xml"
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def macintrowp(self, wpno) -> None:
@@ -209,11 +218,11 @@ class SupportingInformation:
         tmp += f'<macintrowp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("macintrowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>MAINTENANCE ALLOCATION CHART (MAC) INTRODUCTION</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>MAINTENANCE ALLOCATION CHART (MAC) INTRODUCTION</title>
     </wpidinfo>
     <intro>
         <para0>
@@ -347,13 +356,14 @@ class SupportingInformation:
         </para0>
     </intro>
 </macintrowp>"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Maintenance Allocation Chart Introduction.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MAC Introduction.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def macwp(self, wpno) -> None:
@@ -370,11 +380,11 @@ class SupportingInformation:
         tmp += f'<macwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("macwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>MAINTENANCE ALLOCATION CHART (MAC)</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>MAINTENANCE ALLOCATION CHART (MAC)</title>
     </wpidinfo>
     <mac>
         <title>Maintenance Allocation Chart for ...</title>
@@ -492,12 +502,14 @@ class SupportingInformation:
         </remark-group>
     </remarktab>
 </macwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Maintenance Allocation Chart.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MAC.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def coeibiiwp(self, wpno) -> None:
@@ -512,11 +524,10 @@ class SupportingInformation:
         tmp += f'<coeibiiwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("coeibiiwp", self.tmno)
-
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>COMPONENTS OF END ITEM (COEI) AND BASIC ISSUE ITEMS (BII) LIST</title>
+        tmp += md.show(wpno, self.tmno)
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>COMPONENTS OF END ITEM (COEI) AND BASIC ISSUE ITEMS (BII) LIST</title>
     </wpidinfo>
     <intro frame="no">
         <para0>
@@ -653,12 +664,14 @@ class SupportingInformation:
         </bii-opt-entry>
     </bii-opt>
 </coeibiiwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Components of End Item and Basic Issue Items List.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-COEI BII List.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def aalwp(self, wpno) -> None:
@@ -675,11 +688,11 @@ class SupportingInformation:
         tmp += f'<aalwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("aalwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>ADDITIONAL AUTHORIZATION LIST (AAL)</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>ADDITIONAL AUTHORIZATION LIST (AAL)</title>
     </wpidinfo>
     <intro>
         <para0>
@@ -771,14 +784,14 @@ class SupportingInformation:
         </aal-entry>
     </aal>
 </aalwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Additional Authorization List.xml"
         with open(
-            (
-                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-AAL.xml"
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def explistwp(self, wpno) -> None:
@@ -793,11 +806,11 @@ class SupportingInformation:
         tmp += f'<explistwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("explistwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>EXPENDABLE AND DURABLE ITEMS LIST</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>EXPENDABLE AND DURABLE ITEMS LIST</title>
     </wpidinfo>
     <intro>
         <para0>
@@ -864,12 +877,16 @@ class SupportingInformation:
         </expdur-entry>
     </explist>
 </explistwp>"""
+        file_name = (
+            f"{cfg.prefix_file:05d}-{wpno}-Expendable and Durable Items List.xml"
+        )
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-EDIL.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def toolidwp(self, wpno) -> None:
@@ -884,11 +901,11 @@ class SupportingInformation:
         tmp += f'<toolidwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("toolidwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>TOOL IDENTIFICATION LIST</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>TOOL IDENTIFICATION LIST</title>
     </wpidinfo>
     <intro>
         <para0>
@@ -960,12 +977,14 @@ class SupportingInformation:
         </tool-entry>
     </toolidlist>
 </toolidwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Tool Identification List.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-TIL.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def mrplwp(self, wpno) -> None:
@@ -980,11 +999,11 @@ class SupportingInformation:
         tmp += f'<mrplwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("mrplwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>MANDATORY REPLACEMENT PARTS LIST</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>MANDATORY REPLACEMENT PARTS LIST</title>
     </wpidinfo>
     <intro>
         <para0>
@@ -1063,12 +1082,14 @@ class SupportingInformation:
 
     </mrpl>
 </mrplwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Material Replacement Parts List.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-MRP.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def csi_wp(self, wpno) -> None:
@@ -1083,11 +1104,11 @@ class SupportingInformation:
         tmp += f'<csi.wp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("csi.wp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-		<maintlvl level="operator"/>
-		<title>CRITICAL SAFETY ITEMS</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>CRITICAL SAFETY ITEMS</title>
 	</wpidinfo>
     <csi>
         <intro>
@@ -1131,12 +1152,14 @@ class SupportingInformation:
 		</csi.tab>
 	</csi>
 </csi.wp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Critical Safety Items.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-CSI.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def supitemwp(self, wpno) -> None:
@@ -1151,11 +1174,11 @@ class SupportingInformation:
         tmp += f'<supitemwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("supitemwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-		<maintlvl level="operator"/>
-		<title>SUPPORT ITEMS</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>SUPPORT ITEMS</title>
 	</wpidinfo>
 	<!-- OPTIONAL WORK PACKAGES -->
     <!-- intro?, (coei, bii)?, aal?, explist?, toolidlist?, mrpl?, csi? -->
@@ -1166,16 +1189,19 @@ class SupportingInformation:
         </para0>
     </intro>
 </supitemwp>"""
+
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Support Items.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Support Items.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def genwp(self, wpno) -> None:
-        """Function to create the Support Items WP."""
+        """Function to create the Additional Supporting WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
             tmp += f'<!DOCTYPE genwp PUBLIC "{self.FPI_2C}" "../dtd/40051C_6_5.dtd" [\n]>\n'
@@ -1188,11 +1214,11 @@ class SupportingInformation:
         tmp += f'<genwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("genwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-		<maintlvl level="operator"/>
-		<title>ADDITIONAL SUPPORTING WORK PACKAGES</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>ADDITIONAL SUPPORTING WORK PACKAGES</title>
 	</wpidinfo>\n"""
         tmp += isb.show()
         tmp += """<proc>
@@ -1214,12 +1240,17 @@ class SupportingInformation:
         </step1>
     </proc>
 </genwp>"""
+
+        file_name = (
+            f"{cfg.prefix_file:05d}-{wpno}-Additional Supporting Work Packages.xml"
+        )
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Additional Supporting WP.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.supporting_information.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -1227,7 +1258,7 @@ class SupportingInformation:
         tmp = "</sim>"
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORT_INFO_END.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SUPPORTING_INFORMATION_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

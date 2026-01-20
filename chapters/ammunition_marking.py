@@ -27,15 +27,23 @@ class AmmunitionMarking:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates the Ammunition Marking Maintenance
         Instructions chapter header of TM."""
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <mim revno="0" chngno="0" chap-toc="no">\n"""
-        tmp += '\t<titlepg maintlvl="maintainer">\n'
-        tmp += (
-            "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
-        )
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
         tmp += "\t</titlepg>\n"
         tmp += "\t<ammunitioncategory>\n"
         with open(
@@ -46,7 +54,7 @@ class AmmunitionMarking:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def ammo_markingwp(self) -> None:
+    def ammo_markingwp(self, wpno) -> None:
         """Function to create the Ammunition Marking Information WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -55,15 +63,13 @@ class AmmunitionMarking:
             tmp += f'<!DOCTYPE production PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE production PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<ammo.markingwp chngno="0" wpno="O0-' + self.tmno + '" security="cui">\n'
-        )
+        tmp += f'<ammo.markingwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ammo.markingwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>AMMUNITION MARKING INFORMATION</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -91,12 +97,14 @@ class AmmunitionMarking:
         tmp += "\t</ammotype>\n"
 
         tmp += "</ammo.markingwp>\n"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Ammunition Marking Info.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-O00001-Ammunition Marking Info.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ammunition_marking.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

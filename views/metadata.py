@@ -5,9 +5,9 @@ import datetime
 date: str = datetime.datetime.today().strftime("%d %B %Y").upper()
 
 
-def show(wpid, tmno) -> str:
+def show(wpno, tmno) -> str:
     """Function to create the <wp.metadata> section of the work package."""
-    return f"""\n\t<wp.metadata>
+    return f"""\t<wp.metadata>
         <portionmark country="US" security="cui"/>
         <proponent>
             <name>US Army Communications-Electronics Command</name>
@@ -25,7 +25,7 @@ def show(wpid, tmno) -> str:
             </address>
         </proponent>
         <tracking>
-            <change.history id="{wpid}-CHNG0">
+            <change.history id="{wpno}-{tmno}-CHG0">
                 <author>
                     <name></name>
                     <proponent>

@@ -33,10 +33,9 @@ class Rpstl:
 
     def start(self) -> None:
         """Function to create RPSTL section start tags."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <pim chngno="0" revno="0" chap-toc="no" dmwr-inclus="none">\n"""
-        tmp += '\t<titlepg maintlvl="operator">\n'
+        tmp += '\t<titlepg maintlvl="maintainer">\n'
         tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
         tmp += "\t</titlepg>\n"
         with open(
@@ -59,7 +58,7 @@ class Rpstl:
         tmp += f'<introwp chngno="0" wpno="R00001-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("introwp", self.tmno)
+        tmp += md.show("R00001", self.tmno)
 
         tmp += f"""\t<wpidinfo>
         <maintlvl level="maintainer"/>
@@ -733,12 +732,14 @@ class Rpstl:
         </para>
     </para0>
 </introwp>"""
+        file_name = f"{cfg.prefix_file:05d}-R00001-RPSTL Introduction.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-R00001-RPSTL Introduction.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.rpstl.append(file_name)
         cfg.prefix_file += 10
 
     def plwp(self, wpno, wp_title) -> None:
@@ -759,7 +760,7 @@ class Rpstl:
         tmp += f'<plwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("plwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += f"""\t<wpidinfo>
         <maintlvl level="maintainer"/>
@@ -846,12 +847,14 @@ class Rpstl:
         </pi.item>
     </pi.category>
 </plwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.rpstl.append(file_name)
         cfg.prefix_file += 10
 
     def bulk_itemswp(self, wpno, wp_title) -> None:
@@ -866,7 +869,7 @@ class Rpstl:
         tmp += f'<bulk_itemswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("bulk_itemswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>
@@ -942,12 +945,14 @@ class Rpstl:
         <desc></desc>
     </pi.item>
 </bulk_itemswp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.rpstl.append(file_name)
         cfg.prefix_file += 10
 
     def nsnindxwp(self, wpno, wp_title) -> None:
@@ -962,7 +967,7 @@ class Rpstl:
         tmp += f'<nsnindxwp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("nsnindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>
@@ -1006,12 +1011,14 @@ class Rpstl:
         </nsnindxrow>
     </nsnindx>
 </nsnindxwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.rpstl.append(file_name)
         cfg.prefix_file += 10
 
     def pnindxwp(self, wpno, wp_title) -> None:
@@ -1026,7 +1033,7 @@ class Rpstl:
         tmp += f'<pnindxwp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pnindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer" />
@@ -1060,12 +1067,14 @@ class Rpstl:
         </pnindxrow>
     </pnindx>
 </pnindxwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.rpstl.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

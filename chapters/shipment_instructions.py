@@ -29,32 +29,36 @@ class ShipmentInstructions:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates the Shipment/Movement and Storage Maintenance
         Instructions chapter header of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = '<?xml version="1.0" encoding="UTF-8"?>\n'
         tmp += '<mim revno="0" chngno="0" chap-toc="no">\n'
-        tmp += '\t\t<titlepg maintlvl="operator">\n'
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
         tmp += (
             "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
         )
         tmp += "\t\t</titlepg>\n"
         tmp += "\t\t<shipmentmovementstoragecategory>\n"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-SHIPPING/STORAGE_START.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SHIPPING_INSTRUCTIONS_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def prepstore(self) -> None:
+    def prepstore(self, wpno) -> None:
         """Function to create Shipment/Movement and Storage Maintenance
         Instructions chapter prepstore WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -64,14 +68,14 @@ class ShipmentInstructions:
             tmp += f'<!DOCTYPE prepstore PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE prepstore PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<maintwp chngno="0" wpno="M00601-' + self.tmno + '" security="cui">\n'
+        tmp += f'<maintwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("prepstore", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-            <maintlvl level="maintainer"/>
-            <title>PREPARATION FOR STORAGE</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>PREPARATION FOR STORAGE</title>
         </wpidinfo>\n"""
         tmp += isb.show()
         tmp += "\t<maintsk>\n"
@@ -81,20 +85,17 @@ class ShipmentInstructions:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Preparation For Storage.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-M00601-Prep For Storage.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.shipment_instructions.append(file_name)
         cfg.prefix_file += 10
 
-    def prepship(self) -> None:
+    def prepship(self, wpno) -> None:
         """Function to create Shipment/Movement and Storage Maintenance
         Instructions chapter prepship WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -104,14 +105,14 @@ class ShipmentInstructions:
             tmp += f'<!DOCTYPE prepship PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE prepship PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<maintwp chngno="0" wpno="M00602-' + self.tmno + '" security="cui">\n'
+        tmp += f'<maintwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-            <maintlvl level="maintainer"/>
-            <title>PREPARATION FOR SHIPPING</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>PREPARATION FOR SHIPPING</title>
         </wpidinfo>\n"""
         tmp += isb.show()
         tmp += "\t<maintsk>\n"
@@ -121,20 +122,17 @@ class ShipmentInstructions:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Preparation For Shipment.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-M00602-Prep For Shipment.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.shipment_instructions.append(file_name)
         cfg.prefix_file += 10
 
-    def transport(self) -> None:
+    def transport(self, wpno) -> None:
         """Function to create Shipment/Movement and Storage Maintenance
         Instructions chapter transport WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -144,14 +142,14 @@ class ShipmentInstructions:
             tmp += f'<!DOCTYPE transport PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE transport PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<maintwp chngno="0" wpno="M00603-' + self.tmno + '" security="cui">\n'
+        tmp += f'<maintwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-            <maintlvl level="maintainer"/>
-            <title>TRANSPORT</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>TRANSPORT</title>
         </wpidinfo>\n"""
         tmp += isb.show()
         tmp += "\t<maintsk>\n"
@@ -161,17 +159,14 @@ class ShipmentInstructions:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Transport.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-M00603-Transport.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.shipment_instructions.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -180,12 +175,7 @@ class ShipmentInstructions:
         tmp = "</mim>"
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-SHIPPING/STORAGE_END.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SHIPPING_INSTRUCTIONS_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

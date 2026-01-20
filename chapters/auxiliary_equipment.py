@@ -30,33 +30,28 @@ class AuxiliaryEquipment:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates the Auxiliary Equipment Maintenance
         Instructions chapter header of TM.
         """
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <mim revno="0" chngno="0" chap-toc="no">\n"""
-        if self.manual_type == "-10":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif (
-            self.manual_type == "-12&P"
-            or self.manual_type == "-13&P"
-            or self.manual_type == "-23&P"
-        ):
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
-        tmp += (
-            "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
-        )
-        tmp += "\t\t</titlepg>\n"
-        tmp += "\t\t<auxiliarycategory>\n"
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
+        tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
+        tmp += "\t</titlepg>\n"
+        tmp += "\t<auxiliarycategory>\n"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-AUXILIARY_EQUPMENT_START.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-AUXILIARY_EQUPMENT_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
@@ -76,10 +71,10 @@ class AuxiliaryEquipment:
         tmp += f'<auxeqpwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("auxeqpwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += f"\t\t<title>{wp_title} <brk/> {proc_type.upper()}</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
@@ -90,13 +85,14 @@ class AuxiliaryEquipment:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</auxeqpwp>\n"
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title} {proc_type.upper()}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title} {proc_type.upper()}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
     def manu_items_introwp(self, wpno, wp_title) -> None:
@@ -108,17 +104,13 @@ class AuxiliaryEquipment:
             tmp += f'<!DOCTYPE manu_items_introwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE manu_items_introwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            f'<manu_items_introwp chngno="0" wpno="{wpno}-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<manu_items_introwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("manu_items_introwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>ILLUSTRATED LIST OF MANUFACTURED ITEMS INTRODUCTION</title>
     </wpidinfo>
     <intro>
@@ -164,12 +156,14 @@ class AuxiliaryEquipment:
         </partdesc>
     </manuindx>
 </manu_items_introwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
     def manuwp(self, wpno, wp_title) -> None:
@@ -181,25 +175,27 @@ class AuxiliaryEquipment:
             tmp += f'<!DOCTYPE manuwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE manuwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += f'<manuwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
+        tmp += f'<manuwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("manuwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>MANUFACTURING PROCEDURES</title>
     </wpidinfo>\n"""
         tmp += isb.show()
         tmp += """\t<manuitem>
     </manuitem>
 </manuwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
     def torquewp(self, wpno, wp_title) -> None:
@@ -211,13 +207,13 @@ class AuxiliaryEquipment:
             tmp += f'<!DOCTYPE torquewp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE torquewp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += f'<torquewp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
+        tmp += f'<torquewp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("torquewp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>TORQUE LIMITS</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -226,12 +222,14 @@ class AuxiliaryEquipment:
         tmp += "\t\t<para></para>\n"
         tmp += "\t</torqueval>\n"
         tmp += "</torquewp>\n"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
     def wiringwp(self, wpno, wp_title) -> None:
@@ -243,13 +241,13 @@ class AuxiliaryEquipment:
             tmp += f'<!DOCTYPE wiringwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE wiringwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += f'<wiringwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
+        tmp += f'<wiringwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("wiringwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += """<title>WIRING DIAGRAMS</title>
     </wpidinfo>\n"""
         tmp += isb.show()
@@ -278,12 +276,14 @@ class AuxiliaryEquipment:
         tmp += "\t\t<para0></para0>\n"
         tmp += "\t</wiringdiag>\n"
         tmp += "</wiringwp>\n"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -293,14 +293,8 @@ class AuxiliaryEquipment:
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         tmp = "\t</auxiliarycategory>\n"
         tmp += "</mim>"
-
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-AUXILIARY_EQUIPMENT_END.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-AUXILIARY_EQUPMENT_STOP.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

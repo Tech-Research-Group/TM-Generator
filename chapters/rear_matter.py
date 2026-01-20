@@ -86,7 +86,7 @@ class RearMatter:
     <back boardno="metric_equivalents"/>
 </rear>"""
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/ZZZZZ-REAR MATTER.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/ZZZZZ_999999_Rear Matter.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

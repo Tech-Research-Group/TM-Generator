@@ -25,12 +25,25 @@ class TSMasterIndex:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if (
+            self.manual_type == "-10"
+            or self.manual_type == "-12&P"
+            or self.manual_type == "-13&P"
+        ):
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates TS Master Index WP starting tags of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <tim chngno="0" revno="0" chap-toc="no">\n"""
-        tmp += '\t<titlepg maintlvl="operator">\n'
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
         tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
         tmp += "\t</titlepg>\n"
         tmp += "\t<masterindexcategory>\n"
@@ -42,7 +55,7 @@ class TSMasterIndex:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def tsindxwp(self) -> None:
+    def tsindxwp(self, wpno) -> None:
         """Function to create a Troubleshooting Index WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -51,13 +64,13 @@ class TSMasterIndex:
             tmp += f'<!DOCTYPE tsindxwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE tsindxwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp = f'<tsindxwp chngno="0" wpno="T00000-{self.tmno}" security="cui">\n'
+        tmp = f'<tsindxwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        tmp += '\t\t<maintlvl level="operator"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += f"""\t\t<title>TROUBLESHOOTING INDEX</title>
     </wpidinfo>
     <geninfo>
@@ -96,12 +109,14 @@ class TSMasterIndex:
         </tsindx.symptom-category>
     </tsindx.symptom>
 </tsindxwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Troubleshooting Master Index.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-T00000-TS Master Index.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_master_index_o.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

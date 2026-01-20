@@ -28,12 +28,11 @@ class TSMaintainer:
 
     def start(self) -> None:
         """Function that creates PMCS starting tags of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <tim chngno="0" revno="0" chap-toc="no">"""
         tmp += '\t<titlepg maintlvl="maintainer">\n'
         tmp += f"\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
-        tmp += "\t</titlepg>\n" + "<troublecategory>\n"
+        tmp += "\t</titlepg>\n" + "\t<troublecategory>\n"
         with open(
             f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-TS_MAINTAINER_START.xml",
             "w",
@@ -54,7 +53,7 @@ class TSMaintainer:
         tmp += f'<tsindxwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsindxwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -96,12 +95,14 @@ class TSMaintainer:
         </tsindx.symptom-category>
     </tsindx.symptom>
 </tsindxwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Troubleshooting Index.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Troubleshooting Index.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_maintainer.append(file_name)
         cfg.prefix_file += 10
 
     def tsintrowp(self, wpno) -> None:
@@ -116,7 +117,7 @@ class TSMaintainer:
         tmp += f'<tsintrowp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tsintrowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """<wpidinfo>
             <maintlvl level="maintainer"/>
@@ -141,12 +142,14 @@ class TSMaintainer:
             <para></para>
         </para0>
     </tsintrowp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Troubleshooting Introduction.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-Troubleshooting Introduction.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_maintainer.append(file_name)
         cfg.prefix_file += 10
 
     def tswp(self, wpno, wp_title) -> None:
@@ -167,7 +170,7 @@ class TSMaintainer:
         tmp += f'<tswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("tswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += f"""\t<wpidinfo>
             <maintlvl level="maintainer"/>
@@ -222,17 +225,14 @@ class TSMaintainer:
             </faultproc>
         </tsproc>
     </tswp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-{wp_title}.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-{}-{}.xml".format(cfg.prefix_file, wpno, wp_title),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.ts_maintainer.append(file_name)
         cfg.prefix_file += 10
 
     def end(self):
@@ -241,12 +241,7 @@ class TSMaintainer:
         tmp = "\t</troublecategory>\n"
         tmp += "</tim>"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-TS_MAINTAINER_END.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-TS_MAINTAINER_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

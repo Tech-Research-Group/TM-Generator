@@ -27,34 +27,38 @@ class SoftwareInformation:
         self.tmno = tmno
         self.save_path = save_path
 
+    def maintenance_level(self) -> str:
+        """Function to find maintenance level for a chapter or work package"""
+        if self.manual_type == "-10":
+            level = "operator"
+        elif self.manual_type == "NMWR":
+            level = "depot"
+        else:
+            level = "maintainer"
+        return level
+
     def start(self) -> None:
         """Function that creates the Software Information chapter header of TM."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <soim revno="0" chngno="0" chap-toc="no">\n"""
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<titlepg maintlvl="operator">\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<titlepg maintlvl="maintainer">\n'
+        tmp += f'\t<titlepg maintlvl="{self.maintenance_level()}">\n'
         tmp += (
-            "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
+            "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
         )
-        tmp += "\t\t</titlepg>\n"
-        tmp += "\t\t<softwarecategory>\n"
+        tmp += "\t</titlepg>\n"
+        tmp += "\t<softwarecategory>\n"
+
+        file_name = f"{cfg.prefix_file:05d}-SOFTWARE_INFORMATION_START.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-SOFTWARE_INFO_START.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.auxiliary_equipment.append(file_name)
         cfg.prefix_file += 10
 
-    def softginfowp(self) -> None:
+    def softginfowp(self, wpno) -> None:
         """Function to create the Software General Information WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -64,17 +68,14 @@ class SoftwareInformation:
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softginfowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
         tmp += (
-            '<softginfowp chngno="0" wpno="S00101-' + self.tmno + '" security="cui">\n'
+            f'<softginfowp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
         )
 
         # WP.METADATA Section
-        tmp += md.show("softginfowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>SOFTWARE GENERAL INFORMATION</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
@@ -111,22 +112,18 @@ class SoftwareInformation:
         tmp += "\t\t<para0></para0>\n"
         tmp += "\t</loa>\n"
         tmp += "</softginfowp>"
+
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software General Info.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00101-Software General Info.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softsumwp(self) -> None:
+    def softsumwp(self, wpno) -> None:
         """Function to create the Software Summary WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -135,16 +132,15 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softsumwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softsumwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<softsumwp chngno="0" wpno="S00102-' + self.tmno + '" security="cui">\n'
+        tmp += (
+            f'<softsumwp chngno="0" wpno="{wpno}-' + self.tmno + '" security="cui">\n'
+        )
 
         # WP.METADATA Section
-        tmp += md.show("softsumwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>SOFTWARE SUMMARY</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
@@ -168,20 +164,17 @@ class SoftwareInformation:
         tmp += "\t<!-- OTHER OPTIONS THAT CAN BE INCLUDED HERE: -->\n"
         tmp += "\t<!-- soft_secpriv?, soft_superctrls?, soft_assistreport? -->\n"
         tmp += "</softsumwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Summary.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00102-Software Summary.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softeffectwp(self) -> None:
+    def softeffectwp(self, wpno) -> None:
         """Function to create the Software Information Effectivity WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -190,8 +183,16 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softeffectwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softeffectwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Information Effectivity.xml"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.software_information.append(file_name)
 
-    def softdiffversionwp(self) -> None:
+    def softdiffversionwp(self, wpno) -> None:
         """Function to create the Software Information Differences Between Software Versions WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -200,8 +201,16 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softdiffversionwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softdiffversionwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Information Differences Between Software Versions.xml"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.software_information.append(file_name)
 
-    def softfeaturescapwp(self) -> None:
+    def softfeaturescapwp(self, wpno) -> None:
         """Function to create the Software Information Features and Capabilities WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -211,41 +220,31 @@ class SoftwareInformation:
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softfeaturescapwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
         tmp += (
-            '<softfeaturescapwp chngno="0" wpno="S00105-'
-            + self.tmno
-            + '" security="cui">\n'
+            f'<softfeaturescapwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
         )
 
         # WP.METADATA Section
-        tmp += md.show("softfeaturescapwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>SOFTWARE FEATURES AND CAPABILITIES</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softfeaturescapwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Information Features and Capabilities.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00105-SW Features Capabilities.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softscreendisplaywp(self) -> None:
+    def softscreendisplaywp(self, wpno) -> None:
         """Function to create the Software Information Screen Displays WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -254,39 +253,32 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softscreendisplaywp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softscreendisplaywp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softscreendisplaywp chngno="0" wpno="S00106-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<softscreendisplaywp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softscreendisplaywp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
-        tmp += """\t<wpidinfo>
-        <maintlvl level="operator"/>
-        <title>SCREEN DISPLAYS</title>
+        tmp += "\t<wpidinfo>\n"
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
+        tmp += """\t\t<title>SCREEN DISPLAYS</title>
     </wpidinfo>\n"""
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softscreendisplaywp>"
+        file_name = (
+            f"{cfg.prefix_file:05d}-{wpno}-Software Information Screen Displays.xml"
+        )
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00106-Software Screen Displays.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softmenuwp(self) -> None:
+    def softmenuwp(self, wpno) -> None:
         """Function to create the Software Information Menus and Directories WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -295,38 +287,30 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softmenuwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softmenuwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softmenuwp chngno="0" wpno="S00107-' + self.tmno + '" security="cui">\n'
-        )
+        tmp += f'<softmenuwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softmenuwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>MENU/DIRECTORIES</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softmenuwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Information Menus and Directories.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00107-Software Menu.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softtoolswp(self) -> None:
+    def softtoolswp(self, wpno) -> None:
         """Function to create the Software Tools and Buttons WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -335,18 +319,13 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softtoolswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softtoolswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softtoolswp chngno="0" wpno="S00108-' + self.tmno + '" security="cui">\n'
-        )
+        tmp += f'<softtoolswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softtoolswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>TOOLS AND BUTTONS</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
@@ -405,22 +384,17 @@ class SoftwareInformation:
         tmp += "\t\t</ctrlindrow>\n"
         tmp += "\t</ctrlindtab>\n"
         tmp += "</softtoolswp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Tools and Buttons.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00108-SW Tools And Buttons.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softsecprivwp(self) -> None:
+    def softsecprivwp(self, wpno) -> None:
         """Function to create the Software Information Security and Privacy Procedures WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -429,42 +403,30 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softsecprivwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softsecprivwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softsecprivwp chngno="0" wpno="S00109-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<softsecprivwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softsecprivwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>SECURITY AND PRIVACY PROCEDURES</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softsecprivwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Information Security and Privacy.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00109-Security And Privacy Procedures.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softsuperctrlswp(self) -> None:
+    def softsuperctrlswp(self, wpno) -> None:
         """Function to create the Software Supervisory Controls WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -473,8 +435,16 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softsuperctrlswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softsuperctrlswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Supervisory Controls.xml"
+        with open(
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+            "w",
+            encoding="UTF-8",
+        ) as _f:
+            _f.write(tmp)
+        cfg.software_information.append(file_name)
 
-    def softpowerupwp(self) -> None:
+    def softpowerupwp(self, wpno) -> None:
         """Function to create the Software Powerup/Powerdown Procedures WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -483,42 +453,30 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softpowerupwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softpowerupwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softpowerupwp chngno="0" wpno="S00111-'
-            + self.tmno
-            + '" security="cui">\n'
-        )
+        tmp += f'<softpowerupwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softpowerupwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>POWERUP/STARTUP AND POWERDOWN/SHUTDOWN PROCEDURES</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softpowerupwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Software Powerup/Powerdown.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00111-SW Power Procedures.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
-    def softaccesswp(self) -> None:
+    def softaccesswp(self, wpno) -> None:
         """Function to create the Accessing/Exiting Software
         WP."""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -528,37 +486,27 @@ class SoftwareInformation:
             tmp += f'<!DOCTYPE softaccesswp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE softaccesswp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += (
-            '<softaccesswp chngno="0" wpno="S00111-' + self.tmno + '" security="cui">\n'
-        )
+        tmp += f'<softaccesswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("softaccesswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
-        if self.manual_type == "-10" or self.manual_type == "-13&P":
-            tmp += '\t\t<maintlvl level="operator"/>\n'
-        elif self.manual_type == "-23&P":
-            tmp += '\t\t<maintlvl level="maintainer"/>\n'
+        tmp += f'\t\t<maintlvl level="{self.maintenance_level()}"/>\n'
         tmp += "\t\t<title>ACCESSING/EXITING SOFTWARE</title>\n"
         tmp += "\t</wpidinfo>\n"
         tmp += isb.show()
         tmp += proc.show()
         tmp += proc.show()
         tmp += "</softaccesswp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-Accessing/Exiting Software.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-S00111-Accessing Exiting Software.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.software_information.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
@@ -567,12 +515,7 @@ class SoftwareInformation:
         tmp += "</soim>"
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-SOFTWARE_INFO_END.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-SOFTWARE_INFORMATION_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

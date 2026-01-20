@@ -30,7 +30,6 @@ class MaintainerProcedures:
 
     def start(self) -> None:
         """Function to create Maintainer Procedures start tags."""
-        # cfg.prefix_file = math.ceil(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="maintainer">\n'
@@ -58,7 +57,7 @@ class MaintainerProcedures:
         tmp += f'<surwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">'
 
         # WP.METADATA Section
-        tmp += md.show("surwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
             <maintlvl level="maintainer"/>
@@ -104,6 +103,7 @@ class MaintainerProcedures:
             </calign>
         </surtsk>"""
 
+        # TODO: Check to see if this is supposed to be -10 or -12
         if self.mil_std == "2D" and self.manual_type == ("-12", "-12&P", "-20", "-20P"):
             tmp += """<surtsk>
                 <ammo.sur>"""
@@ -117,12 +117,14 @@ class MaintainerProcedures:
         tmp += """</other.surtsk>
         </surtsk>
     </surwp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-Service Upon Receipt.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-SERVICE UPON RECEIPT.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_m.append(file_name)
         cfg.prefix_file += 10
 
     def maintwp(self, wpno, wp_title, proc_type) -> None:
@@ -134,19 +136,19 @@ class MaintainerProcedures:
             tmp += f'<!DOCTYPE maintwp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE maintwp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
+        tmp += f'<maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>\n"""
         if proc_type == "prepforuse":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR USE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type == "prepship":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR SHIPMENT</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type == "prepstore":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR STORAGE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         else:
             tmp += f"<title>{wp_title} <brk/> {proc_type.upper()}</title>\n"
         tmp += "\t</wpidinfo>\n"
@@ -158,12 +160,27 @@ class MaintainerProcedures:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
-        with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
-            "w",
-            encoding="UTF-8",
-        ) as _f:
-            _f.write(tmp)
+        if (
+            proc_type == "prepforuse"
+            or proc_type == "prepship"
+            or proc_type == "prepstore"
+        ):
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        else:
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}-{proc_type.upper()}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        cfg.procedures_m.append(file_name)
         cfg.prefix_file += 10
 
     def gen_maintwp(self, wpno, wp_title) -> None:
@@ -178,7 +195,7 @@ class MaintainerProcedures:
         tmp += f'<gen.maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("gen.maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>\n"""
@@ -187,12 +204,14 @@ class MaintainerProcedures:
         tmp += isb.show()
         tmp += proc.show()
         tmp += "</maintwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_m.append(file_name)
         cfg.prefix_file += 10
 
     def manu_items_introwp(self, wpno, wp_title) -> None:
@@ -207,7 +226,7 @@ class MaintainerProcedures:
         tmp += f'<manu_items_introwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("manu_items_introwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>\n"""
@@ -231,12 +250,14 @@ class MaintainerProcedures:
 			</subpara1>
         </para0>"""
         tmp += "</manu_items_introwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_m.append(file_name)
         cfg.prefix_file += 10
 
     def manuwp(self, wpno, wp_title) -> None:
@@ -251,7 +272,7 @@ class MaintainerProcedures:
         tmp += f'<manuwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("manuwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
         tmp += """\t<wpidinfo>
         <maintlvl level="maintainer"/>\n"""
         tmp += f"<title>{wp_title}</title>\n"
@@ -280,12 +301,14 @@ class MaintainerProcedures:
 		</proc>
     </manuitem>"""
         tmp += "</manuwp>"
+        file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title.upper()}.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.procedures_m.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

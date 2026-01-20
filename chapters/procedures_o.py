@@ -30,7 +30,6 @@ class OperatorProcedures:
 
     def start(self) -> None:
         """Function to create Operator Procedures start tags."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="operator">\n'
@@ -56,16 +55,16 @@ class OperatorProcedures:
         tmp += f'<maintwp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("maintwp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += """\t<wpidinfo>
         <maintlvl level="operator"/>\n"""
         if proc_type == "prepforuse":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR USE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type == "prepship":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR SHIPMENT</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         elif proc_type == "prepstore":
-            tmp += f"<title>{wp_title} <brk/> PREPARATION FOR STORAGE</title>\n"
+            tmp += f"<title>{wp_title}</title>\n"
         else:
             tmp += f"<title>{wp_title} <brk/> {proc_type.upper()}</title>\n"
         tmp += "\t</wpidinfo>\n"
@@ -77,12 +76,27 @@ class OperatorProcedures:
         tmp += "\t</maintsk>\n"
         tmp += followon_maintsk.show()
         tmp += "</maintwp>"
-        with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-{wp_title.upper()} {proc_type.upper()}.xml",
-            "w",
-            encoding="UTF-8",
-        ) as _f:
-            _f.write(tmp)
+        if (
+            proc_type == "prepforuse"
+            or proc_type == "prepship"
+            or proc_type == "prepstore"
+        ):
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        else:
+            file_name = f"{cfg.prefix_file:05d}-{wpno.upper()}-{wp_title}-{proc_type.upper()}.xml"
+            with open(
+                f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
+                "w",
+                encoding="UTF-8",
+            ) as _f:
+                _f.write(tmp)
+        cfg.procedures_o.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

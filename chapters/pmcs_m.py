@@ -28,15 +28,14 @@ class PMCS:
 
     def start(self) -> None:
         """Function to create the PMCS start tags."""
-        # cfg.prefix_file = math.floor(cfg.prefix_file / 1000) * 1000
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
-    <mim chngno="0" revno="0" chap-toc="no">\n"""
+<mim chngno="0" revno="0" chap-toc="no">\n"""
         tmp += '\t<titlepg maintlvl="maintainer">\n'
         tmp += (
             "\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
         )
         tmp += "\t</titlepg>\n"
-        tmp += "<pmcscategory>\n" ""
+        tmp += "\t<pmcscategory>\n" ""
         with open(
             f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-MAINTAINER_PMCS_START.xml",
             "w",
@@ -45,7 +44,7 @@ class PMCS:
             _f.write(tmp)
         cfg.prefix_file += 10
 
-    def pmcsintrowp(self) -> None:
+    def pmcsintrowp(self, wpno) -> None:
         """Function to create a PMCS intro WP"""
         tmp: str = '<?xml version="1.0" encoding="UTF-8"?>\n'
         if self.mil_std == "2C":
@@ -54,10 +53,10 @@ class PMCS:
             tmp += f'<!DOCTYPE pmcsintrowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE pmcsintrowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<pmcsintrowp wpno="C00001-' + self.tmno + '" chngno="0" security="cui">'
+        tmp += f'<pmcsintrowp wpno="{wpno}-{self.tmno}" chngno="0" security="cui">'
 
         # WP.METADATA Section
-        tmp += md.show("pmcsintrowp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -140,12 +139,14 @@ class PMCS:
         </subpara1>
     </para0>
 </pmcsintrowp>"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Introduction.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-C00101-PMCS Introduction.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_before(self, wpno) -> None:
@@ -160,7 +161,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -212,13 +213,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Before.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Before.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_during(self, wpno) -> None:
@@ -233,7 +235,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -285,13 +287,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS During.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS During.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_after(self, wpno) -> None:
@@ -306,7 +309,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -358,13 +361,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS After.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS After.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_daily(self, wpno) -> None:
@@ -379,7 +383,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -432,12 +436,14 @@ class PMCS:
     </pmcstable>
 </pmcswp>\n"""
 
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Daily.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Daily.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_weekly(self, wpno) -> None:
@@ -452,7 +458,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -504,12 +510,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Weekly.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Weekly.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_monthly(self, wpno) -> None:
@@ -524,7 +532,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -576,13 +584,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Monthly.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Monthly.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_quarterly(self, wpno) -> None:
@@ -597,7 +606,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -650,12 +659,14 @@ class PMCS:
     </pmcstable>
 </pmcswp>\n"""
 
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Quarterly.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Quarterly.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_semi_annually(self, wpno) -> None:
@@ -670,7 +681,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -722,13 +733,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Semi-Annually.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Semi-annually.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def pmcs_annually(self, wpno) -> None:
@@ -743,7 +755,7 @@ class PMCS:
         tmp += f'<pmcswp chngno="0" wpno="{wpno}-{self.tmno}" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("pmcswp", self.tmno)
+        tmp += md.show(wpno, self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += '\t\t<maintlvl level="maintainer"/>\n'
@@ -795,13 +807,14 @@ class PMCS:
         </pmcs-entry>
     </pmcstable>
 </pmcswp>\n"""
-
+        file_name = f"{cfg.prefix_file:05d}-{wpno}-PMCS Annually.xml"
         with open(
-            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{cfg.prefix_file:05d}-{wpno}-PMCS Annually.xml",
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.pmcs_m.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:

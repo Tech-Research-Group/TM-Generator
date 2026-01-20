@@ -15,11 +15,11 @@ class EntityDeclarations:
         tmp = '<?xml version="1.0" encoding="UTF-8"?>'
         if self.milstd == "2C":
             tmp += """<?xml-stylesheet href="40051C_6_5.fos" type="text/x-fosi" title="Editor Stylesheet" media="screen" alternate="yes"?>
-<?xml-stylesheet href="C:/Program Files/PTC/Arbortext Editor/custom/doctypes/xslfo-main-TRG_Stable--2C 2023-12-11/xslfo-main-vTRG-2C_DAILYS.xsl" type="text/xsl" media="print,pdf" alternate="yes" title="Print Stylesheet"?>
+<?xml-stylesheet href="C:/Program Files/PTC/Arbortext Editor/custom/doctypes/xslfo-main-TRG_Stable--2C 2025-07-18/xslfo-main-vTRG-2C_DAILYS.xsl" type="text/xsl" media="print,pdf" alternate="yes" title="Print Stylesheet"?>
 <!DOCTYPE production PUBLIC "-//USA-DOD//DTD -1/2C TM Assembly REV C 6.5 20200930//EN" "40051C_6_5.dtd" [\n"""
         elif self.milstd == "2D":
             tmp += """<?xml-stylesheet href="40051D_7_0.fos" type="text/x-fosi" title="Editor Stylesheet" media="screen" alternate="yes"?>
-<?xml-stylesheet href="C:/Program Files/PTC/Arbortext Editor/custom/doctypes/xslfo-main-TRG_Stable--2D 2025-04-14/xslfo-main-vTRG-2D_DAILY.xsl" type="text/xsl" media="print,pdf" alternate="yes" title="Print Stylesheet"?>
+<?xml-stylesheet href="C:/Program Files/PTC/Arbortext Editor/custom/doctypes/xslfo-main-TRG_Stable--2D 2025-07-18/xslfo-main-vTRG-2D_DAILY.xsl" type="text/xsl" media="print,pdf" alternate="yes" title="Print Stylesheet"?>
 <!DOCTYPE production PUBLIC "-//USA-DOD//DTD -1/2D TM Assembly REV D 7.0 20220130//EN" "40051D_7_0.dtd" [\n"""
         elif self.milstd == "E":
             tmp += """<?xml-stylesheet href="40051E_8_0.fos" type="text/x-fosi" title="Editor Stylesheet" media="screen" alternate="yes"?>

@@ -33,13 +33,11 @@ class Chapter1:
         self.save_path = save_path
 
     def start(self) -> None:
-        """Function that creates chapter 1 header of TM."""
+        """Function that creates Chapter 1 header of TM."""
         tmp = """<?xml version="1.0" encoding="UTF-8"?>
 <gim revno="0" chngno="0" chap-toc="no">\n"""
-        tmp += '<titlepg maintlvl="operator">\n'
-        tmp += (
-            "\t\t\t<name>" + self.sys_name + " (" + self.sys_acronym + ")" + "</name>\n"
-        )
+        tmp += '\t<titlepg maintlvl="operator">\n'
+        tmp += f"\t\t\t<name>{self.sys_name} ({self.sys_acronym})</name>\n"
         tmp += "\t\t</titlepg>\n"
         with open(
             self.save_path
@@ -47,7 +45,7 @@ class Chapter1:
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-CHAP_1_START.xml".format(cfg.prefix_file),
+            + f" IADS/files/{cfg.prefix_file:05d}-CHAPTER_1_START.xml",
             "w",
             encoding="UTF-8",
         ) as _f:
@@ -63,10 +61,10 @@ class Chapter1:
             tmp += f'<!DOCTYPE ginfowp PUBLIC "{self.FPI_2D}" "../dtd/40051D_7_0.dtd" [\n]>\n'
         elif self.mil_std == "E":
             tmp += f'<!DOCTYPE ginfowp PUBLIC "{self.FPI_E}" "../dtd/40051E_8_0.dtd" [\n]>\n'
-        tmp += '<ginfowp wpno="G00001-' + self.tmno + '" chngno="0" security="cui">\n'
+        tmp += f'<ginfowp wpno="G00001-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("ginfowp", self.tmno)
+        tmp += md.show("G00001", self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
@@ -246,17 +244,14 @@ class Chapter1:
         <para>Repair parts are listed and illustrated in <xref wpid="RXX-XX-XXXX-XXX"/> through <xref wpid="RXXXXX-XX-XXXX-XXX"/> of this manual.</para>
     </supdata>"""
         tmp += "</ginfowp>\n"
+        file_name = f"{cfg.prefix_file:05d}-G00001-General Information.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-G00001-General Info.xml".format(cfg.prefix_file),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.chapter1.append(file_name)
         cfg.prefix_file += 10
 
     def equipment_description(self) -> None:
@@ -272,7 +267,7 @@ class Chapter1:
         tmp += f'<descwp wpno="G00002-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("descwp", self.tmno)
+        tmp += md.show("G00002", self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
@@ -477,19 +472,14 @@ class Chapter1:
         tmp += f"{self.TAB_2}</para0>\n"
         tmp += "\t</eqpdata>\n"
         tmp += "</descwp>\n"
+        file_name = f"{cfg.prefix_file:05d}-G00002-Equipment Description and Data.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-G00002-Equipment Description.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.chapter1.append(file_name)
         cfg.prefix_file += 10
 
     def theory_operations(self) -> None:
@@ -504,7 +494,7 @@ class Chapter1:
         tmp += f'<thrywp wpno="G00003-{self.tmno}" chngno="0" security="cui">\n'
 
         # WP.METADATA Section
-        tmp += md.show("thrywp", self.tmno)
+        tmp += md.show("G00003", self.tmno)
 
         tmp += "\t<wpidinfo>\n"
         tmp += f'{self.TAB_2}<maintlvl level="operator"/>\n'
@@ -558,23 +548,18 @@ class Chapter1:
     </systhry>
 </thrywp>"""
         )
+        file_name = f"{cfg.prefix_file:05d}-G00003-Theory Of Operations.xml"
         with open(
-            self.save_path
-            + "/"
-            + self.sys_acronym
-            + " "
-            + self.manual_type
-            + " IADS/files/{:05d}-G00003-Theory Of Operations.xml".format(
-                cfg.prefix_file
-            ),
+            f"{self.save_path}/{self.sys_acronym} {self.manual_type} IADS/files/{file_name}",
             "w",
             encoding="UTF-8",
         ) as _f:
             _f.write(tmp)
+        cfg.chapter1.append(file_name)
         cfg.prefix_file += 10
 
     def end(self) -> None:
-        """Function to create chapter 1 end tags"""
+        """Function to create Chapter 1 end tags"""
         tmp = "</gim>"
         cfg.prefix_file = (math.ceil(cfg.prefix_file / 1000) * 1000) - 1
         with open(
@@ -583,7 +568,7 @@ class Chapter1:
             + self.sys_acronym
             + " "
             + self.manual_type
-            + " IADS/files/{:05d}-CHAP_1_END.xml".format(cfg.prefix_file),
+            + f" IADS/files/{cfg.prefix_file:05d}-CHAPTER_1_END.xml",
             "w",
             encoding="UTF-8",
         ) as _f:

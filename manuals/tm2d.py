@@ -132,23 +132,23 @@ def build_12p_tm(
     cf.get_operator_instructions(
         manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws
     )
-    # TROUBLESHOOTING MASTER INDEX
+    # TROUBLESHOOTING MASTER INDEX - OPTIONAL
     if chb_tmi.get() == 1:
         cf.get_ts_master_index(
             manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws
         )
     # OPERATOR TROUBLESHOOTING
     cf.get_operator_ts(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
-    # MAINTAINER TROUBLESHOOTING
-    cf.get_maintainer_ts(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
     # OPERATOR PMCS
     cf.get_operator_pmcs(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
-    # MAINTAINER PMCS
-    cf.get_maintainer_pmcs(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
     # OPERATOR MAINTENANCE PROCEDURES
     cf.get_operator_maintenance(
         manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws
     )
+    # MAINTAINER TROUBLESHOOTING
+    cf.get_maintainer_ts(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
+    # MAINTAINER PMCS
+    cf.get_maintainer_pmcs(manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws)
     # MAINTAINER MAINTENANCE
     cf.get_maintainer_maintenance(
         manual, milstd, SYS_ACRONYM, SYS_NAME, TMNO, save_path, ws

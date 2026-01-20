@@ -1,20 +1,15 @@
 """TM SHELL GENERATOR"""
 
 import contextlib
-import os
-import shutil
+
+# import os
+# import shutil
 from tkinter import filedialog, messagebox
 
-import openpyxl as xl
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import DANGER, END, FALSE, LEFT, PRIMARY, SUCCESS, W
 
 import cfg
-import chapters.dataset as ds
-import chapters.production as prod
-import chapters.toc as toc
-import manuals.tm2c as tm2c
-import manuals.tm2d as tm2d
 
 global chbox_1, chbox_2, chbox_3, chbox_4, chbox_5, chbox_6, chbox_tmi
 excelFile = None
@@ -23,8 +18,8 @@ milstd = ""
 workbook = None
 ws = None
 
-CBX_MANUAL = None
-CBX_MIL_STD = None
+# CBX_MANUAL = None
+# CBX_MIL_STD = None
 CAGENO = ""
 CUSTOM_TBUTTON = "Custom.TButton"
 ERRORS = []
@@ -32,6 +27,7 @@ FSC = ""
 ICON = r"C:\\Users\\nicho\\OneDrive - techresearchgroup.com\\Documents\\GitHub\\TM-Generator\\logo_TRG.ico"
 MODELNO = ""
 NIIN = ""
+PADY = (2, 2)
 PARTNO = ""
 SYS_ACRONYM = ""
 SYS_NAME = ""
@@ -119,11 +115,11 @@ def clear_form() -> None:
     ent_tmno.delete(0, END)
     ent_uoc.delete(0, END)
 
-    # Reset the Comboboxes
-    if CBX_MANUAL is not None:
-        CBX_MANUAL.current(0)
-    if CBX_MIL_STD is not None:
-        CBX_MIL_STD.current(0)
+    # Reset MIL-STD Combobox
+    CBX_MIL_STD.current(1)  # 2D
+    # Reset Manual Type Comobobox
+    combofill(None)
+    CBX_MANUAL.current(0)  # -10
 
     # Reset the Checkboxes
     chb_tmi.set(0)
@@ -134,8 +130,9 @@ def clear_form() -> None:
     chb_5.set(0)
     chb_6.set(0)
 
-    chbox_3["state"] = "disable"
-    chbox_4["state"] = "disable"
+    chbox_3["state"] = "normal"
+    chbox_4["state"] = "normal"
+    chbox_6["state"] = "normal"
 
     # Reset WP Numbering
     cfg.prefix_file = 0
@@ -147,27 +144,16 @@ def build_tm(save_path) -> None:
     milstd = CBX_MIL_STD.get()
     manual = CBX_MANUAL.get()
 
+    import chapters.dataset as ds
+    import chapters.production as prod
+    import chapters.toc as toc
+    import manuals.tm2c as tm2c
+    import manuals.tm2d as tm2d
+
     if milstd == "2C":
         if manual == "-10":
             create_tm_wip_dir(save_path)
-            production = prod.Production(
-                CAGENO,
-                FSC,
-                manual,
-                milstd,
-                NIIN,
-                PARTNO,
-                SYS_ACRONYM,
-                SYS_NAME,
-                TMNO,
-                UOC,
-                save_path,
-            )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
-            table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2c.build_10(
                 CAGENO,
                 FSC,
@@ -188,12 +174,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "-13&P":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -207,11 +187,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "-13&P":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2c.build_13p(
                 CAGENO,
                 FSC,
@@ -232,12 +220,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "-23&P":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -251,11 +233,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "-23&P":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2c.build_23p(
                 CAGENO,
                 FSC,
@@ -276,12 +266,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "NMWR":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -295,11 +279,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "NMWR":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} NMWR Shell using MIL-STD-{milstd}")
             tm2c.build_nmwr(
                 CAGENO,
                 FSC,
@@ -315,13 +307,6 @@ def build_tm(save_path) -> None:
                 save_path,
                 ws,
             )
-            print(f"Building...{manual} NMWR Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your NMWR has been created.")
-    elif milstd == "2D":
-        if manual == "-10":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -335,11 +320,20 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your NMWR has been created.")
+
+    elif milstd == "2D":
+        if manual == "-10":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2d.build_10_tm(
                 CAGENO,
                 FSC,
@@ -362,12 +356,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "-12&P":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -381,11 +369,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "-12&P":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2d.build_12p_tm(
                 CAGENO,
                 FSC,
@@ -408,12 +404,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "-20":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -427,11 +417,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "-20":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2d.build_20_tm(
                 CAGENO,
                 FSC,
@@ -454,12 +452,6 @@ def build_tm(save_path) -> None:
                 chb_6,
                 chb_tmi,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "-20P":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -473,11 +465,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "-20P":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
             tm2d.build_20p_tm(
                 CAGENO,
                 FSC,
@@ -493,12 +493,6 @@ def build_tm(save_path) -> None:
                 save_path,
                 ws,
             )
-            print(f"Building...{manual} TM Shell using MIL-STD-{milstd}")
-            # Reset WP Numbering
-            cfg.prefix_file = 0
-            messagebox.showinfo("Success!", "Your technical manual has been created.")
-        elif manual == "NMWR":
-            create_tm_wip_dir(save_path)
             production = prod.Production(
                 CAGENO,
                 FSC,
@@ -512,11 +506,19 @@ def build_tm(save_path) -> None:
                 UOC,
                 save_path,
             )
-            production.buildProduction()
-            dataset = ds.DataSet(manual, SYS_ACRONYM, save_path)
-            dataset.buildDataSet()
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
             table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
-            table_of_contents.buildTOC()
+            table_of_contents.build_toc()
+
+            # Reset WP Numbering
+            cfg.prefix_file = 0
+            messagebox.showinfo("Success!", "Your technical manual has been created.")
+
+        elif manual == "NMWR":
+            create_tm_wip_dir(save_path)
+            print(f"Building...{manual} NMWR Shell using MIL-STD-{milstd}")
             tm2d.build_nmwr(
                 CAGENO,
                 FSC,
@@ -532,7 +534,25 @@ def build_tm(save_path) -> None:
                 save_path,
                 ws,
             )
-            print(f"Building...{manual} NMWR Shell using MIL-STD-{milstd}")
+            production = prod.Production(
+                CAGENO,
+                FSC,
+                manual,
+                milstd,
+                NIIN,
+                PARTNO,
+                SYS_ACRONYM,
+                SYS_NAME,
+                TMNO,
+                UOC,
+                save_path,
+            )
+            production.build_production()
+            dataset = ds.DataSet(manual, SYS_ACRONYM, SYS_NAME, TMNO, save_path)
+            dataset.build_dataset()
+            table_of_contents = toc.TOC(manual, SYS_ACRONYM, save_path)
+            table_of_contents.build_toc()
+
             # Reset WP Numbering
             cfg.prefix_file = 0
             messagebox.showinfo("Success!", "Your NMWR has been created.")
@@ -541,24 +561,38 @@ def build_tm(save_path) -> None:
 def create_tm_wip_dir(save_path) -> None:
     """Creates the IADS directory for generated TM files.
     Deletes the current one if it exists."""
+    import shutil
+    from pathlib import Path
+
     man = CBX_MANUAL.get()
-    # Directory
-    directory = f"{SYS_ACRONYM} {man} IADS"
-    # Parent Directory path
-    parent_dir = f"{save_path}/"
-    # Path
-    path = os.path.join(parent_dir, directory)
-    # Remove folder if a folder is already present
-    if os.path.exists(path):
-        shutil.rmtree(path, ignore_errors=True)
-    # Create the directory
-    # '/home / User / Documents'
-    os.mkdir(path)
-    print(f"Creating the {directory} directory!")
-    # Create the 'files' subdirectory inside IADS
-    files_dir = os.path.join(path, "files")
-    os.mkdir(files_dir)
-    print(f"Creating the files directory inside {directory}!")
+
+    base = Path(save_path)
+    tm_dir = base / f"{SYS_ACRONYM} {man} IADS"
+
+    if tm_dir.exists():
+        shutil.rmtree(tm_dir)
+
+    tm_dir.mkdir()
+    (tm_dir / "files").mkdir()
+
+    print(f"Creating the {tm_dir.name} directory!")
+    # man = CBX_MANUAL.get()
+    # # Directory
+    # directory = f"{SYS_ACRONYM} {man} IADS"
+    # # Parent Directory path
+    # parent_dir = f"{save_path}/"
+    # # Path
+    # path = os.path.join(parent_dir, directory)
+    # # Remove folder if a folder is already present
+    # if os.path.exists(path):
+    #     shutil.rmtree(path, ignore_errors=True)
+
+    # os.mkdir(path)
+    # print(f"Creating the {directory} directory!")
+    # # Create the 'files' subdirectory inside IADS
+    # files_dir = os.path.join(path, "files")
+    # os.mkdir(files_dir)
+    # print(f"Creating the files directory inside {directory}!")
 
 
 def save_folder() -> None:
@@ -579,12 +613,12 @@ def save_folder() -> None:
 def maincombo() -> None:
     """Creates the two comboboxes and binds one to another."""
     global CBX_MANUAL, CBX_MIL_STD
-    man_values = ("-10", "-13&P", "-23&P", "NMWR")
+    man_values = ("-10", "-12&P", "-20", "-20P", "NMWR")
     std_values = ("2C", "2D", "E")
     CBX_MIL_STD = ttk.Combobox(root, values=std_values, font="helvetica 13", width=28)
     CBX_MIL_STD.grid(column=1, row=8)
     CBX_MIL_STD["state"] = "readonly"
-    CBX_MIL_STD.current(0)
+    CBX_MIL_STD.current(1)
     CBX_MIL_STD.bind("<<ComboboxSelected>>", combofill)
     CBX_MANUAL = ttk.Combobox(
         root, values=man_values, font="helvetica 13", width=28, justify="left"
@@ -598,30 +632,33 @@ def combofill(_e) -> None:
     """Checks what MIL-STD is selected to fill the TM type combobox."""
     if CBX_MIL_STD.get() == "2C":
         man = ("-10", "-13&P", "-23&P", "NMWR")
-        chbox_3["state"] = "disable"
-        chbox_4["state"] = "disable"
-        chbox_6["state"] = "active"
+        chbox_3["state"] = "disabled"
+        chbox_4["state"] = "disabled"
+        chbox_6["state"] = "disabled"
     elif CBX_MIL_STD.get() == "2D":
         man = ("-10", "-12&P", "-20", "-20P", "NMWR")
-        chbox_3["state"] = "active"
-        chbox_4["state"] = "active"
-        chbox_6["state"] = "active"
+        chbox_3["state"] = "normal"
+        chbox_4["state"] = "normal"
+        chbox_6["state"] = "normal"
     elif CBX_MIL_STD.get() == "E":
         man = ("-10", "-12&P", "NMWR")
-        chbox_3["state"] = "active"
-        chbox_4["state"] = "active"
-        chbox_6["state"] = "active"
+        chbox_3["state"] = "normal"
+        chbox_4["state"] = "normal"
+        chbox_6["state"] = "normal"
     else:
         man = ()
-        chbox_3["state"] = "disable"
-        chbox_4["state"] = "disable"
-        chbox_6["state"] = "disable"
+        chbox_3["state"] = "disabled"
+        chbox_4["state"] = "disabled"
+        chbox_6["state"] = "disabled"
     if CBX_MANUAL is not None:
         CBX_MANUAL.config(values=man)
 
 
 def open_tm_tracker():
     global excelFile, workbook, ws
+
+    import openpyxl as xl
+
     try:
         excelFile = filedialog.askopenfilename(
             initialdir="~",
@@ -641,15 +678,17 @@ def open_tm_tracker():
         ws = workbook.active
 
 
-def autofill() -> None:
-    """Automatically fills in Entries with dummy data."""
-    ent_sys_name.insert(0, "IMPROVED ENVIRONMENTAL CONTROL UNIT")
-    ent_tmno.insert(0, "9-4120-433")
-    ent_sys_acronym.insert(0, "IECU")
-    ent_niin.insert(0, "01-592-7987")
-    ent_fsc.insert(0, "4120")
-    ent_uoc.insert(0, "")
-    ent_partno.insert(0, "IECU-5200")
+# def autofill() -> None:
+#     """Automatically fills in Entries with dummy data."""
+#     ent_sys_name.insert(0, "IMPROVED ENVIRONMENTAL CONTROL UNIT")
+#     ent_modelno.insert(0, "THREE-PHASE 18K BTU/HR")
+#     ent_tmno.insert(0, "9-4120-433")
+#     ent_sys_acronym.insert(0, "IECU")
+#     ent_niin.insert(0, "01-592-7987")
+#     ent_fsc.insert(0, "4120")
+#     ent_uoc.insert(0, "6QE")
+#     ent_cageno.insert(0, "80058")
+#     ent_partno.insert(0, "HD-1243X/G")
 
 
 root = ttk.Window(themename="darkly")
@@ -664,7 +703,12 @@ with contextlib.suppress(Exception):
 lbl_sys_name = ttk.Label(root, text="SYSTEM NAME: ", font="helvetica 13 bold")
 lbl_sys_name.grid(column=0, row=2, pady=5)
 
-ent_sys_name = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
+ent_sys_name = ttk.Entry(
+    root,
+    font="helvetica 13",
+    width=30,
+    justify="left",
+)
 ent_sys_name.grid(column=1, row=2, pady=5)
 
 # System Acronym
@@ -688,40 +732,40 @@ lbl_modelno.grid(column=2, row=3, pady=5)
 ent_modelno = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
 ent_modelno.grid(column=3, row=3, pady=5)
 
-# NIIN
-lbl_niin = ttk.Label(root, text="NIIN: ", font="helvetica 13 bold")
-lbl_niin.grid(column=0, row=5, pady=5)
-
-ent_niin = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
-ent_niin.grid(column=1, row=5, pady=5)
-
 # FSC
 lbl_fsc = ttk.Label(root, text="FSC: ", font="helvetica 13 bold")
-lbl_fsc.grid(column=2, row=5, pady=5)
+lbl_fsc.grid(column=0, row=5, pady=5)
 
 ent_fsc = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
-ent_fsc.grid(column=3, row=5, pady=5)
+ent_fsc.grid(column=1, row=5, pady=5)
 
-# UOC
-lbl_uoc = ttk.Label(root, text="UOC: ", font="helvetica 13 bold")
-lbl_uoc.grid(column=0, row=6, pady=5)
+# NIIN
+lbl_niin = ttk.Label(root, text="NIIN: ", font="helvetica 13 bold")
+lbl_niin.grid(column=2, row=5, pady=5)
 
-ent_uoc = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
-ent_uoc.grid(column=1, row=6, pady=5)
+ent_niin = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
+ent_niin.grid(column=3, row=5, pady=5)
 
 # PN
 lbl_part_no = ttk.Label(root, text="PART NUMBER: ", font="helvetica 13 bold")
-lbl_part_no.grid(column=2, row=6, pady=5)
+lbl_part_no.grid(column=0, row=6, pady=5)
 
 ent_partno = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
-ent_partno.grid(column=3, row=6, pady=5)
+ent_partno.grid(column=1, row=6, pady=5)
 
 # CAGE Code
 lbl_cageno = ttk.Label(root, text="CAGE CODE: ", font="helvetica 13 bold")
-lbl_cageno.grid(column=0, row=7, pady=5)
+lbl_cageno.grid(column=2, row=6, pady=5)
 
 ent_cageno = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
-ent_cageno.grid(column=1, row=7, pady=5)
+ent_cageno.grid(column=3, row=6, pady=5)
+
+# UOC
+lbl_uoc = ttk.Label(root, text="UOC: ", font="helvetica 13 bold")
+lbl_uoc.grid(column=0, row=7, pady=5)
+
+ent_uoc = ttk.Entry(root, font="helvetica 13", width=30, justify="left")
+ent_uoc.grid(column=1, row=7, pady=5)
 
 # MIL-STD
 lbl_mil_std = ttk.Label(root, text="MIL-STD: ", font="helvetica 13 bold")
@@ -735,7 +779,7 @@ maincombo()
 
 # OPTIONAL CHAPTERS
 lbl_blank = ttk.Label(root, text="", font="helvetica 13 bold", anchor="w", width=35)
-lbl_blank.grid(column=1, row=9, pady=6)
+lbl_blank.grid(column=1, row=9, pady=5)
 lbl_add_chapters = ttk.Label(
     root,
     text="ADD OPTIONAL CHAPTERS:",
@@ -760,55 +804,53 @@ chbox_tmi = ttk.Checkbutton(
     onvalue=1,
     offvalue=0,
     width=50,
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_tmi.grid(column=1, row=11, sticky=W)
+chbox_tmi.grid(column=1, row=11, sticky=W, pady=PADY)
 
 chbox_1 = ttk.Checkbutton(
     root,
-    text="Auxillary Equipment Maintenance Instructions",
+    text="Auxilary Equipment Maintenance",
     variable=chb_1,
     onvalue=1,
     offvalue=0,
     width=50,
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_1.grid(column=1, row=12, sticky=W)
+chbox_1.grid(column=1, row=12, sticky=W, pady=PADY)
 
 chbox_2 = ttk.Checkbutton(
     root,
-    text="Ammunition Maintenance Instructions",
+    text="Ammunition Maintenance",
     variable=chb_2,
     onvalue=1,
     offvalue=0,
     width=50,
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_2.grid(column=1, row=13, sticky=W)
+chbox_2.grid(column=1, row=13, sticky=W, pady=PADY)
 
 chbox_3 = ttk.Checkbutton(
     root,
-    text="Test and Inspection Maintenance Instructions",
+    text="Test and Inspection Maintenance",
     variable=chb_3,
     onvalue=1,
     offvalue=0,
     width=50,
-    state="disabled",
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_3.grid(column=1, row=14, sticky=W)
+chbox_3.grid(column=1, row=14, sticky=W, pady=PADY)
 
 chbox_4 = ttk.Checkbutton(
     root,
-    text="Shipment/Movementand Storage Maintenance Instructions",
+    text="Shipment/Movement and Storage Maintenance",
     variable=chb_4,
     onvalue=1,
     offvalue=0,
     width=50,
-    state="disabled",
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_4.grid(column=1, row=15, sticky=W)
+chbox_4.grid(column=1, row=15, sticky=W, pady=PADY)
 
 chbox_5 = ttk.Checkbutton(
     root,
@@ -817,9 +859,9 @@ chbox_5 = ttk.Checkbutton(
     onvalue=1,
     offvalue=0,
     width=50,
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_5.grid(column=1, row=16, sticky=W)
+chbox_5.grid(column=1, row=16, sticky=W, pady=PADY)
 
 chbox_6 = ttk.Checkbutton(
     root,
@@ -828,56 +870,52 @@ chbox_6 = ttk.Checkbutton(
     onvalue=1,
     offvalue=0,
     width=50,
-    state="disabled",
-    style="Custom.TCheckbutton",
+    style="round-toggle",
 )
-chbox_6.grid(column=1, row=17, sticky=W)
+chbox_6.grid(column=1, row=17, sticky=W, pady=PADY)
 
 # Create a custom style for the Checkbutton font
 style = ttk.Style()
-style.configure("Custom.TCheckbutton", font=("Helvetica", 13, "bold"))
+# style.configure("Custom.TCheckbutton", font=("Helvetica", 13, "bold"))
 
-# Autofill Button
-btn_autofill = ttk.Button(
-    root,
-    text="AUTOFILL FORM",
-    command=autofill,
-    width=16,
-)
-btn_autofill.grid(column=3, row=9, pady=5)
+# # Autofill Button
+# btn_autofill = ttk.Button(
+#     root,
+#     text="AUTOFILL FORM",
+#     command=autofill,
+#     width=20,
+# )
+# btn_autofill.grid(column=3, row=10, pady=5)
 
 # TM Tracker Button
 btn_tm_tracker = ttk.Button(
     root,
     text="SELECT TRACKER",
     command=open_tm_tracker,
-    width=16,
-    # style="Select.TCheckbutton",
+    width=20,
     style=CUSTOM_TBUTTON,
 )
-btn_tm_tracker.grid(column=3, row=11, pady=5)
+btn_tm_tracker.grid(column=3, row=12, pady=5)
 
 # Clear Button
 btn_clear = ttk.Button(
     root,
     text="CLEAR FORM",
     command=clear_form,
-    width=16,
-    # style="Clear.TCheckbutton",
+    width=20,
     style=CUSTOM_TBUTTON,
 )
-btn_clear.grid(column=3, row=13, pady=5)
+btn_clear.grid(column=3, row=14, pady=5)
 
 # Build TM Button
 btn_build = ttk.Button(
     root,
     text="BUILD TM",
     command=save_folder,
-    width=16,
-    # style="Build.TCheckbutton",
+    width=20,
     style=CUSTOM_TBUTTON,
 )
-btn_build.grid(column=3, row=15, pady=5)
+btn_build.grid(column=3, row=16, pady=5)
 
 # Create custom styles for the Buttons
 style.configure(
